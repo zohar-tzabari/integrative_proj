@@ -1,8 +1,69 @@
-import { DatePicker, Table, Button, Rate } from "antd";
-import { InstagramOutlined } from "@ant-design/icons";
+import {
+  DatePicker,
+  Table,
+  Button,
+  Rate,
+  List,
+  Badge,
+  Avatar,
+  Form,
+  Input,
+  Layout
+} from "antd";
+import { InstagramOutlined, MessageTwoTone } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
+const { Header, Content, Footer, Sider } = Layout;
+
+
+const ChatView = ({ text, clientName }) => {
+  const [textChat, setTextChat] = useState(text);
+  const [clientPrivateName, setClientName] = useState(clientName);
+
+  const handleSubmit = (values) => {
+    const newMessage = `${clientPrivateName}\n${values.content}`;
+    setTextChat((prevTextChat) => [...prevTextChat, newMessage]);
+  };
+
+  const messages = textChat.map((message) => {
+    const [name, content] = message.split("\n");
+    return { name, content };
+  });
+
+  return (
+    <div
+      style={{
+        background: "#f0f0f0",
+        maxHeight: "100vh",
+        maxWidth: "100vw",
+        overflow: "auto",
+        position: "relative", // add position relative to the container
+      }}
+    >
+      <List
+        itemLayout="horizontal"
+        dataSource={messages}
+        renderItem={({ name, content }) => (
+          <List.Item>
+            <List.Item.Meta title={name} description={content} />
+          </List.Item>
+        )}
+      />
+        <Form onFinish={handleSubmit}>
+          <Form.Item name="content">
+            <Input placeholder="Message" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Send
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+  );
+};
+
 
 const PickDate = () => {
   const [date, setDate] = useState(null);
@@ -80,6 +141,26 @@ const RatingSup = () => {
 };
 
 const Description = ({ text, instgramLink }) => {
+  const [chat, setChat] = useState(null);
+  const [showChat, setShowChat] = useState(false);
+
+  useEffect(() => {
+    function setShowChatEffect() {
+      setChat(
+        <ChatView
+          clientName={"zohar"}
+          text={[
+            "zohar\nhi",
+            "moshe\nhi",
+            "zohar\ngood and with u?",
+            "moshe\ngood",
+          ]}
+        />
+      );
+    }
+    setShowChatEffect();
+  }, []);
+
   return (
     <div>
       {text}
@@ -87,8 +168,14 @@ const Description = ({ text, instgramLink }) => {
       <Button icon={<InstagramOutlined />} size="large" href={instgramLink}>
         {" "}
       </Button>
+      <button type="button" onClick={() => setShowChat(!showChat)}>
+        <Badge count={5}>
+          <Avatar icon={<MessageTwoTone />} shape="square" size="large" />
+        </Badge>
+      </button>
       <RatingSup />
       <PickDate />
+      {showChat ? chat : ""}
     </div>
   );
 };
@@ -303,4 +390,51 @@ const SupTable = () => {
     </div>
   );
 };
-export default SupTable;
+
+
+const AllClientView = () => {
+return (
+  <Layout>
+    <Header
+      style={{
+        backgroundColor: "white",
+        borderBottom: "none",
+        padding: 0,
+      }}
+    >
+
+    </Header>
+    <Layout>
+      <Sider
+        style={{
+          backgroundColor: "gray",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      >
+        {" "}
+      </Sider>
+      <Content>
+        {" "}
+        <div>
+          <SupTable />
+        </div>
+      </Content>
+      <Sider
+        style={{
+          backgroundColor: "gray",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      >
+        right sidebar
+      </Sider>
+    </Layout>
+    <Footer>@all right served to wed portal</Footer>
+  </Layout>
+);
+}
+
+
+
+export default AllClientView;
