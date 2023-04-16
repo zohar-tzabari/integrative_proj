@@ -3,7 +3,7 @@ import { Form, Input, Button, Layout, message } from "antd";
 import axios from "axios";
 
 const { Header, Content, Footer, Sider } = Layout;
-
+const superApp = "2023b.zohar.tzabari"
 const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -14,23 +14,41 @@ const RegistrationFormContent = () => {
     });
   };
 
+
   const onFinish = async (values) => {
-    const { firstName, lastName, email } = values;
-    success(
-      `Registration successful! First Name: ${firstName}, Last Name: ${lastName}, Email: ${email}`
-    );
-    const dataToServer = {
-        email,
-      };
-      console.log(dataToServer)
-    try {
-      const response = await axios.post("http://localhost:8081/superapp/users",dataToServer );
-      console.log(response.data);
+    const dataFromServer = await onFinishApi(values);
+    if(dataFromServer)
+    {
+      console.log(dataFromServer);
       success("Registration successful!");
+    }
+
+  }
+
+  const onFinishApi = async (values) => {
+    const { firstName, lastName, email } = values;
+    const dataToServer = {
+      email,
+    };
+    console.log(dataToServer);
+    try {
+      const response = await axios.post(
+        `http://localhost:8081/superapp/users`,
+        dataToServer,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }
+      );
+      return response.data;
     } catch (error) {
       console.error(error);
+      return null;
     }
   };
+
 
   return (
     <>
@@ -71,19 +89,18 @@ const RegistrationFormContent = () => {
 };
 
 const RegistrationForm = () => {
-    return (
+  return (
+    <Layout>
+      <Header>Header</Header>
       <Layout>
-        <Header>Header</Header>
-        <Layout>
-          <Sider>Sider</Sider>
-          <Content>
-            <RegistrationFormContent />
-          </Content>
-          <Sider>Sider</Sider>
-
-        </Layout>
-        <Footer>Footer</Footer>
+        <Sider>Sider</Sider>
+        <Content>
+          <RegistrationFormContent />
+        </Content>
+        <Sider>Sider</Sider>
       </Layout>
-    );
-  };
+      <Footer>Footer</Footer>
+    </Layout>
+  );
+};
 export default RegistrationForm;
