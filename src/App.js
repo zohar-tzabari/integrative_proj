@@ -1,9 +1,7 @@
-import AllClientView from "./suppliersTable";
-import RegistrationForm from "./registerClinet"
-
+import Router from "./router"
 
 function App() {
   return (
-    <RegistrationForm/>
+    <Router/>
     )}
 export default App;
