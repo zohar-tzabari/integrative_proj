@@ -427,7 +427,6 @@ return (
           padding: 0,
         }}
       >
-        right sidebar
       </Sider>
     </Layout>
     <Footer>@all right served to wed portal</Footer>

@@ -1,70 +1,58 @@
 import { Form, Input, Button, Layout, message } from "antd";
-
-import axios from "axios";
+import { ClientRegisterApi } from "../api/usersApi";
+import { MINIAPPUSER } from "../CONST";
+import { useState } from "react";
 
 const { Header, Content, Footer, Sider } = Layout;
-const superApp = "2023b.zohar.tzabari"
+
 const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
+  const [role, setRole] = useState(MINIAPPUSER);
 
-  const success = (text) => {
+  const successMsg = (text) => {
     messageApi.open({
       type: "success",
       content: text,
     });
   };
 
-
-  const onFinish = async (values) => {
-    const dataFromServer = await onFinishApi(values);
-    if(dataFromServer)
-    {
-      console.log(dataFromServer);
-      success("Registration successful!");
-    }
-
-  }
-
-  const onFinishApi = async (values) => {
-    const { firstName, lastName, email } = values;
-    const dataToServer = {
-      email,
-    };
-    console.log(dataToServer);
-    try {
-      const response = await axios.post(
-        `http://localhost:8081/superapp/users`,
-        dataToServer,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
+  const errorMsg = (text) => {
+    messageApi.open({
+      type: "error",
+      content: text,
+    });
   };
 
+  const onFinish = async (values) => {
+    values["role"] = "ADMIN";
+    console.log(values);
+    const dataFromServer = await ClientRegisterApi(values);
+    if (dataFromServer) {
+      console.log(dataFromServer);
+      successMsg("Registration successful!");
+    } else {
+      errorMsg("somthing went wrong");
+    }
+  };
 
   return (
     <>
       {contextHolder}
       <Form onFinish={onFinish}>
         <Form.Item
-          name="firstName"
-          label="First Name"
-          rules={[{ required: true, message: "Please input your first name!" }]}
+          name="avatar"
+          label="avatar"
+          rules={[
+            { required: true, message: "Please input your avatar name!" },
+          ]}
         >
           <Input />
         </Form.Item>
+
         <Form.Item
-          name="lastName"
-          label="Last Name"
-          rules={[{ required: true, message: "Please input your last name!" }]}
+          name="username"
+          label="username"
+          rules={[{ required: true, message: "Please input your user name!" }]}
         >
           <Input />
         </Form.Item>
@@ -91,15 +79,39 @@ const RegistrationFormContent = () => {
 const RegistrationForm = () => {
   return (
     <Layout>
-      <Header>Header</Header>
+      <Header
+        style={{
+          backgroundColor: "#ffff",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      ></Header>
       <Layout>
-        <Sider>Sider</Sider>
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Sider>
         <Content>
           <RegistrationFormContent />
         </Content>
-        <Sider>Sider</Sider>
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Sider>{" "}
       </Layout>
-      <Footer>Footer</Footer>
+      <Footer
+        style={{
+          backgroundColor: "#ffff",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      ></Footer>
     </Layout>
   );
 };
