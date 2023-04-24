@@ -65,19 +65,39 @@ function AdminComp() {
         alignContent: "stretch",
       }}
     >
-      <Button style={{ margin: "0.5rem" }} type="primary" onClick={handleGetAllUsers}>
+      <Button
+        style={{ margin: "0.5rem" }}
+        type="primary"
+        onClick={handleGetAllUsers}
+      >
         Get All Users
       </Button>
-      <Button style={{ margin: "0.5rem" }} type="primary" onClick={handleGetAllCommands}>
+      <Button
+        style={{ margin: "0.5rem" }}
+        type="primary"
+        onClick={handleGetAllCommands}
+      >
         Get All Commands
       </Button>
-      <Button style={{ margin: "0.5rem" }} onClick={handleDeleteAllUsers}>
+      <Button
+        danger
+        style={{ margin: "0.5rem" }}
+        onClick={handleDeleteAllUsers}
+      >
         Delete All Users
       </Button>
-      <Button style={{ margin: "0.5rem" }} onClick={handleDeleteAllObjects}>
+      <Button
+        danger
+        style={{ margin: "0.5rem" }}
+        onClick={handleDeleteAllObjects}
+      >
         Delete All Objects
       </Button>
-      <Button style={{ margin: "0.5rem" }} onClick={handleDeleteAllCommandsHistory}>
+      <Button
+        danger
+        style={{ margin: "0.5rem" }}
+        onClick={handleDeleteAllCommandsHistory}
+      >
         Delete All Commands History
       </Button>
     </div>
@@ -87,15 +107,39 @@ function AdminComp() {
 const Admin = () => {
   return (
     <Layout>
-      <Header>Header</Header>
+      <Header
+        style={{
+          backgroundColor: "#ffff",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      ></Header>
       <Layout>
-        <Sider>Sider</Sider>
-        <Content>
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Sider>
+        <Content
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        >
           <AdminComp />
         </Content>
-        <Sider>Sider</Sider>
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Sider>
       </Layout>
-      <Footer>Footer</Footer>
+      <Footer></Footer>
     </Layout>
   );
 };

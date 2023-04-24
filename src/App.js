@@ -4,6 +4,6 @@ import Admin from "./pages/admin"
 
 function App() {
   return (
-    <Admin/>
+    <AppTemp/>
     )}
 export default App;

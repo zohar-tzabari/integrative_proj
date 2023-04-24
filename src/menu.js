@@ -9,11 +9,12 @@ import {
 import RegistrationForm from "./pages/registerClinet";
 import AllClientView from "./pages/suppliersTable";
 import Home from "./pages/home";
+import Admin from "./pages/admin";
 
 
 const { Header, Content } = Layout;
 
-function AppTemp() {
+function NewMenu() {
   return (
     <Router>
       <Layout>
@@ -25,6 +26,7 @@ function AppTemp() {
             <Route index element={<Home />} />
             <Route path="RegistrationForm" element={<RegistrationForm />} />
             <Route path="AllClientView" element={<AllClientView />} />
+            <Route path="Admin" element={<Admin />} />
             <Route path="*" element={"nothing to see"} />            
             <Route path="hi" element={<RegistrationForm />} />
           </Routes>
@@ -47,8 +49,11 @@ function MenuComp() {
       <Menu.Item key="/AllClientView">
         <Link to="/AllClientView">All Client View</Link>
       </Menu.Item>
+      <Menu.Item key="/Admin">
+        <Link to="/Admin">Admin Dashboard</Link>
+      </Menu.Item>
     </Menu>
   );
 }
 
-export default AppTemp;
+export default NewMenu;

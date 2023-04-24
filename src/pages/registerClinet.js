@@ -3,7 +3,7 @@ import { Form, Input, Button, Layout, message } from "antd";
 import axios from "axios";
 
 const { Header, Content, Footer, Sider } = Layout;
-const superApp = "2023b.zohar.tzabari"
+const superApp = "2023b.zohar.tzabari";
 const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -14,16 +14,13 @@ const RegistrationFormContent = () => {
     });
   };
 
-
   const onFinish = async (values) => {
     const dataFromServer = await onFinishApi(values);
-    if(dataFromServer)
-    {
+    if (dataFromServer) {
       console.log(dataFromServer);
       success("Registration successful!");
     }
-
-  }
+  };
 
   const onFinishApi = async (values) => {
     const { firstName, lastName, email } = values;
@@ -37,9 +34,9 @@ const RegistrationFormContent = () => {
         dataToServer,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         }
       );
       return response.data;
@@ -48,7 +45,6 @@ const RegistrationFormContent = () => {
       return null;
     }
   };
-
 
   return (
     <>
@@ -91,15 +87,39 @@ const RegistrationFormContent = () => {
 const RegistrationForm = () => {
   return (
     <Layout>
-      <Header>Header</Header>
+      <Header
+        style={{
+          backgroundColor: "#ffff",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      ></Header>
       <Layout>
-        <Sider>Sider</Sider>
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Sider>
         <Content>
           <RegistrationFormContent />
         </Content>
-        <Sider>Sider</Sider>
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Sider>{" "}
       </Layout>
-      <Footer>Footer</Footer>
+      <Footer
+        style={{
+          backgroundColor: "#ffff",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      ></Footer>
     </Layout>
   );
 };
