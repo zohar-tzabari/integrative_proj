@@ -1,13 +1,10 @@
 import { Form, Input, Button, Layout, message } from "antd";
 import { ClientRegisterApi } from "../api/usersApi";
-import { MINIAPPUSER } from "../CONST";
-import { useState } from "react";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [role, setRole] = useState(MINIAPPUSER);
 
   const successMsg = (text) => {
     messageApi.open({
