@@ -37,16 +37,6 @@ const RegistrationFormContent = () => {
       {contextHolder}
       <Form onFinish={onFinish}>
         <Form.Item
-          name="avatar"
-          label="avatar"
-          rules={[
-            { required: true, message: "Please input your avatar name!" },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
           name="username"
           label="username"
           rules={[{ required: true, message: "Please input your user name!" }]}
@@ -63,6 +53,16 @@ const RegistrationFormContent = () => {
         >
           <Input />
         </Form.Item>
+        <Form.Item
+          name="avatar"
+          label="avatar"
+          rules={[
+            { required: true, message: "Please input your avatar name!" },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Register
