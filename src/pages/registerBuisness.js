@@ -1,102 +1,58 @@
 import { Form, Input, Button, Layout, message, Upload } from "antd";
 import { ClientRegisterApi } from "../api/usersApi";
 import { InboxOutlined } from "@ant-design/icons";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import ImgCrop from "antd-img-crop";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Dragger } = Upload;
 
 const UploadFile = () => {
-  const [messageApi, contextHolder] = message.useMessage();
-  const [buisnessImg, setBuisnesImg] = useState(null);
+  const [fileList, setFileList] = useState([]);
 
-  const successMsg = (text) => {
-    messageApi.open({
-      type: "success",
-      content: text,
-    });
+  useEffect(() => {
+    console.log(fileList);
+  }, [fileList[0]]); // Only re-run the effect if count changes
+
+  const onChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
   };
 
-  const errorMsg = (text) => {
-    messageApi.open({
-      type: "error",
-      content: text,
-    });
+  const dummyRequest = async ({ file, onSuccess }) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
   };
 
-  const sendFile = (file) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    reader.onloadend = () => {
-      setBuisnesImg(reader.result);
-    };
+  const onPreview = async (file) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
   };
-
-
-
-  const props = {
-    name: "file",
-    multiple: false,
-    action: "",
-    accept: ".png",
-    className:"avatar-uploader",
-    disabled: buisnessImg !== null,
-    onRemove(info){
-      setBuisnesImg(null);
-    },
-    onChange(info) {
-      const { status, response } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (status === "done") {
-        console.log(info.file);
-        successMsg(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        errorMsg(`${info.file.name} file upload failed.`);
-      }
-    },
-    customRequest: ({ onSuccess, onError, file }) => {
-      setTimeout(() => {
-        onSuccess("ok");
-        sendFile(file);
-      }, 0);
-    },
-  };
-
   return (
-    <div>
-      <Dragger {...props}>
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">
-          Click or drag file to this area to upload
-        </p>
-        <p className="ant-upload-hint">
-          Support for a single or bulk upload. Strictly prohibited from
-          uploading company data or other banned files.
-        </p>
-      </Dragger>
-      {buisnessImg && (
-        <div>
-          <img
-            src={buisnessImg}
-            alt="Selected Business Image"
-            style={{
-              height: "20vh",
-              display: "block",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          />
-        </div>
-      )}
-    </div>
+    <ImgCrop rotationSlider>
+      <Upload
+        listType="picture-card"
+        fileList={fileList}
+        onChange={onChange}
+        onPreview={onPreview}
+        customRequest={dummyRequest}
+      >
+        {fileList.length < 1 && "+ Upload buisness photo"}
+      </Upload>
+    </ImgCrop>
   );
 };
-
 
 const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -131,43 +87,100 @@ const RegistrationFormContent = () => {
 
   return (
     <>
-      {contextHolder}
-      <Form onFinish={onFinish}>
-        <Form.Item
-          name="avatar"
-          label="avatar"
-          rules={[
-            { required: true, message: "Please input your avatar name!" },
-          ]}
+      <Layout>
+        <Header
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Header>
+        {contextHolder}
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
         >
-          <Input />
-        </Form.Item>
+          <UploadFile />
+        </Sider>
 
-        <Form.Item
-          name="username"
-          label="username"
-          rules={[{ required: true, message: "Please input your user name!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            { required: true, message: "Please input your email!" },
-            { type: "email", message: "Please enter a valid email address!" },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Register
-          </Button>
-        </Form.Item>
-      </Form>
-      <UploadFile />
-      //TODO dropdown of supplier type
+        <Content>
+          <Form onFinish={onFinish}>
+            <Form.Item
+              name="avatar"
+              label="Avatar"
+              rules={[
+                { required: true, message: "Please input your avatar name!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="username"
+              label="Username"
+              rules={[
+                { required: true, message: "Please input your user name!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                { required: true, message: "Please input your email!" },
+                {
+                  type: "email",
+                  message: "Please enter a valid email address!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item name="instagram" label="Instagram">
+              <Input placeholder="Optional" />
+            </Form.Item>
+
+            <Form.Item name="facebook" label="Facebook">
+              <Input placeholder="Optional" />
+            </Form.Item>
+
+            <Form.Item
+              name="city"
+              label="City"
+              rules={[{ required: true, message: "Please input your city!" }]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item name="address" label="Address">
+              <Input placeholder="Optional" />
+            </Form.Item>
+
+            <Form.Item
+              name="phone"
+              label="Phone Number"
+              rules={[
+                { required: true, message: "Please input your phone number!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Register
+              </Button>
+            </Form.Item>
+          </Form>
+          {/* TODO: dropdown of supplier type */}
+        </Content>
+      </Layout>
     </>
   );
 };
