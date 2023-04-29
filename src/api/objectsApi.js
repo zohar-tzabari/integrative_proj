@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export async function ClientRegisterApi(values) {
+export async function CreateNewObject(values) {
   console.log(values);
   try {
     const response = await axios.post(
-      `http://localhost:8081/superapp/users`,
+      `http://localhost:8081/superapp/objects`,
       values,
       {
         headers: {

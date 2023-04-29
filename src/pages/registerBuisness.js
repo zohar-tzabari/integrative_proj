@@ -1,5 +1,7 @@
 import { Form, Input, Button, Layout, message, Upload } from "antd";
 import { ClientRegisterApi } from "../api/usersApi";
+import { CreateNewObject } from "../api/objectsApi";
+
 import { InboxOutlined } from "@ant-design/icons";
 
 import { useState, useEffect } from "react";
@@ -75,11 +77,17 @@ const RegistrationFormContent = () => {
   const onFinish = async (values) => {
     //todo: change the role to buissness
     values["role"] = "MINIAPP_USER";
+    values["type"] = "supplier";
     console.log(values);
-    const dataFromServer = await ClientRegisterApi(values);
-    if (dataFromServer) {
-      console.log(dataFromServer);
-      successMsg("Registration successful!");
+    const registerUser = await ClientRegisterApi(values);
+    if (registerUser) {
+      console.log(registerUser);
+      const registerObject = await CreateNewObject(values);
+      if (registerObject) {
+        successMsg("Registration successful!");
+      } else {
+        errorMsg("somthing went wrong");
+      }
     } else {
       errorMsg("somthing went wrong");
     }
