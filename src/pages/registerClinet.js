@@ -1,9 +1,10 @@
 import { Form, Input, Button, Layout, message } from "antd";
 import { ClientRegisterApi } from "../api/usersApi";
+import { useRef, useState } from "react";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const RegistrationFormContent = () => {
+const RegistrationFormContent = ({setRegisterSuccess}) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const successMsg = (text) => {
@@ -21,14 +22,16 @@ const RegistrationFormContent = () => {
   };
 
   const onFinish = async (values) => {
-    values["role"] = "ADMIN";
+    values["role"] = "MINIAPP_USER";
     console.log(values);
     const dataFromServer = await ClientRegisterApi(values);
     if (dataFromServer) {
       console.log(dataFromServer);
       successMsg("Registration successful!");
+      setRegisterSuccess(true);
     } else {
       errorMsg("somthing went wrong");
+      setRegisterSuccess(false);
     }
   };
 
@@ -73,7 +76,7 @@ const RegistrationFormContent = () => {
   );
 };
 
-const RegistrationForm = () => {
+const RegistrationForm = ({setRegisterSuccess}) => {
   return (
     <Layout>
       <Header
@@ -92,7 +95,7 @@ const RegistrationForm = () => {
           }}
         ></Sider>
         <Content>
-          <RegistrationFormContent />
+          <RegistrationFormContent setRegisterSuccess={setRegisterSuccess}/>
         </Content>
         <Sider
           style={{
@@ -112,4 +115,6 @@ const RegistrationForm = () => {
     </Layout>
   );
 };
+
+
 export default RegistrationForm;
