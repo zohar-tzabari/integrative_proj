@@ -11,7 +11,7 @@ import {
 import { ClientRegisterApi } from "../api/usersApi";
 import { CreateNewObject } from "../api/objectsApi";
 import RegistrationForm from "./registerClinet";
-
+import { useNavigate } from "react-router-dom";
 import { InboxOutlined } from "@ant-design/icons";
 
 import { useState, useEffect, useRef } from "react";
@@ -72,6 +72,8 @@ const UploadFile = ({ supplierPhoto }) => {
 const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const supplierPhoto = useRef(null);
+  const navigate = useNavigate();
+  const [registerSuccess, setRegisterSuccess] = useState(false);
 
   // const [role, setRole] = useState(MINIAPPUSER);
 
@@ -88,10 +90,13 @@ const RegistrationFormContent = () => {
     });
   };
 
+  function timeout(delay) {
+    return new Promise((res) => setTimeout(res, delay));
+  }
+
   const onFinish = async (values) => {
     //todo: change the role to buissness
     let json_to_server = {};
-    json_to_server["type"] = "supplier";
     json_to_server["type"] = "supplier";
     json_to_server["alias"] = values["alias"];
     values["photo"] = supplierPhoto.current;
@@ -101,6 +106,9 @@ const RegistrationFormContent = () => {
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
       successMsg("Registration successful!");
+      setRegisterSuccess(true);
+      await timeout(2000); //for 1 sec delay
+      navigate("/");
     } else {
       errorMsg("somthing went wrong");
     }
@@ -165,9 +173,11 @@ const RegistrationFormContent = () => {
             <UploadFile supplierPhoto={supplierPhoto} />
 
             <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Register
-              </Button>
+              {!registerSuccess && (
+                <Button type="primary" htmlType="submit">
+                  Register
+                </Button>
+              )}
             </Form.Item>
           </Form>
           {/* TODO: dropdown of supplier type */}
@@ -274,8 +284,8 @@ const BuisnessRegistrationForm = () => {
             {contextHolder}
             <Steps current={current} items={items} />
             <div style={contentStyle}>{steps[current].content}</div>
-            {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => next()}>
+            {userRegisterSuccess && current < steps.length - 1 && (
+              <Button type="primary" onClick={next}>
                 Next
               </Button>
             )}
@@ -283,8 +293,7 @@ const BuisnessRegistrationForm = () => {
         </Layout>
         <Sider style={{ background: "#fff" }}></Sider>
       </Layout>
-      <Footer>
-      </Footer>
+      <Footer></Footer>
     </Layout>
   );
 };
