@@ -6,6 +6,9 @@ const { Header, Content, Footer, Sider } = Layout;
 
 const RegistrationFormContent = ({setRegisterSuccess}) => {
   const [messageApi, contextHolder] = message.useMessage();
+  //the state that decide if th show the register button
+  const submissinShow = useRef(true);
+
 
   const successMsg = (text) => {
     messageApi.open({
@@ -28,6 +31,7 @@ const RegistrationFormContent = ({setRegisterSuccess}) => {
     if (dataFromServer) {
       console.log(dataFromServer);
       successMsg("Registration successful!");
+      submissinShow.current = false;
       setRegisterSuccess(true);
     } else {
       errorMsg("somthing went wrong");
@@ -65,12 +69,11 @@ const RegistrationFormContent = ({setRegisterSuccess}) => {
         >
           <Input />
         </Form.Item>
-
-        <Form.Item>
+        {submissinShow.current && <Form.Item>
           <Button type="primary" htmlType="submit">
             Register
           </Button>
-        </Form.Item>
+        </Form.Item>}
       </Form>
     </>
   );
