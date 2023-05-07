@@ -6,54 +6,13 @@ import {
   deleteAllObjects,
   deleteAllCommandsHistory,
 } from "../api/AdminAPI";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { JsonTable } from "../sharedComponents/JsonTable";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-
-
-const JsonTable = ({ data }) => {
-  const [columns, setColumns] = useState([]);
-
-  useEffect(() => {
-    if (data.length > 0) {
-      const keys = Object.keys(data[0]);
-      const newColumns = keys.map((key) => {
-        const dataIndex = key;
-        const title = key.toUpperCase();
-        const value = data[0][key];
-        if (typeof value === "object" && value !== null) {
-          const subKeys = Object.keys(value);
-          const children = subKeys.map((subKey) => ({
-            title: subKey.toUpperCase(),
-            dataIndex: `${key}.${subKey}`,
-            key: `${key}.${subKey}`,
-            render: (text, record) => record[key][subKey],
-          }));
-          return {
-            title,
-            dataIndex,
-            key,
-            children,
-          };
-        }
-        return {
-          title,
-          dataIndex,
-          key,
-        };
-      });
-      setColumns(newColumns);
-    }
-  }, [data]);
-
-
-
-  return <Table dataSource={data} columns={columns} />;
-};
-
 function AdminComp() {
-  const [results, setResults] = useState([]);
+  const [resultsTable, setResultsTable] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
 
   const success = (text) => {
@@ -63,24 +22,26 @@ function AdminComp() {
     });
   };
 
-
   const handleGetAllUsers = async () => {
     try {
+      setResultsTable(null);
       const users = await getAllUsers();
       success("Get All Users");
       console.log(users.data);
-      setResults(users.data);
+      setResultsTable(<JsonTable data={users.data} />);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleGetAllCommands = async () => {
+    setResultsTable(null);
     try {
       const commands = await getAllCommands();
-      setResults(commands.data);
+      setResultsTable(<JsonTable data={commands.data} />);
+      console.log(commands.data);
       success("Get All Commands");
-      // setResults(commands);
+      // setResultsTable(commands);
     } catch (error) {
       console.log(error);
     }
@@ -114,55 +75,54 @@ function AdminComp() {
   };
 
   return (
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "stretch",
-          alignContent: "stretch",
-        }}
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "stretch",
+        alignContent: "stretch",
+      }}
+    >
+      <Button
+        style={{ margin: "0.5rem" }}
+        type="primary"
+        onClick={handleGetAllUsers}
       >
-        <Button
-          style={{ margin: "0.5rem" }}
-          type="primary"
-          onClick={handleGetAllUsers}
-        >
-          Get All Users
-        </Button>
-        <Button
-          style={{ margin: "0.5rem" }}
-          type="primary"
-          onClick={handleGetAllCommands}
-        >
-          Get All Commands
-        </Button>
-        <Button
-          danger
-          style={{ margin: "0.5rem" }}
-          onClick={handleDeleteAllUsers}
-        >
-          Delete All Users
-        </Button>
-        <Button
-          danger
-          style={{ margin: "0.5rem" }}
-          onClick={handleDeleteAllObjects}
-        >
-          Delete All Objects
-        </Button>
-        <Button
-          danger
-          style={{ margin: "0.5rem" }}
-          onClick={handleDeleteAllCommandsHistory}
-        >
-          Delete All Commands History
-        </Button>
-        <JsonTable data = {results} />
+        Get All Users
+      </Button>
+      <Button
+        style={{ margin: "0.5rem" }}
+        type="primary"
+        onClick={handleGetAllCommands}
+      >
+        Get All Commands
+      </Button>
+      <Button
+        danger
+        style={{ margin: "0.5rem" }}
+        onClick={handleDeleteAllUsers}
+      >
+        Delete All Users
+      </Button>
+      <Button
+        danger
+        style={{ margin: "0.5rem" }}
+        onClick={handleDeleteAllObjects}
+      >
+        Delete All Objects
+      </Button>
+      <Button
+        danger
+        style={{ margin: "0.5rem" }}
+        onClick={handleDeleteAllCommandsHistory}
+      >
+        Delete All Commands History
+      </Button>
+      {resultsTable}
       {contextHolder}
-      </div>
+    </div>
   );
 }
 

@@ -6,19 +6,15 @@ import {
   message,
   Upload,
   Steps,
-  theme,
 } from "antd";
-import { ClientRegisterApi } from "../api/usersApi";
 import { CreateNewObject } from "../api/objectsApi";
 import RegistrationForm from "./registerClinet";
 import { useNavigate } from "react-router-dom";
-import { InboxOutlined } from "@ant-design/icons";
 
 import { useState, useEffect, useRef } from "react";
 import ImgCrop from "antd-img-crop";
 
 const { Header, Content, Footer, Sider } = Layout;
-const { Dragger } = Upload;
 
 const UploadFile = ({ supplierPhoto }) => {
   const [fileList, setFileList] = useState([]);
@@ -97,7 +93,7 @@ const RegistrationFormContent = () => {
   const onFinish = async (values) => {
     //todo: change the role to buissness
     let json_to_server = {};
-    json_to_server["type"] = "supplier";
+    json_to_server["type"] = "Supplier";
     json_to_server["alias"] = values["alias"];
     values["photo"] = supplierPhoto.current;
     json_to_server["objectDetails"] = values;

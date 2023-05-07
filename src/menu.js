@@ -9,8 +9,7 @@ import AllClientView from "./pages/suppliersTable";
 import Home from "./pages/home";
 import Admin from "./pages/admin";
 import BuisnessRegistrationForm from "./pages/registerBuisness"
-import TablePage from "./pages/tables"
-
+import MiniAppDash from "./pages/miniAppDashBorad"
 
 const { Header, Content } = Layout;
 
@@ -29,6 +28,7 @@ function NewMenu() {
             <Route path="*" element={"nothing to see"} />            
             <Route path="BuisnessRegistrationForm" element={<BuisnessRegistrationForm />} />
             <Route path="tables" element={<TablePage />} />
+            <Route path="MiniAppDash" element={<MiniAppDash />} />
           </Routes>
         </Content>
       </Layout>
@@ -55,6 +55,9 @@ function MenuComp() {
     <Menu.Item key="/tables">
         <Link to="/tables">Tables organizer</Link>
       </Menu.Item>
+    <Menu.Item key="/MiniAppDash">
+      <Link to="/MiniAppDash">Mini APP DashBorad</Link>
+    </Menu.Item>
     </Menu>
   );
 }
