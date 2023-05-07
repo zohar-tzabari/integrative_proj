@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export async function GetAllSuppliers(miniAppName) {
+async function GetCommand(miniAppName,command) {
   let dataToSend = {};
   //Todo: need to get this as data for now its hardCoded
-  dataToSend["command"] = "getAllSuppliers";
+  dataToSend["command"] = command;
   dataToSend["invokedBy"] = {
     userId: {
       superapp: "2023b.zohar.tzabari",
@@ -32,3 +32,11 @@ export async function GetAllSuppliers(miniAppName) {
     return null;
   }
 }
+
+export async function GetAllSuppliers(miniAppName) {
+return GetCommand(miniAppName,"getAllSuppliers")
+}
+
+export async function GetSupplierTypes(miniAppName) {
+  return GetCommand(miniAppName,"getTypes")
+  }
