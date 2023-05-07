@@ -22,6 +22,7 @@ function MiniAPPComp() {
 
   const handleGetAllSuppliers = async () => {
     try {
+      setResultsTable(null);
       const suppliers = await GetAllSuppliers("zohar");
       setResultsTable (<JsonTable data={suppliers.data} />);
       success("Get All Suppliers");
@@ -33,9 +34,10 @@ function MiniAPPComp() {
 
   const handleGetAllTypes = async () => {
     try {
+      setResultsTable(null);
       const types = await GetSupplierTypes("zohar");
       console.log(types);
-      setResultsTable (<JsonTable data={types.data} />);
+      setResultsTable (<JsonTable data={[types.data]} />);
       success("Get All supplier types");
     } catch (error) {
       console.log(error);
