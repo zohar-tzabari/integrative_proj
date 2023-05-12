@@ -13,6 +13,9 @@ import {
   message,
 } from "antd";
 import { SketchPicker } from "react-color";
+import { JsonTable } from "../sharedComponents/JsonTable";
+import { useNavigate } from "react-router-dom";
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -54,7 +57,8 @@ const Category = ({ category, items, onDragEnd }) => {
 };
 
 const GuestFormComponent = () => {
-  const [allGuests,setAllGuests] = useState([]);
+  const [allGuests, setAllGuests] = useState([]);
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([
     {
       name: "Groom family",
@@ -70,13 +74,13 @@ const GuestFormComponent = () => {
   const [newGuest, setNewGuest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
   const [sketchPickerColor, setSketchPickerColor] = useState({
     r: "241",
     g: "112",
     b: "19",
     a: "1",
   });
+  const [form] = Form.useForm();
 
   const successMsg = (text) => {
     messageApi.open({
@@ -95,31 +99,27 @@ const GuestFormComponent = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const handleOk = () => {
     handleNewGuestType();
     setIsModalOpen(false);
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const onFinish = (values) => {
-    const newGuestTemp = {"firstName": values.firstName, "lastName":values.lastName ,"guestCatagory":values.guestType}
-    setNewGuest(newGuestTemp);
-    console.log(values);
-
-    console.log(newGuest);
+  const finishGuestsAdding = () => {
+    navigate("/tables/arrangeTables");
   };
 
-  const handleAddNewGhest = () => {
-    console.log(newGuest);
-    console.log(allGuests);
-    console.log("hi")
-  }
+  const onFinish = (values) => {
+    setAllGuests([...allGuests, values]);
+    // Reset the form fields
+    form.resetFields();
+  };
 
   const handleNewGuestType = () => {
-    console.log(newCategory);
-    console.log(categories);
     if (newCategory !== "") {
       const categoryNameExists = categories.some(
         (category) => category.name === newCategory.GuestCatagoryName
@@ -133,12 +133,61 @@ const GuestFormComponent = () => {
         };
         setCategories([...categories, objectToAdd]);
         setNewCategory("");
+        successMsg("Guest category added successfully!");
       }
     }
   };
 
   return (
     <>
+      {contextHolder}
+      <Form onFinish={onFinish} form={form}>
+        <Form.Item
+          name="firstName"
+          label="first Name"
+          rules={[
+            { required: true, message: "Please input guest first name!" },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="lastName"
+          label="Last Name"
+          rules={[{ required: true, message: "Please input guest last name!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Type of Guest"
+          name="guestType"
+          rules={[{ required: true, message: "Please select a guest type!" }]}
+        >
+          <Radio.Group>
+            {categories.map((category) => (
+              <Radio.Button
+                key={category.name}
+                value={category.name}
+                style={{
+                  backgroundColor: `rgba(${category.color.r}, ${category.color.g}, ${category.color.b}, ${category.color.a})`,
+                }}
+              >
+                {category.name}
+              </Radio.Button>
+            ))}
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" onClick={showModal}>
+            Add new Guets type
+          </Button>
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            add new ghest
+          </Button>
+        </Form.Item>
+      </Form>
       <Modal
         title="Choose name and color"
         open={isModalOpen}
@@ -163,55 +212,10 @@ const GuestFormComponent = () => {
           color={sketchPickerColor}
         />
       </Modal>
-      <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 12 }}
-        onFinish={onFinish}
-      >
-        <Form.Item
-          label="First Name"
-          name="firstName"
-          rules={[{ required: true, message: "Please input your first name!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Last Name"
-          name="lastName"
-          rules={[{ required: true, message: "Please input your last name!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Type of Guest"
-          name="guestType"
-          rules={[{ required: true, message: "Please select a guest type!" }]}
-        >
-          <Radio.Group>
-            {categories.map((category) => (
-              <Radio.Button
-                key={category.name}
-                value={category.name}
-                style={{
-                  backgroundColor: `rgba(${category.color.r}, ${category.color.g}, ${category.color.b}, ${category.color.a})`,
-                }}
-              >
-                {category.name}
-              </Radio.Button>
-            ))}
-          </Radio.Group>
-          <Button type="primary" onClick={showModal}>
-            Add new Guets type
-          </Button>
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
-          <Button type="primary">Finish</Button>
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 6, span: 12 }}  onClick={handleAddNewGhest}>
-          <Button type="primary">Add More Guests</Button>
-        </Form.Item>
-      </Form>
-      {contextHolder}
+      <Button type="primary" onClick={finishGuestsAdding}>
+        Finish with adding guests
+      </Button>
+      <JsonTable data={allGuests} />
     </>
   );
 };
