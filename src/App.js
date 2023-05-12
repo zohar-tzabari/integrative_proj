@@ -1,7 +1,7 @@
-import AppTemp from "./menu"
+import Menu from "./menu"
 
 function App() {
   return (
-    <AppTemp/>
+    <Menu/>
     )}
 export default App;

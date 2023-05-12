@@ -1,16 +1,23 @@
 import React, { useState, useRef } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Card, Col, Row, Layout, Collapse } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Row,
+  Layout,
+  Form,
+  Input,
+  Radio,
+  Modal,
+  message,
+} from "antd";
+import { SketchPicker } from "react-color";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-function CardComponent({item}) {
-
-  return (
-    <Card size="small">
-      {item.name}
-    </Card>
-  );
+function CardComponent({ item }) {
+  return <Card size="small">{item.name}</Card>;
 }
 
 const Category = ({ category, items, onDragEnd }) => {
@@ -34,7 +41,7 @@ const Category = ({ category, items, onDragEnd }) => {
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                   >
-                    <CardComponent item={item}/>
+                    <CardComponent item={item} />
                   </div>
                 )}
               </Draggable>
@@ -46,7 +53,190 @@ const Category = ({ category, items, onDragEnd }) => {
   );
 };
 
-const TablePage = () => {
+const GuestFormComponent = () => {
+  const [allGuests,setAllGuests] = useState([]);
+  const [categories, setCategories] = useState([
+    {
+      name: "Groom family",
+      color: {
+        r: "241",
+        g: "112",
+        b: "19",
+        a: "1",
+      },
+    },
+  ]);
+  const [newCategory, setNewCategory] = useState("");
+  const [newGuest, setNewGuest] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const [sketchPickerColor, setSketchPickerColor] = useState({
+    r: "241",
+    g: "112",
+    b: "19",
+    a: "1",
+  });
+
+  const successMsg = (text) => {
+    messageApi.open({
+      type: "success",
+      content: text,
+    });
+  };
+
+  const errorMsg = (text) => {
+    messageApi.open({
+      type: "error",
+      content: text,
+    });
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    handleNewGuestType();
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const onFinish = (values) => {
+    const newGuestTemp = {"firstName": values.firstName, "lastName":values.lastName ,"guestCatagory":values.guestType}
+    setNewGuest(newGuestTemp);
+    console.log(values);
+
+    console.log(newGuest);
+  };
+
+  const handleAddNewGhest = () => {
+    console.log(newGuest);
+    console.log(allGuests);
+    console.log("hi")
+  }
+
+  const handleNewGuestType = () => {
+    console.log(newCategory);
+    console.log(categories);
+    if (newCategory !== "") {
+      const categoryNameExists = categories.some(
+        (category) => category.name === newCategory.GuestCatagoryName
+      );
+      if (categoryNameExists) {
+        errorMsg(`${newCategory.GuestCatagoryName} already exists`);
+      } else {
+        const objectToAdd = {
+          name: newCategory.GuestCatagoryName,
+          color: sketchPickerColor,
+        };
+        setCategories([...categories, objectToAdd]);
+        setNewCategory("");
+      }
+    }
+  };
+
+  return (
+    <>
+      <Modal
+        title="Choose name and color"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form onValuesChange={setNewCategory}>
+          <Form.Item
+            label="Guest Catagory Name"
+            name="GuestCatagoryName"
+            rules={[
+              { required: true, message: "Please input Guest Catagory name!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+        <SketchPicker
+          onChange={(color) => {
+            setSketchPickerColor(color.rgb);
+          }}
+          color={sketchPickerColor}
+        />
+      </Modal>
+      <Form
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 12 }}
+        onFinish={onFinish}
+      >
+        <Form.Item
+          label="First Name"
+          name="firstName"
+          rules={[{ required: true, message: "Please input your first name!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Last Name"
+          name="lastName"
+          rules={[{ required: true, message: "Please input your last name!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Type of Guest"
+          name="guestType"
+          rules={[{ required: true, message: "Please select a guest type!" }]}
+        >
+          <Radio.Group>
+            {categories.map((category) => (
+              <Radio.Button
+                key={category.name}
+                value={category.name}
+                style={{
+                  backgroundColor: `rgba(${category.color.r}, ${category.color.g}, ${category.color.b}, ${category.color.a})`,
+                }}
+              >
+                {category.name}
+              </Radio.Button>
+            ))}
+          </Radio.Group>
+          <Button type="primary" onClick={showModal}>
+            Add new Guets type
+          </Button>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
+          <Button type="primary">Finish</Button>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 6, span: 12 }}  onClick={handleAddNewGhest}>
+          <Button type="primary">Add More Guests</Button>
+        </Form.Item>
+      </Form>
+      {contextHolder}
+    </>
+  );
+};
+
+export const GuestForm = () => {
+  return (
+    <Layout>
+      <Header style={{ background: "#fff" }}></Header>
+      <Layout>
+        <Layout>
+          <Sider style={{ background: "#fff" }}></Sider>
+          <Layout>
+            <Content>
+              <GuestFormComponent />
+            </Content>
+          </Layout>
+          <Sider style={{ background: "#fff" }}></Sider>
+        </Layout>
+        <Footer></Footer>
+      </Layout>
+    </Layout>
+  );
+};
+
+export const TablePage = () => {
   // Define the initial state of the items and their categories
   const [items, setItems] = useState([
     { id: "1", name: "Dean", lastName: "Temp", category: "All ghests" },
@@ -134,5 +324,3 @@ const TablePage = () => {
     </DragDropContext>
   );
 };
-
-export default TablePage;
