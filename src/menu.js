@@ -30,8 +30,8 @@ function NewMenu() {
             <Route path="Admin" element={<Admin />} />
             <Route path="*" element={"nothing to see"} />            
             <Route path="BuisnessRegistrationForm" element={<BuisnessRegistrationForm />} />
-            <Route path="tables/insertGuests" element={<TablePage />} />
-            <Route path="tables/arrangeTables" element={<GuestForm />} />
+            <Route path="tables/arrangeTables" element={<TablePage />} />
+            <Route path="tables/insertGuests" element={<GuestForm />} />
             <Route path="MiniAppDash" element={<MiniAppDash />} />
           </Routes>
         </Content>
@@ -55,8 +55,8 @@ function MenuComp() {
       <Menu.Item key="/BuisnessRegistrationForm">
       <Link to="/BuisnessRegistrationForm">Buisness Registration Form</Link>
     </Menu.Item>
-    <Menu.Item key="/tables/arrangeTables">
-        <Link to="/tables/arrangeTables">Tables organizer</Link>
+    <Menu.Item key="/tables/insertGuests">
+        <Link to="/tables/insertGuests">Tables organizer</Link>
       </Menu.Item>
     <Menu.Item key="/MiniAppDash">
       <Link to="/MiniAppDash">Mini APP DashBorad</Link>
