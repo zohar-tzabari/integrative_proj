@@ -1,14 +1,15 @@
 import { Form, Input, Button, Layout, message } from "antd";
-import { ClientRegisterApi } from "../api/usersApi";
-import { useRef } from "react";
+import { ClientLoginApi } from "../api/usersApi";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const RegistrationFormContent = ({setRegisterSuccess}) => {
+const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
   const [messageApi, contextHolder] = message.useMessage();
-  //the state that decide if th show the register button
-  const submissinShow = useRef(true);
+  const navigate = useNavigate();
 
+  
 
   const successMsg = (text) => {
     messageApi.open({
@@ -25,17 +26,13 @@ const RegistrationFormContent = ({setRegisterSuccess}) => {
   };
 
   const onFinish = async (values) => {
-    values["role"] = "MINIAPP_USER";
-    console.log(values);
-    const dataFromServer = await ClientRegisterApi(values);
-    if (dataFromServer) {
-      console.log(dataFromServer);
-      successMsg("Registration successful!");
-      submissinShow.current = false;
-      setRegisterSuccess(true);
+    console.log("log in", values.email);
+    const user = await ClientLoginApi(values.email);
+    if (user) {
+      successMsg(`${values.email} login successfuly `);
+      navigate(`/${navigateUrl}/${values.email}`);
     } else {
-      errorMsg("somthing went wrong");
-      setRegisterSuccess(false);
+      errorMsg(`couldnt found ${values.email}`);
     }
   };
 
@@ -43,13 +40,6 @@ const RegistrationFormContent = ({setRegisterSuccess}) => {
     <>
       {contextHolder}
       <Form onFinish={onFinish}>
-        <Form.Item
-          name="username"
-          label="username"
-          rules={[{ required: true, message: "Please input your user name!" }]}
-        >
-          <Input />
-        </Form.Item>
         <Form.Item
           name="email"
           label="Email"
@@ -60,26 +50,17 @@ const RegistrationFormContent = ({setRegisterSuccess}) => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          name="avatar"
-          label="avatar"
-          rules={[
-            { required: true, message: "Please input your avatar name!" },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        {submissinShow.current && <Form.Item>
+        <Form.Item>
           <Button type="primary" htmlType="submit">
             Register
           </Button>
-        </Form.Item>}
+        </Form.Item>
       </Form>
     </>
   );
 };
 
-const RegistrationForm = ({setRegisterSuccess}) => {
+const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
   return (
     <Layout>
       <Header
@@ -98,7 +79,7 @@ const RegistrationForm = ({setRegisterSuccess}) => {
           }}
         ></Sider>
         <Content>
-          <RegistrationFormContent setRegisterSuccess={setRegisterSuccess}/>
+          <LoginFormContent setLoginSuccess={setLoginSuccess}  navigateUrl={navigateUrl}/>
         </Content>
         <Sider
           style={{
@@ -119,4 +100,11 @@ const RegistrationForm = ({setRegisterSuccess}) => {
   );
 };
 
-export default RegistrationForm;
+const Login = () => {
+  const [sucess, setSuccess] = useState(false);
+  const [navigateUrl, setNavigateUrl] = useState("MiniAppDash");
+
+  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={navigateUrl} />;
+};
+
+export default Login;

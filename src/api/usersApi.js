@@ -1,7 +1,7 @@
 import axios from "axios";
+const SUPERAPP = "2023b.zohar.tzabari";
 
 export async function ClientRegisterApi(values) {
-  console.log(values);
   try {
     const response = await axios.post(
       `http://localhost:8081/superapp/users`,
@@ -19,4 +19,18 @@ export async function ClientRegisterApi(values) {
     return null;
   }
 }
+
+
+export async function ClientLoginApi(loginEmail) {
+  try {
+    const response = await axios.get(
+      `http://localhost:8081/superapp/users/login/${SUPERAPP}/${loginEmail}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 

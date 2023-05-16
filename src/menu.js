@@ -10,6 +10,7 @@ import Home from "./pages/home";
 import Admin from "./pages/admin";
 import BuisnessRegistrationForm from "./pages/registerBuisness"
 import MiniAppDash from "./pages/miniAppDashBorad"
+import Login from "./sharedComponents/loginUser"
 
 const { Header, Content } = Layout;
 
@@ -27,7 +28,8 @@ function NewMenu() {
             <Route path="Admin" element={<Admin />} />
             <Route path="*" element={"nothing to see"} />            
             <Route path="BuisnessRegistrationForm" element={<BuisnessRegistrationForm />} />
-            <Route path="MiniAppDash" element={<MiniAppDash />} />
+            <Route path="MiniAppDash/:email" element={<MiniAppDash />} />
+            <Route path="login" element={<Login />} />
           </Routes>
         </Content>
       </Layout>
@@ -52,7 +54,10 @@ function MenuComp() {
       <Link to="/BuisnessRegistrationForm">Buisness Registration Form</Link>
     </Menu.Item>
     <Menu.Item key="/MiniAppDash">
-      <Link to="/MiniAppDash">Mini APP DashBorad</Link>
+      <Link to="/MiniAppDash/exampleEmail@email.com">Mini APP DashBorad</Link>
+    </Menu.Item>
+    <Menu.Item key="/login">
+      <Link to="/login">Login</Link>
     </Menu.Item>
     </Menu>
   );

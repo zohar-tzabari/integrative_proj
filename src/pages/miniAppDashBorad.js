@@ -4,7 +4,10 @@ import {
 } from "../api/miniAppApi";
 import {  useState } from "react";
 import {JsonTable} from "../sharedComponents/JsonTable";
+import { useParams } from 'react-router-dom';
+
 const { Header, Content, Footer, Sider } = Layout;
+
 
 const suppliersMiniAppName = "suppliers"
 
@@ -78,6 +81,9 @@ function MiniAPPComp() {
 }
 
 const MiniAppDash = () => {
+  const { email } = useParams();
+  console.log( useParams());
+  console.log(email);
   return (
     <Layout>
       <Header
