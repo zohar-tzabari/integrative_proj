@@ -119,5 +119,4 @@ const RegistrationForm = ({setRegisterSuccess}) => {
   );
 };
 
-
 export default RegistrationForm;

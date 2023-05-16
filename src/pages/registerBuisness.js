@@ -1,6 +1,6 @@
 import { Form, Input, Button, Layout, message, Upload, Steps,Select } from "antd";
 import { CreateNewObject } from "../api/objectsApi";
-import RegistrationForm from "./registerClinet";
+import RegistrationForm from "../sharedComponents/RegisterUser";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect, useRef } from "react";
