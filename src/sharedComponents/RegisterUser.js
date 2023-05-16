@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const RegistrationFormContent = ({setRegisterSuccess}) => {
+const RegistrationFormContent = ({setRegisterSuccess,setUserEmail}) => {
   const [messageApi, contextHolder] = message.useMessage();
   //the state that decide if th show the register button
   const submissinShow = useRef(true);
@@ -33,6 +33,7 @@ const RegistrationFormContent = ({setRegisterSuccess}) => {
       successMsg("Registration successful!");
       submissinShow.current = false;
       setRegisterSuccess(true);
+      setUserEmail(values.email);
     } else {
       errorMsg("somthing went wrong");
       setRegisterSuccess(false);
@@ -79,7 +80,7 @@ const RegistrationFormContent = ({setRegisterSuccess}) => {
   );
 };
 
-const RegistrationForm = ({setRegisterSuccess}) => {
+const RegistrationForm = ({setRegisterSuccess,setUserEmail}) => {
   return (
     <Layout>
       <Header
@@ -98,7 +99,7 @@ const RegistrationForm = ({setRegisterSuccess}) => {
           }}
         ></Sider>
         <Content>
-          <RegistrationFormContent setRegisterSuccess={setRegisterSuccess}/>
+          <RegistrationFormContent setRegisterSuccess={setRegisterSuccess} setUserEmail = {setUserEmail}/>
         </Content>
         <Sider
           style={{

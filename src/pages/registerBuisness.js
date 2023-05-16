@@ -61,7 +61,7 @@ const UploadFile = ({ supplierPhoto }) => {
   );
 };
 
-const RegistrationFormContent = () => {
+const RegistrationFormContent = (userEmail) => {
   const [messageApi, contextHolder] = message.useMessage();
   const supplierPhoto = useRef(null);
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ const RegistrationFormContent = () => {
     useEffect(() => {
       // Function to execute
       const fetchData = async () => {
-        const supplierType = await GetSupplierTypes(suppliersMiniAppName);
+        const supplierType = await GetSupplierTypes(suppliersMiniAppName,userEmail.userEmail.userEmail);
         console.log(supplierType);
         setSupplierOptions(supplierType.data);
       };
@@ -200,7 +200,7 @@ const RegistrationFormContent = () => {
   );
 };
 
-const BuisnessRegistration = () => {
+const BuisnessRegistration = (userEmail) => {
   return (
     <Layout>
       <Header
@@ -219,7 +219,7 @@ const BuisnessRegistration = () => {
           }}
         ></Sider>
         <Content>
-          <RegistrationFormContent />
+          <RegistrationFormContent userEmail={userEmail} />
         </Content>
         <Sider
           style={{
@@ -244,6 +244,7 @@ const BuisnessRegistration = () => {
 
 const BuisnessRegistrationForm = () => {
   const [current, setCurrent] = useState(0);
+  const [userEmail, setUserEmail] = useState();
   const [userRegisterSuccess, setRegisterSuccess] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -262,11 +263,11 @@ const BuisnessRegistrationForm = () => {
   const steps = [
     {
       title: "Create user",
-      content: <RegistrationForm setRegisterSuccess={setRegisterSuccess} />,
+      content: <RegistrationForm setRegisterSuccess={setRegisterSuccess} setUserEmail={setUserEmail} />,
     },
     {
       title: "Add buisnedd data",
-      content: <BuisnessRegistration />,
+      content: <BuisnessRegistration userEmail = {userEmail}/>,
     },
   ];
 
