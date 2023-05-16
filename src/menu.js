@@ -53,11 +53,8 @@ function MenuComp() {
       <Menu.Item key="/BuisnessRegistrationForm">
       <Link to="/BuisnessRegistrationForm">Buisness Registration Form</Link>
     </Menu.Item>
-    <Menu.Item key="/MiniAppDash">
-      <Link to="/MiniAppDash/exampleEmail@email.com">Mini APP DashBorad</Link>
-    </Menu.Item>
     <Menu.Item key="/login">
-      <Link to="/login">Login</Link>
+      <Link to="/login">Login Mini APP DashBorad</Link>
     </Menu.Item>
     </Menu>
   );

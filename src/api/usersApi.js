@@ -21,7 +21,7 @@ export async function ClientRegisterApi(values) {
 }
 
 
-export async function ClientLoginApi(loginEmail) {
+export async function UserLoginApi(loginEmail) {
   try {
     const response = await axios.get(
       `http://localhost:8081/superapp/users/login/${SUPERAPP}/${loginEmail}`,

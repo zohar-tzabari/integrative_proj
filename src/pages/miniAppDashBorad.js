@@ -5,16 +5,19 @@ import {
 import {  useState } from "react";
 import {JsonTable} from "../sharedComponents/JsonTable";
 import { useParams } from 'react-router-dom';
+import { UserLoginApi } from "../api/usersApi";
+import { useEffect } from "react";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 
 const suppliersMiniAppName = "suppliers"
 
-function MiniAPPComp() {
+function MiniAPPComp({email}) {
   const [results, setResults] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [resultsTable, setResultsTable] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
 
   const success = (text) => {
     messageApi.open({
@@ -23,11 +26,22 @@ function MiniAPPComp() {
     });
   };
 
+  useEffect(() => {
+    // Function to execute
+    const fetchData = async () => {
+      const userDetails = await UserLoginApi(email);
+      setUserDetails(userDetails);
+      console.log(userDetails);
+    };
+    // Call the function
+    fetchData();
+  }, []); // Empty dependency array to run the effect only once
+
 
   const handleGetAllSuppliers = async () => {
     try {
       setResultsTable(null);
-      const suppliers = await GetAllSuppliers(suppliersMiniAppName);
+      const suppliers = await GetAllSuppliers(suppliersMiniAppName,email);
       setResultsTable (<JsonTable data={suppliers.data} />);
       success("Get All Suppliers");
       console.log(suppliers);
@@ -39,7 +53,7 @@ function MiniAPPComp() {
   const handleGetAllTypes = async () => {
     try {
       setResultsTable(null);
-      const types = await GetSupplierTypes(suppliersMiniAppName);
+      const types = await GetSupplierTypes(suppliersMiniAppName,email);
       console.log(types);
       setResultsTable (<JsonTable data={[types.data]} />);
       success("Get All supplier types");
@@ -94,13 +108,6 @@ const MiniAppDash = () => {
         }}
       ></Header>
       <Layout>
-        <Sider
-          style={{
-            backgroundColor: "#ffff",
-            borderBottom: "none",
-            padding: 0,
-          }}
-        ></Sider>
         <Content
           style={{
             backgroundColor: "#ffff",
@@ -108,15 +115,8 @@ const MiniAppDash = () => {
             padding: 0,
           }}
         >
-          <MiniAPPComp />
+          <MiniAPPComp email={email}/>
         </Content>
-        <Sider
-          style={{
-            backgroundColor: "#ffff",
-            borderBottom: "none",
-            padding: 0,
-          }}
-        ></Sider>
       </Layout>
       <Footer></Footer>
     </Layout>

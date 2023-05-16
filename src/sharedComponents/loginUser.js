@@ -1,5 +1,5 @@
 import { Form, Input, Button, Layout, message } from "antd";
-import { ClientLoginApi } from "../api/usersApi";
+import { UserLoginApi } from "../api/usersApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +9,6 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
 
-  
 
   const successMsg = (text) => {
     messageApi.open({
@@ -27,7 +26,7 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
 
   const onFinish = async (values) => {
     console.log("log in", values.email);
-    const user = await ClientLoginApi(values.email);
+    const user = await UserLoginApi(values.email);
     if (user) {
       successMsg(`${values.email} login successfuly `);
       navigate(`/${navigateUrl}/${values.email}`);
