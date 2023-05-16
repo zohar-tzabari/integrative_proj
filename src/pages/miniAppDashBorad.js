@@ -6,6 +6,7 @@ import {  useState } from "react";
 import {JsonTable} from "../sharedComponents/JsonTable";
 const { Header, Content, Footer, Sider } = Layout;
 
+const suppliersMiniAppName = "suppliers"
 
 function MiniAPPComp() {
   const [results, setResults] = useState([]);
@@ -23,7 +24,7 @@ function MiniAPPComp() {
   const handleGetAllSuppliers = async () => {
     try {
       setResultsTable(null);
-      const suppliers = await GetAllSuppliers("zohar");
+      const suppliers = await GetAllSuppliers(suppliersMiniAppName);
       setResultsTable (<JsonTable data={suppliers.data} />);
       success("Get All Suppliers");
       console.log(suppliers);
@@ -35,7 +36,7 @@ function MiniAPPComp() {
   const handleGetAllTypes = async () => {
     try {
       setResultsTable(null);
-      const types = await GetSupplierTypes("zohar");
+      const types = await GetSupplierTypes(suppliersMiniAppName);
       console.log(types);
       setResultsTable (<JsonTable data={[types.data]} />);
       success("Get All supplier types");

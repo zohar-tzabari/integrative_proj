@@ -1,20 +1,16 @@
-import {
-  Form,
-  Input,
-  Button,
-  Layout,
-  message,
-  Upload,
-  Steps,
-} from "antd";
+import { Form, Input, Button, Layout, message, Upload, Steps,Select } from "antd";
 import { CreateNewObject } from "../api/objectsApi";
 import RegistrationForm from "./registerClinet";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect, useRef } from "react";
 import ImgCrop from "antd-img-crop";
+import {GetSupplierTypes} from "../api/miniAppApi";
 
 const { Header, Content, Footer, Sider } = Layout;
+const { Option } = Select;
+
+const suppliersMiniAppName = "suppliers"
 
 const UploadFile = ({ supplierPhoto }) => {
   const [fileList, setFileList] = useState([]);
@@ -70,6 +66,7 @@ const RegistrationFormContent = () => {
   const supplierPhoto = useRef(null);
   const navigate = useNavigate();
   const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [supplierOptions, setSupplierOptions] = useState([]);
 
   // const [role, setRole] = useState(MINIAPPUSER);
 
@@ -89,6 +86,18 @@ const RegistrationFormContent = () => {
   function timeout(delay) {
     return new Promise((res) => setTimeout(res, delay));
   }
+
+    useEffect(() => {
+      // Function to execute
+      const fetchData = async () => {
+        const supplierType = await GetSupplierTypes(suppliersMiniAppName);
+        console.log(supplierType);
+        setSupplierOptions(supplierType.data);
+      };
+      // Call the function
+      fetchData();
+    }, []); // Empty dependency array to run the effect only once
+  
 
   const onFinish = async (values) => {
     //todo: change the role to buissness
@@ -148,9 +157,17 @@ const RegistrationFormContent = () => {
             <Form.Item
               name="alias"
               label="supplier type (alias)"
-              rules={[{ required: true, message: "Please input your city!" }]}
+              rules={[
+                { required: true, message: "Please select a supplier type!" },
+              ]}
             >
-              <Input />
+              <Select>
+                {supplierOptions.map((option) => (
+                  <Option key={option} value={option}>
+                    {option.toLowerCase()}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
 
             <Form.Item name="address" label="Address">
