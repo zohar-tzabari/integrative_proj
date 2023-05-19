@@ -1,9 +1,19 @@
 
-
 # wed portal wedding
 
-
 # Requirements
+## linux users(Ubuntu 20.04)
+Before you can start using this app, run this lines in youre shell:
+
+```sh
+sudo apt update
+sudo apt install npm
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+```
+
+## windows users
 Before you can start using this app, make sure you have the following installed on your machine:
 
 - Node.js
