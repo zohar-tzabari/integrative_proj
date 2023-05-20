@@ -9,9 +9,12 @@ import {
   Form,
   Input,
   Layout
+  , message
 } from "antd";
 import { InstagramOutlined, MessageTwoTone } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 const { Header, Content, Footer, Sider } = Layout;
@@ -20,6 +23,7 @@ const { Header, Content, Footer, Sider } = Layout;
 const ChatView = ({ text, clientName }) => {
   const [textChat, setTextChat] = useState(text);
   const [clientPrivateName, setClientName] = useState(clientName);
+
 
   const handleSubmit = (values) => {
     const newMessage = `${clientPrivateName}\n${values.content}`;
@@ -393,8 +397,37 @@ const SupTable = () => {
 
 
 const AllClientView = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+
+
+  const successMsg = (text) => {
+    messageApi.open({
+      type: "success",
+      content: text,
+    });
+  };
+
+  const errorMsg = (text, duration = 9999) => {
+    messageApi.open({
+      type: "error",
+      content: text,
+      duration:duration
+    });
+  };
+
+  useEffect(() => {
+    // Function to execute
+    const showTempData =  () => {
+      errorMsg("This table provides an example of dummy data for demonstration purposes.");
+    };
+    // Call the function
+    showTempData();
+  }, []); // Empty dependency array to run the effect only once
+
+
 return (
   <Layout>
+      {contextHolder}
     <Header
       style={{
         backgroundColor: "white",
