@@ -33,8 +33,20 @@ async function GetCommand(miniAppName,command,userEmail) {
   }
 }
 
+async function GetObjectByType(type,userEmail) {
+  try {
+    const response = await axios.get(
+      `http://localhost:8081/superapp/objects/search/byType/${type}?userEmail=${userEmail}`,
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export async function GetAllSuppliers(miniAppName,userEmail) {
-return GetCommand(miniAppName,"getAllSuppliers",userEmail)
+return GetObjectByType("Supplier",userEmail)
 }
 
 export async function GetSupplierTypes(miniAppName,userEmail) {
