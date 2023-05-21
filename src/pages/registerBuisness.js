@@ -66,7 +66,7 @@ const RegistrationFormContent = (userEmail) => {
   const supplierPhoto = useRef(null);
   const navigate = useNavigate();
   const [registerSuccess, setRegisterSuccess] = useState(false);
-  const [supplierOptions, setSupplierOptions] = useState([]);
+  const [supplierOptions, setSupplierOptions] = useState(["FLOWERS", "PHOTOGRAPHER", "DJ"]);
 
   // const [role, setRole] = useState(MINIAPPUSER);
 
@@ -87,16 +87,16 @@ const RegistrationFormContent = (userEmail) => {
     return new Promise((res) => setTimeout(res, delay));
   }
 
-    useEffect(() => {
-      // Function to execute
-      const fetchData = async () => {
-        const supplierType = await GetSupplierTypes(suppliersMiniAppName,userEmail.userEmail.userEmail);
-        console.log(supplierType);
-        setSupplierOptions(supplierType.data);
-      };
-      // Call the function
-      fetchData();
-    }, []); // Empty dependency array to run the effect only once
+    // useEffect(() => {
+    //   // Function to execute
+    //   const fetchData = async () => {
+    //     const supplierType = await GetSupplierTypes(suppliersMiniAppName,userEmail.userEmail.userEmail);
+    //     console.log(supplierType);
+    //     setSupplierOptions(supplierType.data);
+    //   };
+    //   // Call the function
+    //   fetchData();
+    // }, []); // Empty dependency array to run the effect only once
   
 
   const onFinish = async (values) => {

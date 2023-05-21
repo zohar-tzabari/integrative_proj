@@ -50,17 +50,17 @@ function MiniAPPComp({email}) {
     }
   };
 
-  const handleGetAllTypes = async () => {
-    try {
-      setResultsTable(null);
-      const types = await GetSupplierTypes(suppliersMiniAppName,email);
-      console.log(types);
-      setResultsTable (<JsonTable data={[types.data]} />);
-      success("Get All supplier types");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleGetAllTypes = async () => {
+  //   try {
+  //     setResultsTable(null);
+  //     const types = await GetSupplierTypes(suppliersMiniAppName,email);
+  //     console.log(types);
+  //     setResultsTable (<JsonTable data={[types.data]} />);
+  //     success("Get All supplier types");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
 
@@ -81,13 +81,13 @@ function MiniAPPComp({email}) {
         >
           Get All Suppliers
         </Button>
-        <Button
+        {/* <Button
           style={{ margin: "0.5rem" }}
           type="primary"
           onClick={handleGetAllTypes}
         >
           Get All Suppliers types
-        </Button>
+        </Button> */}
         {resultsTable}
       {contextHolder}
       </div>
