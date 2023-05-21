@@ -4,11 +4,14 @@ import { useRef } from "react";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const RegistrationFormContent = ({setRegisterSuccess,setUserEmail}) => {
+const RegistrationFormContent = ({
+  setRegisterSuccess,
+  setUserEmail,
+  userRole,
+}) => {
   const [messageApi, contextHolder] = message.useMessage();
   //the state that decide if th show the register button
   const submissinShow = useRef(true);
-
 
   const successMsg = (text) => {
     messageApi.open({
@@ -25,14 +28,16 @@ const RegistrationFormContent = ({setRegisterSuccess,setUserEmail}) => {
   };
 
   const onFinish = async (values) => {
-    values["role"] = "MINIAPP_USER";
+    values["role"] = userRole;
     console.log(values);
     const dataFromServer = await ClientRegisterApi(values);
     if (dataFromServer) {
       console.log(dataFromServer);
       successMsg("Registration successful!");
       submissinShow.current = false;
-      setRegisterSuccess(true);
+      if (setRegisterSuccess) {
+        setRegisterSuccess(true);
+      }
       setUserEmail(values.email);
     } else {
       errorMsg("somthing went wrong");
@@ -70,17 +75,19 @@ const RegistrationFormContent = ({setRegisterSuccess,setUserEmail}) => {
         >
           <Input />
         </Form.Item>
-        {submissinShow.current && <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Register
-          </Button>
-        </Form.Item>}
+        {submissinShow.current && (
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Register
+            </Button>
+          </Form.Item>
+        )}
       </Form>
     </>
   );
 };
 
-const RegistrationForm = ({setRegisterSuccess,setUserEmail}) => {
+const RegistrationForm = ({ setRegisterSuccess, setUserEmail, userRole }) => {
   return (
     <Layout>
       <Header
@@ -99,7 +106,11 @@ const RegistrationForm = ({setRegisterSuccess,setUserEmail}) => {
           }}
         ></Sider>
         <Content>
-          <RegistrationFormContent setRegisterSuccess={setRegisterSuccess} setUserEmail = {setUserEmail}/>
+          <RegistrationFormContent
+            setRegisterSuccess={setRegisterSuccess}
+            setUserEmail={setUserEmail}
+            userRole={userRole}
+          />
         </Content>
         <Sider
           style={{

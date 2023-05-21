@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
+const LoginFormContent = ({ setLoginSuccess ,navigateUrl,userType}) => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
 
@@ -28,8 +28,14 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
     console.log("log in", values.email);
     const user = await UserLoginApi(values.email);
     if (user) {
+      console.log(user);
+      if (user.role===userType){
       successMsg(`${values.email} login successfuly `);
       navigate(`/${navigateUrl}/${values.email}`);
+      }
+      else{
+        errorMsg(`the user type is ${user.role} not ${userType}`);
+      }
     } else {
       errorMsg(`couldnt found ${values.email}`);
     }
@@ -59,7 +65,7 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
   );
 };
 
-const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
+const LoginForm = ({ setLoginSuccess , navigateUrl,userType}) => {
   return (
     <Layout>
       <Header
@@ -78,7 +84,7 @@ const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
           }}
         ></Sider>
         <Content>
-          <LoginFormContent setLoginSuccess={setLoginSuccess}  navigateUrl={navigateUrl}/>
+          <LoginFormContent setLoginSuccess={setLoginSuccess}  navigateUrl={navigateUrl} userType={userType}/>
         </Content>
         <Sider
           style={{
@@ -99,11 +105,11 @@ const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
   );
 };
 
-const Login = () => {
+const Login = ({urlToPass,type}) => {
   const [sucess, setSuccess] = useState(false);
-  const [navigateUrl, setNavigateUrl] = useState("MiniAppDash");
+  console.log(urlToPass);
 
-  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={navigateUrl} />;
+  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass} userType = {type} />;
 };
 
 export default Login;

@@ -8,12 +8,14 @@ import {
 } from "../api/AdminAPI";
 import { useState } from "react";
 import { JsonTable } from "../sharedComponents/JsonTable";
+import { useParams } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 
 function AdminComp() {
   const [resultsTable, setResultsTable] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
+  const { email } = useParams();
 
   const success = (text) => {
     messageApi.open({

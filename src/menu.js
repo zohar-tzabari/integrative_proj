@@ -11,6 +11,7 @@ import Admin from "./pages/admin";
 import BuisnessRegistrationForm from "./pages/registerBuisness"
 import MiniAppDash from "./pages/miniAppDashBorad"
 import Login from "./sharedComponents/loginUser"
+import RegistrationForm from './sharedComponents/RegisterUser';
 
 const { Header, Content } = Layout;
 
@@ -25,11 +26,14 @@ function NewMenu() {
           <Routes>
             <Route index element={<Home />} />
             <Route path="AllClientView" element={<AllClientView />} />
-            <Route path="Admin" element={<Admin />} />
             <Route path="*" element={"nothing to see"} />            
             <Route path="BuisnessRegistrationForm" element={<BuisnessRegistrationForm />} />
             <Route path="MiniAppDash/:email" element={<MiniAppDash />} />
-            <Route path="login" element={<Login />} />
+            <Route path="Admin/:email" element={<Admin />} />
+            <Route path="RegisterAdmin" element={<RegistrationForm userRole={"ADMIN"} />} />
+            <Route path="RegisterSuperApp" element={<RegistrationForm userRole={"SUPERAPP_USER"} />} />
+            <Route path="loginAdmin" element={<Login urlToPass = {"Admin"} type={"ADMIN"} />} />
+            <Route path="loginMiniAppDash" element={<Login urlToPass = {"MiniAppDash"} type={"MINIAPP_USER"} />} />
           </Routes>
         </Content>
       </Layout>
@@ -47,14 +51,20 @@ function MenuComp() {
       <Menu.Item key="/AllClientView">
         <Link to="/AllClientView">All Client View</Link>
       </Menu.Item>
-      <Menu.Item key="/Admin">
-        <Link to="/Admin">Admin Dashboard</Link>
+      <Menu.Item key="/loginAdmin">
+        <Link to="/loginAdmin">Admin Dashboard</Link>
       </Menu.Item>
       <Menu.Item key="/BuisnessRegistrationForm">
       <Link to="/BuisnessRegistrationForm">Buisness Registration Form</Link>
     </Menu.Item>
-    <Menu.Item key="/login">
-      <Link to="/login">Login Mini APP DashBorad</Link>
+    <Menu.Item key="/RegisterAdmin">
+      <Link to="/RegisterAdmin">Register Admin</Link>
+    </Menu.Item>
+    <Menu.Item key="/loginMiniAppDash">
+      <Link to="/loginMiniAppDash">Login Mini APP DashBorad</Link>
+    </Menu.Item>
+    <Menu.Item key="/RegisterSuperApp">
+      <Link to="/RegisterSuperApp">Register SuperApp User</Link>
     </Menu.Item>
     </Menu>
   );

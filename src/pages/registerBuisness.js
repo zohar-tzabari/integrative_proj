@@ -263,7 +263,7 @@ const BuisnessRegistrationForm = () => {
   const steps = [
     {
       title: "Create user",
-      content: <RegistrationForm setRegisterSuccess={setRegisterSuccess} setUserEmail={setUserEmail} />,
+      content: <RegistrationForm setRegisterSuccess={setRegisterSuccess} setUserEmail={setUserEmail} userRole={"MINIAPP_USER"} />,
     },
     {
       title: "Add buisnedd data",
