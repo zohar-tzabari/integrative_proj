@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export async function deleteAllObjects() {
+export async function deleteAllObjects(userEmail) {
   try {
     const response = await axios.delete(
-      `http://localhost:8081/superapp/admin/objects`
+      `http://localhost:8081/superapp/admin/objects?userEmail=${userEmail}`
     );
     return response;
   } catch (error) {
