@@ -1,7 +1,12 @@
-import AppTemp from "./menu"
+import AppTemp from "./menu";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 function App() {
   return (
-    <AppTemp/>
-    )}
+    <Provider store={store}>
+      <AppTemp />
+    </Provider>
+  );
+}
 export default App;

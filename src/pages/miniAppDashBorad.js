@@ -19,6 +19,7 @@ function MiniAPPComp({email}) {
   const [resultsTable, setResultsTable] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
 
+
   const success = (text) => {
     messageApi.open({
       type: "success",
