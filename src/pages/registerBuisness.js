@@ -1,16 +1,25 @@
-import { Form, Input, Button, Layout, message, Upload, Steps,Select } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Layout,
+  message,
+  Upload,
+  Steps,
+  Select,
+} from "antd";
 import { CreateNewObject } from "../api/objectsApi";
 import RegistrationForm from "../sharedComponents/RegisterUser";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect, useRef } from "react";
 import ImgCrop from "antd-img-crop";
-import {GetSupplierTypes} from "../api/miniAppApi";
+import { GetSupplierTypes } from "../api/miniAppApi";
+import useSelection from "antd/es/table/hooks/useSelection";
+import { useSelector } from "react-redux";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
-
-const suppliersMiniAppName = "suppliers"
 
 const UploadFile = ({ supplierPhoto }) => {
   const [fileList, setFileList] = useState([]);
@@ -61,12 +70,16 @@ const UploadFile = ({ supplierPhoto }) => {
   );
 };
 
-const RegistrationFormContent = (userEmail) => {
+const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const supplierPhoto = useRef(null);
   const navigate = useNavigate();
-  const [registerSuccess, setRegisterSuccess] = useState(false);
-  const [supplierOptions, setSupplierOptions] = useState(["FLOWERS", "PHOTOGRAPHER", "DJ"]);
+  const [supplierOptions, setSupplierOptions] = useState([
+    "FLOWERS",
+    "PHOTOGRAPHER",
+    "DJ",
+  ]);
+  const {user} = useSelector((state) => state.user);
 
   // const [role, setRole] = useState(MINIAPPUSER);
 
@@ -87,18 +100,6 @@ const RegistrationFormContent = (userEmail) => {
     return new Promise((res) => setTimeout(res, delay));
   }
 
-    // useEffect(() => {
-    //   // Function to execute
-    //   const fetchData = async () => {
-    //     const supplierType = await GetSupplierTypes(suppliersMiniAppName,userEmail.userEmail.userEmail);
-    //     console.log(supplierType);
-    //     setSupplierOptions(supplierType.data);
-    //   };
-    //   // Call the function
-    //   fetchData();
-    // }, []); // Empty dependency array to run the effect only once
-  
-
   const onFinish = async (values) => {
     //todo: change the role to buissness
     let json_to_server = {};
@@ -106,12 +107,11 @@ const RegistrationFormContent = (userEmail) => {
     json_to_server["alias"] = values["alias"];
     values["photo"] = supplierPhoto.current;
     json_to_server["objectDetails"] = values;
-
+    json_to_server["createdBy"] ={"userId": user.userId};
     console.log(json_to_server);
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
       successMsg("Registration successful!");
-      setRegisterSuccess(true);
       await timeout(2000); //for 1 sec delay
       navigate("/");
     } else {
@@ -184,13 +184,10 @@ const RegistrationFormContent = (userEmail) => {
               <Input />
             </Form.Item>
             <UploadFile supplierPhoto={supplierPhoto} />
-
             <Form.Item>
-              {!registerSuccess && (
-                <Button type="primary" htmlType="submit">
-                  Register
-                </Button>
-              )}
+              <Button type="primary" htmlType="submit">
+                Register
+              </Button>
             </Form.Item>
           </Form>
           {/* TODO: dropdown of supplier type */}
@@ -200,7 +197,7 @@ const RegistrationFormContent = (userEmail) => {
   );
 };
 
-const BuisnessRegistration = (userEmail) => {
+const BuisnessRegistration = () => {
   return (
     <Layout>
       <Header
@@ -219,7 +216,7 @@ const BuisnessRegistration = (userEmail) => {
           }}
         ></Sider>
         <Content>
-          <RegistrationFormContent userEmail={userEmail} />
+          <RegistrationFormContent />
         </Content>
         <Sider
           style={{
@@ -245,7 +242,7 @@ const BuisnessRegistration = (userEmail) => {
 const BuisnessRegistrationForm = () => {
   const [current, setCurrent] = useState(0);
   const [userEmail, setUserEmail] = useState();
-  const [userRegisterSuccess, setRegisterSuccess] = useState(false);
+  const userRegisterSuccess = useSelector((state) => state.user);
   const [messageApi, contextHolder] = message.useMessage();
 
   const successMsg = (text) => {
@@ -263,11 +260,11 @@ const BuisnessRegistrationForm = () => {
   const steps = [
     {
       title: "Create user",
-      content: <RegistrationForm setRegisterSuccess={setRegisterSuccess} setUserEmail={setUserEmail} userRole={"MINIAPP_USER"} />,
+      content: <RegistrationForm />,
     },
     {
       title: "Add buisnedd data",
-      content: <BuisnessRegistration userEmail = {userEmail}/>,
+      content: <BuisnessRegistration />,
     },
   ];
 
@@ -298,11 +295,9 @@ const BuisnessRegistrationForm = () => {
             {contextHolder}
             <Steps current={current} items={items} />
             <div style={contentStyle}>{steps[current].content}</div>
-            {userRegisterSuccess && current < steps.length - 1 && (
               <Button type="primary" onClick={next}>
                 Next
-              </Button>
-            )}
+              </Button>            
           </Content>
         </Layout>
         <Sider style={{ background: "#fff" }}></Sider>

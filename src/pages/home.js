@@ -61,7 +61,7 @@ const AppMatrix = () => {
 };
 
 function Home() {
-  const email = useSelector((state) => state.userEmail);
+  const user = useSelector((state) => state.user);
   const objectM = useSelector((state) => state.objectManager);
   const miniAppName = useSelector((state) => state.miniAppName);
 
@@ -96,7 +96,8 @@ function Home() {
             <Breadcrumb.Item>Home</Breadcrumb.Item>
           </Breadcrumb>
           <div>
-            <h1>hi: {email.userEmail}</h1>
+            {console.log(user)}
+            <h1>hi: {user? user.avatar:""}</h1>
             <h1>current mini app is: {miniAppName.miniAppName}</h1>
             <h1>Welcome to our web portal!</h1>
             <p>We are a leading provider of web-based solutions.</p>

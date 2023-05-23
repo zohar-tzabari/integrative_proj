@@ -1,17 +1,19 @@
 import { Form, Input, Button, Layout, message } from "antd";
 import { ClientRegisterApi } from "../api/usersApi";
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { setUser } from '../redux/userSlice';
+import { object } from "prop-types";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const RegistrationFormContent = ({
-  setRegisterSuccess,
-  setUserEmail,
-  userRole,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
   //the state that decide if th show the register button
   const submissinShow = useRef(true);
+  const dispatch = useDispatch(); 
+
 
   const successMsg = (text) => {
     messageApi.open({
@@ -28,20 +30,17 @@ const RegistrationFormContent = ({
   };
 
   const onFinish = async (values) => {
-    values["role"] = userRole;
+    values["role"] = "SUPERAPP_USER";
     console.log(values);
     const dataFromServer = await ClientRegisterApi(values);
-    if (dataFromServer) {
+    console.log(typeof dataFromServer);
+    if (typeof dataFromServer == "object") {
       console.log(dataFromServer);
       successMsg("Registration successful!");
       submissinShow.current = false;
-      if (setRegisterSuccess) {
-        setRegisterSuccess(true);
-      }
-      setUserEmail(values.email);
+      dispatch(setUser(dataFromServer));
     } else {
-      errorMsg("somthing went wrong");
-      setRegisterSuccess(false);
+      errorMsg(`${dataFromServer}`);
     }
   };
 
@@ -87,7 +86,7 @@ const RegistrationFormContent = ({
   );
 };
 
-const RegistrationForm = ({ setRegisterSuccess, setUserEmail, userRole }) => {
+const RegistrationForm = () => {
   return (
     <Layout>
       <Header
@@ -107,9 +106,6 @@ const RegistrationForm = ({ setRegisterSuccess, setUserEmail, userRole }) => {
         ></Sider>
         <Content>
           <RegistrationFormContent
-            setRegisterSuccess={setRegisterSuccess}
-            setUserEmail={setUserEmail}
-            userRole={userRole}
           />
         </Content>
         <Sider

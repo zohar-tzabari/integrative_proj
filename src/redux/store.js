@@ -5,7 +5,7 @@ import miniAppReducer from "./miniAppSlice";
 
 const Store = configureStore({
   reducer: {
-    userEmail: userReducer,
+    user: userReducer,
     objectManager: objectReducer,
     miniAppName:miniAppReducer
   },

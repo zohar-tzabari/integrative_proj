@@ -4,8 +4,7 @@ import { CreateNewObject} from "../api/objectsApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserEmail } from '../redux/userSlice';
-import { setManagerObjectId } from "../redux/objectSlice";
+import { setUser } from '../redux/userSlice';
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -35,18 +34,7 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl,userType}) => {
     if (user) {
       console.log(user);
       if (user.role===userType){
-      const email = values.email;
-      let json_to_server = {};
-      json_to_server["type"] =`${userType}_manager`;
-      json_to_server["alias"] = "session_manager";
-      json_to_server["createdBy"] =  
-      {"userId":{superapp: '2023b.zohar.tzabari', email: 'superApp@gmail.com'}};
-      console.log(json_to_server);
-      const registerObject = await CreateNewObject(json_to_server);
-      console.log(registerObject);
-      dispatch(setUserEmail({ email }));
-      dispatch(setManagerObjectId({registerObject}));
-
+      dispatch(setUser(user));
       console.log(values.email);
       successMsg(`${values.email} login successfuly `);
       navigate(`/${navigateUrl}/${values.email}`);
