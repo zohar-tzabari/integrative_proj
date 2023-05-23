@@ -1,4 +1,4 @@
-import { Layout, Menu, Breadcrumb } from "antd";
+import { Layout, Menu, Breadcrumb, Button } from "antd";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -6,13 +6,66 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setMiniAppName } from "../redux/miniAppSlice";
 
 const { Header, Content, Footer, Sider } = Layout;
+const AppMatrix = () => {
+  const dispatch = useDispatch();
+  const handleSupplierAppClick = () => {
+    dispatch(setMiniAppName('Supplier Mini App'));
+  };
+
+  const handleCustomerAppClick = () => {
+    dispatch(setMiniAppName('Customer Mini App'));
+  };
+
+  const handleTablesAppClick = () => {
+    dispatch(setMiniAppName('Tables Mini App'));
+  };
+
+  const handleApproveInventionAppClick = () => {
+    dispatch(setMiniAppName('Approve Invention Mini App'));
+  };
+
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row-reverse",
+          flexWrap: "wrap",
+          alignItems: "flex-end",
+          justifyContent: "center",
+        }}
+      >
+        <Button type="primary" size="large" onClick={handleSupplierAppClick}>
+          Supplier Mini App
+        </Button>
+        <Button type="primary" size="large" onClick={handleCustomerAppClick}>
+          Customer Mini App
+        </Button>
+        <Button type="primary" size="large" onClick={handleTablesAppClick}>
+          Tables Mini App
+        </Button>
+        <Button
+          type="primary"
+          size="large"
+          onClick={handleApproveInventionAppClick}
+        >
+          Approve Invention Mini App
+        </Button>
+      </div>
+    </>
+  );
+};
 
 function Home() {
-  const email = useSelector(state=>state.userEmail);
-  const objectM = useSelector(state=>state.objectManager);
+  const email = useSelector((state) => state.userEmail);
+  const objectM = useSelector((state) => state.objectManager);
+  const miniAppName = useSelector((state) => state.miniAppName);
+
+
 
   return (
     <Layout>
@@ -23,13 +76,13 @@ function Home() {
             example
           </Menu.Item>
           <Menu.Item key="2" icon={<DesktopOutlined />}>
-          example
+            example
           </Menu.Item>
           <Menu.Item key="3" icon={<FileOutlined />}>
             example
           </Menu.Item>
           <Menu.Item key="4" icon={<TeamOutlined />}>
-          example
+            example
           </Menu.Item>
         </Menu>
       </Sider>
@@ -44,11 +97,11 @@ function Home() {
           </Breadcrumb>
           <div>
             <h1>hi: {email.userEmail}</h1>
-            <h1>object manager is: {objectM.type}</h1>
-            {console.log(objectM)}
+            <h1>current mini app is: {miniAppName.miniAppName}</h1>
             <h1>Welcome to our web portal!</h1>
             <p>We are a leading provider of web-based solutions.</p>
           </div>
+          <AppMatrix />
         </Content>
         <Footer style={{ textAlign: "center" }}>
           Web Portal ©2023 Created by My Company
