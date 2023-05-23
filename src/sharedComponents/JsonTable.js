@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import { useEffect, useState } from "react";
 
-function generateSubTable(key, value, dataIndex,title) {
+function generateSubTable(key, value, dataIndex, title) {
   const subKeys = Object.keys(value);
   const children = subKeys.map((subKey) => ({
     title: subKey.toUpperCase(),
@@ -28,7 +28,7 @@ export const JsonTable = ({ data }) => {
         const title = key.toUpperCase();
         const value = data[0][key];
         if (typeof value === "object" && value !== null) {
-          return generateSubTable(key, value, dataIndex,title);
+          return generateSubTable(key, value, dataIndex, title);
         }
         return {
           title,
@@ -40,5 +40,7 @@ export const JsonTable = ({ data }) => {
     }
   }, [data]);
 
-  return <Table dataSource={data} columns={columns} />;
+  return (<div>
+    <Table dataSource={data} columns={columns} />
+  </div>)
 };

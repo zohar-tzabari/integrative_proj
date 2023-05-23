@@ -8,12 +8,14 @@ import {
 } from "../api/AdminAPI";
 import { useState } from "react";
 import { JsonTable } from "../sharedComponents/JsonTable";
+import { useParams } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 
 function AdminComp() {
   const [resultsTable, setResultsTable] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
+  const { email } = useParams();
 
   const success = (text) => {
     messageApi.open({
@@ -25,7 +27,7 @@ function AdminComp() {
   const handleGetAllUsers = async () => {
     try {
       setResultsTable(null);
-      const users = await getAllUsers();
+      const users = await getAllUsers(email);
       success("Get All Users");
       console.log(users.data);
       setResultsTable(<JsonTable data={users.data} />);
@@ -37,7 +39,7 @@ function AdminComp() {
   const handleGetAllCommands = async () => {
     setResultsTable(null);
     try {
-      const commands = await getAllCommands();
+      const commands = await getAllCommands(email);
       setResultsTable(<JsonTable data={commands.data} />);
       console.log(commands.data);
       success("Get All Commands");
@@ -49,7 +51,7 @@ function AdminComp() {
 
   const handleDeleteAllUsers = async () => {
     try {
-      await deleteAllUsers();
+      await deleteAllUsers(email);
       success("All users deleted");
     } catch (error) {
       console.log(error);
@@ -58,7 +60,7 @@ function AdminComp() {
 
   const handleDeleteAllObjects = async () => {
     try {
-      await deleteAllObjects();
+      await deleteAllObjects(email);
       success("All objects deleted");
     } catch (error) {
       console.log(error);
@@ -67,7 +69,7 @@ function AdminComp() {
 
   const handleDeleteAllCommandsHistory = async () => {
     try {
-      await deleteAllCommandsHistory();
+      await deleteAllCommandsHistory(email);
       success("All commands history deleted");
     } catch (error) {
       console.log(error);

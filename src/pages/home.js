@@ -6,10 +6,14 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { useSelector } from "react-redux";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 function Home() {
+  const email = useSelector(state=>state.userEmail);
+  const objectM = useSelector(state=>state.objectManager);
+
   return (
     <Layout>
       <Sider collapsible>
@@ -39,6 +43,9 @@ function Home() {
             <Breadcrumb.Item>Home</Breadcrumb.Item>
           </Breadcrumb>
           <div>
+            <h1>hi: {email.userEmail}</h1>
+            <h1>object manager is: {objectM.type}</h1>
+            {console.log(objectM)}
             <h1>Welcome to our web portal!</h1>
             <p>We are a leading provider of web-based solutions.</p>
           </div>

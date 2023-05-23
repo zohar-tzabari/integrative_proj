@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export async function deleteAllObjects() {
+export async function deleteAllObjects(userEmail) {
   try {
     const response = await axios.delete(
-      `http://localhost:8081/superapp/admin/objects`
+      `http://localhost:8081/superapp/admin/objects?userEmail=${userEmail}`
     );
     return response;
   } catch (error) {
@@ -12,10 +12,10 @@ export async function deleteAllObjects() {
   }
 }
 
-export async function deleteAllUsers() {
+export async function deleteAllUsers(userEmail) {
   try {
     const response = await axios.delete(
-      `http://localhost:8081/superapp/admin/users`
+      `http://localhost:8081/superapp/admin/users?userEmail=${userEmail}`
     );
     return response;
   } catch (error) {
@@ -24,10 +24,10 @@ export async function deleteAllUsers() {
   }
 }
 
-export async function deleteAllCommandsHistory() {
+export async function deleteAllCommandsHistory(userEmail) {
   try {
     const response = await axios.delete(
-      `http://localhost:8081/superapp/admin/miniapp`
+      `http://localhost:8081/superapp/admin/miniapp?userEmail=${userEmail}`
     );
     return response;
   } catch (error) {
@@ -36,10 +36,10 @@ export async function deleteAllCommandsHistory() {
   }
 }
 
-export async function getAllUsers() {
+export async function getAllUsers(userEmail) {
   try {
     const response = await axios.get(
-      `http://localhost:8081/superapp/admin/users`
+      `http://localhost:8081/superapp/admin/users?userEmail=${userEmail}`
     );
     return response;
   } catch (error) {
@@ -48,10 +48,10 @@ export async function getAllUsers() {
   }
 }
 
-export async function getAllCommands() {
+export async function getAllCommands(userEmail) {
     try {
         const response = await axios.get(
-          `http://localhost:8081/superapp/admin/miniapp`
+          `http://localhost:8081/superapp/admin/miniapp?userEmail=${userEmail}`
         );
         return response;
       } catch (error) {

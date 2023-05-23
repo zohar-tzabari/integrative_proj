@@ -4,14 +4,19 @@ import {
 } from "../api/miniAppApi";
 import {  useState } from "react";
 import {JsonTable} from "../sharedComponents/JsonTable";
+import { useParams } from 'react-router-dom';
+import { UserLoginApi } from "../api/usersApi";
+import { useEffect } from "react";
+
 const { Header, Content, Footer, Sider } = Layout;
 
-const suppliersMiniAppName = "suppliers"
 
 function MiniAPPComp() {
   const [results, setResults] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [resultsTable, setResultsTable] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+
 
   const success = (text) => {
     messageApi.open({
@@ -20,11 +25,22 @@ function MiniAPPComp() {
     });
   };
 
+  useEffect(() => {
+    // Function to execute
+    const fetchData = async () => {
+      const userDetails = await UserLoginApi(email);
+      setUserDetails(userDetails);
+      console.log(userDetails);
+    };
+    // Call the function
+    fetchData();
+  }, []); // Empty dependency array to run the effect only once
+
 
   const handleGetAllSuppliers = async () => {
     try {
       setResultsTable(null);
-      const suppliers = await GetAllSuppliers(suppliersMiniAppName);
+      const suppliers = await GetAllSuppliers(suppliersMiniAppName,email);
       setResultsTable (<JsonTable data={suppliers.data} />);
       success("Get All Suppliers");
       console.log(suppliers);
@@ -33,17 +49,17 @@ function MiniAPPComp() {
     }
   };
 
-  const handleGetAllTypes = async () => {
-    try {
-      setResultsTable(null);
-      const types = await GetSupplierTypes(suppliersMiniAppName);
-      console.log(types);
-      setResultsTable (<JsonTable data={[types.data]} />);
-      success("Get All supplier types");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleGetAllTypes = async () => {
+  //   try {
+  //     setResultsTable(null);
+  //     const types = await GetSupplierTypes(suppliersMiniAppName,email);
+  //     console.log(types);
+  //     setResultsTable (<JsonTable data={[types.data]} />);
+  //     success("Get All supplier types");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
 
@@ -64,13 +80,13 @@ function MiniAPPComp() {
         >
           Get All Suppliers
         </Button>
-        <Button
+        {/* <Button
           style={{ margin: "0.5rem" }}
           type="primary"
           onClick={handleGetAllTypes}
         >
           Get All Suppliers types
-        </Button>
+        </Button> */}
         {resultsTable}
       {contextHolder}
       </div>
@@ -78,6 +94,9 @@ function MiniAPPComp() {
 }
 
 const MiniAppDash = () => {
+  const { email } = useParams();
+  console.log( useParams());
+  console.log(email);
   return (
     <Layout>
       <Header
@@ -88,13 +107,6 @@ const MiniAppDash = () => {
         }}
       ></Header>
       <Layout>
-        <Sider
-          style={{
-            backgroundColor: "#ffff",
-            borderBottom: "none",
-            padding: 0,
-          }}
-        ></Sider>
         <Content
           style={{
             backgroundColor: "#ffff",
@@ -102,15 +114,8 @@ const MiniAppDash = () => {
             padding: 0,
           }}
         >
-          <MiniAPPComp />
+          <MiniAPPComp email={email}/>
         </Content>
-        <Sider
-          style={{
-            backgroundColor: "#ffff",
-            borderBottom: "none",
-            padding: 0,
-          }}
-        ></Sider>
       </Layout>
       <Footer></Footer>
     </Layout>

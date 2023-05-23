@@ -1,20 +1,16 @@
-import {
-  Form,
-  Input,
-  Button,
-  Layout,
-  message,
-  Upload,
-  Steps,
-} from "antd";
+import { Form, Input, Button, Layout, message, Upload, Steps,Select } from "antd";
 import { CreateNewObject } from "../api/objectsApi";
-import RegistrationForm from "./registerClinet";
+import RegistrationForm from "../sharedComponents/RegisterUser";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect, useRef } from "react";
 import ImgCrop from "antd-img-crop";
+import {GetSupplierTypes} from "../api/miniAppApi";
 
 const { Header, Content, Footer, Sider } = Layout;
+const { Option } = Select;
+
+const suppliersMiniAppName = "suppliers"
 
 const UploadFile = ({ supplierPhoto }) => {
   const [fileList, setFileList] = useState([]);
@@ -65,11 +61,12 @@ const UploadFile = ({ supplierPhoto }) => {
   );
 };
 
-const RegistrationFormContent = () => {
+const RegistrationFormContent = (userEmail) => {
   const [messageApi, contextHolder] = message.useMessage();
   const supplierPhoto = useRef(null);
   const navigate = useNavigate();
   const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [supplierOptions, setSupplierOptions] = useState(["FLOWERS", "PHOTOGRAPHER", "DJ"]);
 
   // const [role, setRole] = useState(MINIAPPUSER);
 
@@ -89,6 +86,18 @@ const RegistrationFormContent = () => {
   function timeout(delay) {
     return new Promise((res) => setTimeout(res, delay));
   }
+
+    // useEffect(() => {
+    //   // Function to execute
+    //   const fetchData = async () => {
+    //     const supplierType = await GetSupplierTypes(suppliersMiniAppName,userEmail.userEmail.userEmail);
+    //     console.log(supplierType);
+    //     setSupplierOptions(supplierType.data);
+    //   };
+    //   // Call the function
+    //   fetchData();
+    // }, []); // Empty dependency array to run the effect only once
+  
 
   const onFinish = async (values) => {
     //todo: change the role to buissness
@@ -148,9 +157,17 @@ const RegistrationFormContent = () => {
             <Form.Item
               name="alias"
               label="supplier type (alias)"
-              rules={[{ required: true, message: "Please input your city!" }]}
+              rules={[
+                { required: true, message: "Please select a supplier type!" },
+              ]}
             >
-              <Input />
+              <Select>
+                {supplierOptions.map((option) => (
+                  <Option key={option} value={option}>
+                    {option.toLowerCase()}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
 
             <Form.Item name="address" label="Address">
@@ -183,7 +200,7 @@ const RegistrationFormContent = () => {
   );
 };
 
-const BuisnessRegistration = () => {
+const BuisnessRegistration = (userEmail) => {
   return (
     <Layout>
       <Header
@@ -202,7 +219,7 @@ const BuisnessRegistration = () => {
           }}
         ></Sider>
         <Content>
-          <RegistrationFormContent />
+          <RegistrationFormContent userEmail={userEmail} />
         </Content>
         <Sider
           style={{
@@ -227,6 +244,7 @@ const BuisnessRegistration = () => {
 
 const BuisnessRegistrationForm = () => {
   const [current, setCurrent] = useState(0);
+  const [userEmail, setUserEmail] = useState();
   const [userRegisterSuccess, setRegisterSuccess] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -245,11 +263,11 @@ const BuisnessRegistrationForm = () => {
   const steps = [
     {
       title: "Create user",
-      content: <RegistrationForm setRegisterSuccess={setRegisterSuccess} />,
+      content: <RegistrationForm setRegisterSuccess={setRegisterSuccess} setUserEmail={setUserEmail} userRole={"MINIAPP_USER"} />,
     },
     {
       title: "Add buisnedd data",
-      content: <BuisnessRegistration />,
+      content: <BuisnessRegistration userEmail = {userEmail}/>,
     },
   ];
 
