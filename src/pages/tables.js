@@ -14,9 +14,10 @@ import {
 } from "antd";
 import { SketchPicker } from "react-color";
 import { JsonTable } from "../sharedComponents/JsonTable";
-import { useNavigate } from "react-router-dom";
-
-
+import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addGuest } from "../redux/guestsSlice";
+import { addCatagory } from "../redux/catagorySlice";
 const { Header, Content, Footer, Sider } = Layout;
 
 function CardComponent({ item }) {
@@ -59,17 +60,10 @@ const Category = ({ category, items, onDragEnd }) => {
 const GuestFormComponent = () => {
   const [allGuests, setAllGuests] = useState([]);
   const navigate = useNavigate();
-  const [categories, setCategories] = useState([
-    {
-      name: "Groom family",
-      color: {
-        r: "241",
-        g: "112",
-        b: "19",
-        a: "1",
-      },
-    },
-  ]);
+  const [categories, setCategories] = useState([]);
+  const dispatch = useDispatch();
+  const allCategories = useSelector((state) => state.all_catagroies);
+
   const [newCategory, setNewCategory] = useState("");
   const [newGuest, setNewGuest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -110,11 +104,12 @@ const GuestFormComponent = () => {
   };
 
   const finishGuestsAdding = () => {
-    navigate("/tables/arrangeTables");
+    navigate(`/tables/arrangeTables`);
   };
 
   const onFinish = (values) => {
     setAllGuests([...allGuests, values]);
+    dispatch(addGuest({ values }));
     // Reset the form fields
     form.resetFields();
   };
@@ -132,6 +127,8 @@ const GuestFormComponent = () => {
           color: sketchPickerColor,
         };
         setCategories([...categories, objectToAdd]);
+        dispatch(addCatagory(objectToAdd));
+        console.log(allCategories);
         setNewCategory("");
         successMsg("Guest category added successfully!");
       }
@@ -259,9 +256,11 @@ export const TablePage = () => {
     { id: "14", name: "Roy", lastName: "Temp", category: "All ghests" },
   ]);
   const [tablesNum, setTablesNum] = useState(20);
-  const categories = useRef(
+  const guests_categories = useSelector(state => state.all_catagroies);
+  const tables_to_sit = useRef(
     Array.from(Array(tablesNum).keys()).map((i) => `table ${i + 1}`)
   );
+  console.log(guests_categories);
 
   // Define the function to handle drag and drop
   const onDragEnd = (result) => {
@@ -308,7 +307,7 @@ export const TablePage = () => {
             <Content>
               {" "}
               <Row>
-                {categories.current.map((n) => (
+                {tables_to_sit.current.map((n) => (
                   <React.Fragment key={n}>
                     <Col span={7}>
                       <Category
