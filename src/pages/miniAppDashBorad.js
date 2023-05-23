@@ -11,7 +11,9 @@ import { useEffect } from "react";
 const { Header, Content, Footer, Sider } = Layout;
 
 
-function MiniAPPComp() {
+const suppliersMiniAppName = "suppliers"
+
+function MiniAPPComp({email}) {
   const [results, setResults] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [resultsTable, setResultsTable] = useState(null);
