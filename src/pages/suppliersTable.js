@@ -14,6 +14,9 @@ import {
 import { InstagramOutlined, MessageTwoTone } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GetAllSuppliers } from "../api/commandApi";
+import { useParams } from 'react-router-dom';
+
 
 
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
@@ -183,6 +186,39 @@ const Description = ({ text, instgramLink }) => {
     </div>
   );
 };
+
+const DataFromServer = async () => {
+  const [messageApi, contextHolder] = message.useMessage();
+
+const [resultsTable, setResultsTable] = useState(null);
+const { email } = useParams();
+const success = (text) => {
+  messageApi.open({
+    type: "success",
+    content: text,
+  });
+};
+  // const handleGetAllUsers = async () => {
+  //   try {
+  //     setResultsTable(null);
+  //     const users = await getAllUsers(email);
+  //     success("Get All Users");
+  //     console.log(users.data);
+  //     setResultsTable(<JsonTable data={users.data} />);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  try{
+    setResultsTable(null);
+    const suppliers = await GetAllSuppliers(email);
+    success("Show suppliers");
+    console.log(suppliers.data);
+   // setResultsTable(<JsonTable data={users.data} />);
+  } catch (error) {
+      console.log(error);
+    }
+}
 
 const dataSource = [
   {
@@ -371,6 +407,7 @@ const columns = [
 ];
 
 const SupTable = () => {
+ DataFromServer("liriella71@gmail.com");
   return (
     <div>
       {
