@@ -1,19 +1,17 @@
 import { Form, Input, Button, Layout, message } from "antd";
 import { UserLoginApi } from "../api/usersApi";
-import { CreateNewObject} from "../api/objectsApi";
+import { CreateNewObject } from "../api/objectsApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from '../redux/userSlice';
+import { setUser } from "../redux/userSlice";
 const { Header, Content, Footer, Sider } = Layout;
 
-
-const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
+const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userType = useSelector((state) => state.miniApp.miniAppClientRole);
-
 
   const successMsg = (text) => {
     messageApi.open({
@@ -34,13 +32,14 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
     const user = await UserLoginApi(values.email);
     if (user) {
       console.log(user);
-      if (user.role===userType){
-      dispatch(setUser(user));
-      console.log(values.email);
-      successMsg(`${values.email} login successfuly `);
-      navigate(`/${navigateUrl}/${values.email}`);
-      }
-      else{
+      if (user.role === userType) {
+        dispatch(setUser(user));
+        console.log(values.email);
+        successMsg(`${values.email} login successfuly `);
+        if (navigateUrl) {
+          navigate(`/${navigateUrl}/${values.email}`);
+        }
+      } else {
         errorMsg(`the user type is ${user.role} not ${userType}`);
       }
     } else {
@@ -64,7 +63,7 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Register
+            login
           </Button>
         </Form.Item>
       </Form>
@@ -72,7 +71,7 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
   );
 };
 
-const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
+const LoginForm = ({ setLoginSuccess, navigateUrl }) => {
   return (
     <Layout>
       <Header
@@ -91,7 +90,7 @@ const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
           }}
         ></Sider>
         <Content>
-          <LoginFormContent setLoginSuccess={setLoginSuccess}  navigateUrl={navigateUrl}/>
+          <LoginFormContent setLoginSuccess={setLoginSuccess} />
         </Content>
         <Sider
           style={{
@@ -112,11 +111,11 @@ const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
   );
 };
 
-const Login = ({urlToPass,type}) => {
+const Login = ({ urlToPass, type }) => {
   const [sucess, setSuccess] = useState(false);
   console.log(urlToPass);
 
-  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass} />;
+  return <LoginForm setLoginSuccess={setSuccess} teUrl={urlToPass} naviga />;
 };
 
 export default Login;
