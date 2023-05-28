@@ -7,27 +7,27 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
-import { setMiniAppName } from "../redux/miniAppSlice";
+import { setMiniAppClientRole, setMiniAppName } from "../redux/miniAppSlice";
+
+const buttonData = [
+  { appName: "Supplier", label: "Supplier Mini App" },
+  { appName: "Customer", label: "Customer Mini App" },
+  { appName: "Tables", label: "Tables Mini App" },
+  { appName: "Invention", label: "Approve Invention Mini App" },
+  { appName: "Admin", label: "Admin" },
+  { appName: "miniAppDashboard", label: "Mini App Dashboard" },
+];
 
 const { Header, Content, Footer, Sider } = Layout;
 const AppMatrix = () => {
   const dispatch = useDispatch();
-  const handleSupplierAppClick = () => {
-    dispatch(setMiniAppName('Supplier Mini App'));
-  };
 
-  const handleCustomerAppClick = () => {
-    dispatch(setMiniAppName('Customer Mini App'));
+  const handleAppClick = (appName) => {
+    dispatch(setMiniAppName(appName));
+    dispatch(
+      setMiniAppClientRole(appName === "Admin" ? "ADMIN" : "SUPERAPP_USER")
+    );
   };
-
-  const handleTablesAppClick = () => {
-    dispatch(setMiniAppName('Tables Mini App'));
-  };
-
-  const handleApproveInventionAppClick = () => {
-    dispatch(setMiniAppName('Approve Invention Mini App'));
-  };
-
   return (
     <>
       <div
@@ -39,39 +39,36 @@ const AppMatrix = () => {
           justifyContent: "center",
         }}
       >
-        <Button type="primary" size="large" onClick={handleSupplierAppClick}>
-          Supplier Mini App
-        </Button>
-        <Button type="primary" size="large" onClick={handleCustomerAppClick}>
-          Customer Mini App
-        </Button>
-        <Button type="primary" size="large" onClick={handleTablesAppClick}>
-          Tables Mini App
-        </Button>
-        <Button
-          type="primary"
-          size="large"
-          onClick={handleApproveInventionAppClick}
-        >
-          Approve Invention Mini App
-        </Button>
+        {buttonData.map((button) => (
+          <Button
+            key={button.appName}
+            type="primary"
+            size="large"
+            style={{
+              margin: "2em",
+              width: "15em",
+              height: "8em",
+            }}
+            onClick={() => handleAppClick(button.appName)}
+          >
+            {button.label}
+          </Button>
+        ))}
       </div>
     </>
   );
 };
 
 function Home() {
-  const email = useSelector((state) => state.userEmail);
+  const user = useSelector((state) => state.user);
   const objectM = useSelector((state) => state.objectManager);
-  const miniAppName = useSelector((state) => state.miniAppName);
-
-
+  const miniApp = useSelector((state) => state.miniApp);
 
   return (
     <Layout>
-      <Sider collapsible>
-        <div className="logo" />
-        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+        <Sider style={{ background: "#fff" }}></Sider>
+      {/* <Sider collapsible> */}
+      {/* <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
           <Menu.Item key="1" icon={<PieChartOutlined />}>
             example
           </Menu.Item>
@@ -84,20 +81,20 @@ function Home() {
           <Menu.Item key="4" icon={<TeamOutlined />}>
             example
           </Menu.Item>
-        </Menu>
-      </Sider>
+        </Menu> */}
+      {/* </Sider> */}
       <Layout>
-        <Header
+        <Header 
           className="site-layout-sub-header-background"
-          style={{ padding: 0 }}
+          style={{ padding: 0 ,background: "#fff" }}
         />
-        <Content>
+        <Content >
           <Breadcrumb>
             <Breadcrumb.Item>Home</Breadcrumb.Item>
           </Breadcrumb>
           <div>
-            <h1>hi: {email.userEmail}</h1>
-            <h1>current mini app is: {miniAppName.miniAppName}</h1>
+            <h1>hi: {user ? user.avatar : ""}</h1>
+            <h1>current mini app is: {miniApp.miniAppName}</h1>
             <h1>Welcome to our web portal!</h1>
             <p>We are a leading provider of web-based solutions.</p>
           </div>

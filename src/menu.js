@@ -5,10 +5,12 @@ import Home from "./pages/home";
 import Admin from "./pages/admin";
 import BuisnessRegistrationForm from "./pages/registerBuisness";
 import MiniAppDash from "./pages/miniAppDashBorad";
-import { TablePage, GuestForm } from "./pages/tables";
-
 import Login from "./sharedComponents/loginUser";
 import RegistrationForm from "./sharedComponents/RegisterUser";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { TablePage, GuestForm } from "./pages/tables";
+
 
 const { Header, Content } = Layout;
 
@@ -62,32 +64,97 @@ function NewMenu() {
 }
 
 function MenuComp() {
+  const currentMiniApp = useSelector((state) => state.miniApp);
+  const [menuToAdd, setMenuToAdd] = useState([]);
+
+  useEffect(() => {
+    // Function to execute
+    const fetchData = () => {
+      console.log(currentMiniApp);
+      switch (currentMiniApp.miniAppName) {
+        case "Supplier": {
+          setMenuToAdd([
+            {
+              key: "/BuisnessRegistrationForm",
+              to: "/BuisnessRegistrationForm",
+              name: "Buisness Registration Form",
+            },
+          ]);
+          break;
+        }
+        case "Customer": {
+          setMenuToAdd([
+            {
+              key: "/AllClientView",
+              to: "/AllClientView",
+              name: "All Client View",
+            },
+          ]);
+          break;
+        }
+        case "Tables": {
+          setMenuToAdd([]);
+          break;
+        }
+        case "Invention": {
+          setMenuToAdd([]);
+          break;
+        }
+        case "Admin": {
+          setMenuToAdd([
+            {
+              key: "/loginAdmin",
+              to: "/loginAdmin",
+              name: "Admin Dashboard",
+            },
+            {
+              key: "/RegisterAdmin",
+              to: "/RegisterAdmin",
+              name: "Register Admin",
+            },
+          ]);
+          break;
+        }
+        case "miniAppDashboard": {
+          setMenuToAdd([
+            {
+              key: "/loginMiniAppDash",
+              to: "/loginMiniAppDash",
+              name: "Login Mini APP DashBorad",
+            },
+            {
+              key: "/RegisterSuperApp",
+              to: "/RegisterSuperApp",
+              name: "Register SuperApp User",
+            },
+          ]);
+          break;
+        }
+        default: {
+          setMenuToAdd([]);
+          // Add default case code if needed
+          break;
+        }
+      }
+    };
+    // Call the function
+    fetchData();
+  }, [currentMiniApp]); // Empty dependency array to run the effect only once
+
+  useEffect(() => {
+    console.log("menuToAdd updated:", menuToAdd);
+  }, [menuToAdd]);
+
   return (
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="/">
         <Link to="/">Home</Link>
       </Menu.Item>
-      <Menu.Item key="/AllClientView">
-        <Link to="/AllClientView">All Client View</Link>
-      </Menu.Item>
-      <Menu.Item key="/loginAdmin">
-        <Link to="/loginAdmin">Admin Dashboard</Link>
-      </Menu.Item>
-      <Menu.Item key="/BuisnessRegistrationForm">
-        <Link to="/BuisnessRegistrationForm">Buisness Registration Form</Link>
-      </Menu.Item>
-      <Menu.Item key="/tables/insertGuests">
-        <Link to="/tables/insertGuests">Tables organizer</Link>
-      </Menu.Item>
-      <Menu.Item key="/RegisterAdmin">
-        <Link to="/RegisterAdmin">Register Admin</Link>
-      </Menu.Item>
-      <Menu.Item key="/loginMiniAppDash">
-        <Link to="/loginMiniAppDash">Login Mini APP DashBorad</Link>
-      </Menu.Item>
-      <Menu.Item key="/RegisterSuperApp">
-        <Link to="/RegisterSuperApp">Register SuperApp User</Link>
-      </Menu.Item>
+      {menuToAdd.map((item) => (
+        <Menu.Item key={item.key}>
+          <Link to={item.to}>{item.name}</Link>
+        </Menu.Item>
+      ))}
     </Menu>
   );
 }

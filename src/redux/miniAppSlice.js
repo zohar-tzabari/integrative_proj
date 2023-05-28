@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   miniAppName: "",
+  miniAppClientRole: "",
 };
 
 const miniAppSlice = createSlice({
@@ -11,8 +12,11 @@ const miniAppSlice = createSlice({
     setMiniAppName: (state, action) => {
       state.miniAppName = action.payload;
     },
+    setMiniAppClientRole: (state, action) => {
+      state.miniAppClientRole = action.payload;
+    },
   },
 });
 
-export const { setMiniAppName } = miniAppSlice.actions;
+export const { setMiniAppName,setMiniAppClientRole } = miniAppSlice.actions;
 export default miniAppSlice.reducer;

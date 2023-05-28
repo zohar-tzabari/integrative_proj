@@ -7,11 +7,11 @@ import miniAppReducer from "./miniAppSlice";
 
 const Store = configureStore({
   reducer: {
-    userEmail: userReducer,
+    user: userReducer,
     objectManager: objectReducer,
+    miniApp:miniAppReducer,
     all_gusets:guestsReducer,
     all_catagroies:catagoryReudcer,
-    miniAppName:miniAppReducer
   },
 });
 export default Store;
