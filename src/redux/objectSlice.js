@@ -1,24 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  objectManager: {
-    superApp: "zohar",
-    internalObjectId: "still not",
-    type: "",
-  },
+  objectManager: {}
 };
 
 const objecctSlice = createSlice({
   name: "objectManager",
   initialState,
   reducers: {
-    setManagerObjectId: (state, action) => {
+    setManagerObject: (state, action) => {
       console.log(state, action);
-      state.objectManager.objectId = action.payload.registerObject.objectId;
-      state.objectManager.type = action.payload.registerObject.type;
+      state.objectManager = action.payload;
     },
   },
 });
 
-export const { setManagerObjectId } = objecctSlice.actions;
+export const { setManagerObject } = objecctSlice.actions;
 export default objecctSlice.reducer;

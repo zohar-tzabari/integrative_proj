@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { setMiniAppClientRole, setMiniAppName } from "../redux/miniAppSlice";
+import { setUser } from "../redux/userSlice";
 
 const buttonData = [
   { appName: "Supplier", label: "Supplier Mini App" },
@@ -15,6 +16,7 @@ const buttonData = [
   { appName: "Tables", label: "Tables Mini App" },
   { appName: "Invention", label: "Approve Invention Mini App" },
   { appName: "Admin", label: "Admin" },
+  { appName: "Tables", label: "Tables" },
   { appName: "miniAppDashboard", label: "Mini App Dashboard" },
 ];
 
@@ -23,6 +25,7 @@ const AppMatrix = () => {
   const dispatch = useDispatch();
 
   const handleAppClick = (appName) => {
+    dispatch(setUser({}));
     dispatch(setMiniAppName(appName));
     dispatch(
       setMiniAppClientRole(appName === "Admin" ? "ADMIN" : "SUPERAPP_USER")
@@ -93,7 +96,7 @@ function Home() {
             <Breadcrumb.Item>Home</Breadcrumb.Item>
           </Breadcrumb>
           <div>
-            <h1>hi: {user ? user.avatar : ""}</h1>
+            <h1>hi: {Object.keys(user).length != 0 ? user.user.avatar : ""}</h1>
             <h1>current mini app is: {miniApp.miniAppName}</h1>
             <h1>Welcome to our web portal!</h1>
             <p>We are a leading provider of web-based solutions.</p>

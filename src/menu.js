@@ -9,6 +9,7 @@ import Login from "./sharedComponents/loginUser";
 import RegistrationForm from "./sharedComponents/RegisterUser";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { TablePage, GuestForm } from "./pages/tables";
 
 const { Header, Content } = Layout;
 
@@ -48,6 +49,18 @@ function NewMenu() {
                 <Login urlToPass={"MiniAppDash"} type={"MINIAPP_USER"} />
               }
             />
+            <Route
+              path="BuisnessRegistrationForm"
+              element={<BuisnessRegistrationForm />}
+            />
+            <Route path="tables/arrangeTables" element={<TablePage />} />
+            <Route path="tables/insertGuests" element={<GuestForm />} />
+            <Route
+              path="tables/login"
+              element={
+                <Login type={"MINIAPP_USER"} />
+              }
+            />
           </Routes>
         </Content>
       </Layout>
@@ -55,14 +68,13 @@ function NewMenu() {
   );
 }
 
-function MenuComp() {
+function MenuComp() { 
   const currentMiniApp = useSelector((state) => state.miniApp);
   const [menuToAdd, setMenuToAdd] = useState([]);
 
   useEffect(() => {
     // Function to execute
     const fetchData = () => {
-      console.log(currentMiniApp);
       switch (currentMiniApp.miniAppName) {
         case "Supplier": {
           setMenuToAdd([
@@ -85,7 +97,18 @@ function MenuComp() {
           break;
         }
         case "Tables": {
-          setMenuToAdd([]);
+          setMenuToAdd([
+            {
+              key: "/tables/insertGuests",
+              to: "/tables/insertGuests",
+              name: "Tables organizer",
+            },
+            {
+              key: "/tables/login",
+              to: "/tables/login",
+              name: "Tables login",
+            },
+          ]);
           break;
         }
         case "Invention": {
