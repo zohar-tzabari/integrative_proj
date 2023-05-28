@@ -3,7 +3,8 @@ import { ClientRegisterApi } from "../api/usersApi";
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from '../redux/userSlice';
-import { object } from "prop-types";
+import { useSelector } from "react-redux";
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -13,6 +14,7 @@ const RegistrationFormContent = ({
   //the state that decide if th show the register button
   const submissinShow = useRef(true);
   const dispatch = useDispatch(); 
+  const miniAppClientRole = useSelector((state) => state.miniApp.miniAppClientRole);
 
 
   const successMsg = (text) => {
@@ -30,7 +32,8 @@ const RegistrationFormContent = ({
   };
 
   const onFinish = async (values) => {
-    values["role"] = "SUPERAPP_USER";
+    console.log(miniAppClientRole);
+    values["role"] = miniAppClientRole;
     console.log(values);
     const dataFromServer = await ClientRegisterApi(values);
     console.log(typeof dataFromServer);
