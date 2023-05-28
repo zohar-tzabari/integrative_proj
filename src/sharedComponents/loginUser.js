@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/userSlice";
+import { setManagerObject } from "../redux/objectSlice";
 const { Header, Content, Footer, Sider } = Layout;
 
 const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
@@ -36,6 +37,18 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
         dispatch(setUser(user));
         console.log(values.email);
         successMsg(`${values.email} login successfuly `);
+        //create manager object//
+        //todo: change the role to buissness\
+        if (userType != "ADMIN") {
+          let json_to_server = {};
+          json_to_server["type"] = "objectManager";
+          json_to_server["alias"] = "manager";
+          json_to_server["createdBy"] = { userId: user.userId };
+          console.log(json_to_server);
+          const registerObject = await CreateNewObject(json_to_server);
+          console.log(registerObject);
+          dispatch(setManagerObject(registerObject));
+        }
         if (navigateUrl) {
           navigate(`/${navigateUrl}/${values.email}`);
         }
@@ -92,7 +105,10 @@ const LoginForm = ({ setLoginSuccess, navigateUrl }) => {
           }}
         ></Sider>
         <Content>
-          <LoginFormContent setLoginSuccess={setLoginSuccess} navigateUrl={navigateUrl}/>
+          <LoginFormContent
+            setLoginSuccess={setLoginSuccess}
+            navigateUrl={navigateUrl}
+          />
         </Content>
         <Sider
           style={{
@@ -117,7 +133,7 @@ const Login = ({ urlToPass, type }) => {
   const [sucess, setSuccess] = useState(false);
   console.log(urlToPass);
 
-  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass}  />;
+  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass} />;
 };
 
 export default Login;

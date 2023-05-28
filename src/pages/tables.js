@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addGuest } from "../redux/guestsSlice";
 import { addCatagory } from "../redux/catagorySlice";
 import { CreateNewObject } from "../api/objectsApi";
+import { GetAllGuests } from "../api/commandApi";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -138,8 +139,7 @@ const GuestFormComponent = () => {
     json_to_server["createdBy"] = { userId: user.user.userId };
     console.log(json_to_server);
     const registerObject = await CreateNewObject(json_to_server);
-    if(!registerObject)
-    {
+    if (!registerObject) {
       errorMsg("somthing went wrong");
       return;
     }
@@ -177,12 +177,14 @@ const GuestFormComponent = () => {
 
   useEffect(() => {
     // Function to execute
-    const fetchData = () => {
+    const fetchData = async () => {
       console.log(user.user);
       if (isObjEmpty(user.user)) {
         errorMsg("need to login first");
       } else {
         clearAllMessages();
+        const previous_guests = await GetAllGuests();
+        console.log(previous_guests);
       }
     };
     // Call the function
@@ -298,30 +300,12 @@ export const TablePage = () => {
   const guests = useSelector((state) => state.all_gusets);
   const guestsArray = guests.all_gusets || []; // Make sure guests.all_gusets is an array
   const [items, setItems] = useState([...guestsArray]);
-  // const [items, setItems] = useState([
-  //   { id: "1", name: "Dean", lastName: "Temp", category: "All ghests" },
-  //   { id: "2", name: "Tom", lastName: "Temp", category: "All ghests" },
-  //   { id: "3", name: "Zohar", lastName: "Temp", category: "All ghests" },
-  //   { id: "4", name: "Tal", lastName: "Temp", category: "All ghests" },
-  //   { id: "5", name: "Liri", lastName: "Temp", category: "All ghests" },
-  //   { id: "6", name: "Michaella", lastName: "Temp", category: "All ghests" },
-  //   { id: "7", name: "Roy", lastName: "Temp", category: "All ghests" },
-  //   { id: "8", name: "Dean", lastName: "Temp", category: "All ghests" },
-  //   { id: "9", name: "Tom", lastName: "Temp", category: "All ghests" },
-  //   { id: "10", name: "Zohar", lastName: "Temp", category: "All ghests" },
-  //   { id: "11", name: "Tal", lastName: "Temp", category: "All ghests" },
-  //   { id: "12", name: "Liri", lastName: "Temp", category: "All ghests" },
-  //   { id: "13", name: "Michaella", lastName: "Temp", category: "All ghests" },
-  //   { id: "14", name: "Roy", lastName: "Temp", category: "All ghests" },
-  // ]);
   const [tablesNum, setTablesNum] = useState(20);
   const guests_categories = useSelector((state) => state.all_catagroies);
 
   const tables_to_sit = useRef(
     Array.from(Array(tablesNum).keys()).map((i) => `table ${i + 1}`)
   );
-  console.log(guests);
-  console.log(items);
 
   // Define the function to handle drag and drop
   const onDragEnd = (result) => {

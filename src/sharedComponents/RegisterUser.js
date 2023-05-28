@@ -66,7 +66,7 @@ const RegistrationFormContent = ({
             { type: "email", message: "Please enter a valid email address!" },
           ]}
         >
-          <Input />
+          <Input  />
         </Form.Item>
         <Form.Item
           name="avatar"

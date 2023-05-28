@@ -75,7 +75,6 @@ function MenuComp() {
   useEffect(() => {
     // Function to execute
     const fetchData = () => {
-      console.log(currentMiniApp);
       switch (currentMiniApp.miniAppName) {
         case "Supplier": {
           setMenuToAdd([
