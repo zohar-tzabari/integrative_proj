@@ -7,7 +7,7 @@ const Store = configureStore({
   reducer: {
     user: userReducer,
     objectManager: objectReducer,
-    miniAppName:miniAppReducer
+    miniApp:miniAppReducer,
   },
 });
 export default Store;

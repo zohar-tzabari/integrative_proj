@@ -8,10 +8,11 @@ import { setUser } from '../redux/userSlice';
 const { Header, Content, Footer, Sider } = Layout;
 
 
-const LoginFormContent = ({ setLoginSuccess ,navigateUrl,userType}) => {
+const LoginFormContent = ({ setLoginSuccess ,navigateUrl}) => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userType = useSelector((state) => state.miniApp.miniAppClientRole);
 
 
   const successMsg = (text) => {
@@ -71,7 +72,7 @@ const LoginFormContent = ({ setLoginSuccess ,navigateUrl,userType}) => {
   );
 };
 
-const LoginForm = ({ setLoginSuccess , navigateUrl,userType}) => {
+const LoginForm = ({ setLoginSuccess , navigateUrl}) => {
   return (
     <Layout>
       <Header
@@ -90,7 +91,7 @@ const LoginForm = ({ setLoginSuccess , navigateUrl,userType}) => {
           }}
         ></Sider>
         <Content>
-          <LoginFormContent setLoginSuccess={setLoginSuccess}  navigateUrl={navigateUrl} userType={userType}/>
+          <LoginFormContent setLoginSuccess={setLoginSuccess}  navigateUrl={navigateUrl}/>
         </Content>
         <Sider
           style={{
@@ -115,7 +116,7 @@ const Login = ({urlToPass,type}) => {
   const [sucess, setSuccess] = useState(false);
   console.log(urlToPass);
 
-  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass} userType = {type} />;
+  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass} />;
 };
 
 export default Login;
