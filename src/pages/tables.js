@@ -18,10 +18,21 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addGuest } from "../redux/guestsSlice";
 import { addCatagory } from "../redux/catagorySlice";
+import { CreateNewObject } from "../api/objectsApi";
+
 const { Header, Content, Footer, Sider } = Layout;
 
 function CardComponent({ item }) {
-  return <Card size="small">{item.name}</Card>;
+  return (
+    <Card
+      size="small"
+      style={{
+        backgroundColor: `rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a})`,
+      }}
+    >
+      {item.firstName}
+    </Card>
+  );
 }
 
 const Category = ({ category, items, onDragEnd }) => {
@@ -62,10 +73,10 @@ const GuestFormComponent = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const dispatch = useDispatch();
+
   const allCategories = useSelector((state) => state.all_catagroies);
 
   const [newCategory, setNewCategory] = useState("");
-  const [newGuest, setNewGuest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [sketchPickerColor, setSketchPickerColor] = useState({
@@ -74,6 +85,7 @@ const GuestFormComponent = () => {
     b: "19",
     a: "1",
   });
+  const [guestId, setGuestId] = useState(0);
   const [form] = Form.useForm();
   const user = useSelector((state) => state.user);
 
@@ -113,9 +125,25 @@ const GuestFormComponent = () => {
     navigate(`/tables/arrangeTables`);
   };
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setAllGuests([...allGuests, values]);
-    dispatch(addGuest({ values }));
+    values["category"] = "All ghests";
+    values["color"] = categories.find(
+      (category) => category.name === values.guestType
+    ).color;
+    console.log(values);
+    let json_to_server = {};
+    json_to_server["type"] = "guest";
+    json_to_server["alias"] = `${values["firstName"]}_${values["lastName"]}`;
+    json_to_server["objectDetails"] = values;
+    json_to_server["createdBy"] = { userId: user.user.userId };
+    console.log(json_to_server);
+    const registerObject = await CreateNewObject(json_to_server);
+    console.log(registerObject);
+    CreateNewObject(values);
+    // values["id"] = `${guestId}`;
+    setGuestId(guestId + 1);
+    dispatch(addGuest(values));
     // Reset the form fields
     form.resetFields();
   };
@@ -265,55 +293,52 @@ export const GuestForm = () => {
 
 export const TablePage = () => {
   // Define the initial state of the items and their categories
-  const [items, setItems] = useState([
-    { id: "1", name: "Dean", lastName: "Temp", category: "All ghests" },
-    { id: "2", name: "Tom", lastName: "Temp", category: "All ghests" },
-    { id: "3", name: "Zohar", lastName: "Temp", category: "All ghests" },
-    { id: "4", name: "Tal", lastName: "Temp", category: "All ghests" },
-    { id: "5", name: "Liri", lastName: "Temp", category: "All ghests" },
-    { id: "6", name: "Michaella", lastName: "Temp", category: "All ghests" },
-    { id: "7", name: "Roy", lastName: "Temp", category: "All ghests" },
-    { id: "8", name: "Dean", lastName: "Temp", category: "All ghests" },
-    { id: "9", name: "Tom", lastName: "Temp", category: "All ghests" },
-    { id: "10", name: "Zohar", lastName: "Temp", category: "All ghests" },
-    { id: "11", name: "Tal", lastName: "Temp", category: "All ghests" },
-    { id: "12", name: "Liri", lastName: "Temp", category: "All ghests" },
-    { id: "13", name: "Michaella", lastName: "Temp", category: "All ghests" },
-    { id: "14", name: "Roy", lastName: "Temp", category: "All ghests" },
-  ]);
+  const guests = useSelector((state) => state.all_gusets);
+  const guestsArray = guests.all_gusets || []; // Make sure guests.all_gusets is an array
+  const [items, setItems] = useState([...guestsArray]);
+  // const [items, setItems] = useState([
+  //   { id: "1", name: "Dean", lastName: "Temp", category: "All ghests" },
+  //   { id: "2", name: "Tom", lastName: "Temp", category: "All ghests" },
+  //   { id: "3", name: "Zohar", lastName: "Temp", category: "All ghests" },
+  //   { id: "4", name: "Tal", lastName: "Temp", category: "All ghests" },
+  //   { id: "5", name: "Liri", lastName: "Temp", category: "All ghests" },
+  //   { id: "6", name: "Michaella", lastName: "Temp", category: "All ghests" },
+  //   { id: "7", name: "Roy", lastName: "Temp", category: "All ghests" },
+  //   { id: "8", name: "Dean", lastName: "Temp", category: "All ghests" },
+  //   { id: "9", name: "Tom", lastName: "Temp", category: "All ghests" },
+  //   { id: "10", name: "Zohar", lastName: "Temp", category: "All ghests" },
+  //   { id: "11", name: "Tal", lastName: "Temp", category: "All ghests" },
+  //   { id: "12", name: "Liri", lastName: "Temp", category: "All ghests" },
+  //   { id: "13", name: "Michaella", lastName: "Temp", category: "All ghests" },
+  //   { id: "14", name: "Roy", lastName: "Temp", category: "All ghests" },
+  // ]);
   const [tablesNum, setTablesNum] = useState(20);
   const guests_categories = useSelector((state) => state.all_catagroies);
+
   const tables_to_sit = useRef(
     Array.from(Array(tablesNum).keys()).map((i) => `table ${i + 1}`)
   );
-  console.log(guests_categories);
+  console.log(guests);
+  console.log(items);
 
   // Define the function to handle drag and drop
   const onDragEnd = (result) => {
-    // If the item was not dropped in a valid droppable area, do nothing
     if (!result.destination) {
       return;
     }
 
-    // Get the items array and the item that was dragged
     const newItems = [...items];
-    const item = newItems.find((i) => i.id === result.draggableId);
+    const itemIndex = newItems.findIndex((i) => i.id === result.draggableId);
+    const item = { ...newItems[itemIndex] };
 
-    // If the item was dropped in a different category, update its category
     if (result.destination.droppableId !== result.source.droppableId) {
       item.category = result.destination.droppableId;
     }
 
-    // Move the item to the new position
-    newItems.splice(
-      result.destination.index,
-      0,
-      newItems.splice(result.source.index, 1)[0]
-    );
+    newItems.splice(result.source.index, 1);
+    newItems.splice(result.destination.index, 0, item);
 
-    // Update the state with the new items array
     setItems(newItems);
-    console.log(newItems);
   };
 
   return (
