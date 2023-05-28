@@ -11,7 +11,7 @@ import {
   Layout
   , message
 } from "antd";
-import { InstagramOutlined, MessageTwoTone } from "@ant-design/icons";
+import { InstagramOutlined,FacebookOutlined,MailOutlined  } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { searchObjectsByType } from "../api/commandApi";
@@ -22,54 +22,6 @@ import { useParams } from 'react-router-dom';
 const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 const { Header, Content, Footer, Sider } = Layout;
 
-
-const ChatView = ({ text, clientName }) => {
-  const [textChat, setTextChat] = useState(text);
-  const [clientPrivateName, setClientName] = useState(clientName);
-
-
-  const handleSubmit = (values) => {
-    const newMessage = `${clientPrivateName}\n${values.content}`;
-    setTextChat((prevTextChat) => [...prevTextChat, newMessage]);
-  };
-
-  const messages = textChat.map((message) => {
-    const [name, content] = message.split("\n");
-    return { name, content };
-  });
-
-  return (
-    <div
-      style={{
-        background: "#f0f0f0",
-        maxHeight: "100vh",
-        maxWidth: "100vw",
-        overflow: "auto",
-        position: "relative", // add position relative to the container
-      }}
-    >
-      <List
-        itemLayout="horizontal"
-        dataSource={messages}
-        renderItem={({ name, content }) => (
-          <List.Item>
-            <List.Item.Meta title={name} description={content} />
-          </List.Item>
-        )}
-      />
-        <Form onFinish={handleSubmit}>
-          <Form.Item name="content">
-            <Input placeholder="Message" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Send
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-  );
-};
 
 
 const PickDate = () => {
@@ -147,27 +99,7 @@ const RatingSup = () => {
   );
 };
 
-const Description = ({ text, instgramLink }) => {
-  const [chat, setChat] = useState(null);
-  const [showChat, setShowChat] = useState(false);
-
-  useEffect(() => {
-    function setShowChatEffect() {
-      setChat(
-        <ChatView
-          clientName={"zohar"}
-          text={[
-            "zohar\nhi",
-            "moshe\nhi",
-            "zohar\ngood and with u?",
-            "moshe\ngood",
-          ]}
-        />
-      );
-    }
-    setShowChatEffect();
-  }, []);
-
+const Description = ({ text, instgramLink,facebookLink,mailLink }) => {
   return (
     <div>
       {text}
@@ -175,14 +107,15 @@ const Description = ({ text, instgramLink }) => {
       <Button icon={<InstagramOutlined />} size="large" href={instgramLink}>
         {" "}
       </Button>
-      <button type="button" onClick={() => setShowChat(!showChat)}>
-        <Badge count={5}>
-          <Avatar icon={<MessageTwoTone />} shape="square" size="large" />
-        </Badge>
-      </button>
+      <Button icon={<FacebookOutlined  />} size="large" href={facebookLink}>
+        {" "}
+      </Button>
+      {console.log(mailLink)}
+      <Button icon={<MailOutlined />} onClick={() => window.open(`mailto:${mailLink}`, '_blank')} size="large" href={mailLink}>
+        {" "}
+      </Button>
       <RatingSup />
       <PickDate />
-      {showChat ? chat : ""}
     </div>
   );
 };
@@ -205,204 +138,7 @@ function generateSubTable(key, value, dataIndex, title) {
   };
 }
 
-/*
-the json file:
- {
-        "objectId": {
-            "superapp": "2023b.zohar.tzabari",
-            "internalObjectId": "7e4f4c94-4eab-432d-a62b-c3fbbeb35c60"
-        },
-        "type": "Supplier",
-        "alias": "FLOWERS",
-        "active": true,
-        "creationTimestamp": "2023-05-26T16:23:06.395+00:00",
-        "location": {
-            "lat": 0.0,
-            "lng": 0.0
-        },
-        "createdBy": {
-            "userId": {
-                "superapp": "2023b.zohar.tzabari",
-                "email": "liri@sdds.sd"
-            }
-        },
-        "objectDetails": {
-            "city": "kfar yona",
-            "alias": "FLOWERS",
-            "phone": "0547901147",
-            "photo": {
-                "uid": "rc-upload-1685117999409-3",
-                "lastModified": 1685118185082,
-                "lastModifiedDate": "2023-05-26T16:23:05.082Z",
-                "name": "Screenshot 2023-02-09 150641.png",
-                "size": 32103,
-                "type": "image/png",
-                "percent": 100,
-                "originFileObj": {
-                    "uid": "rc-upload-1685117999409-3"
-                },
-                "status": "done",
-                "response": "ok",
-                
-            ********** add - name, description,  
-            
-              }
-        }
-    },
 
-*/
-/*
-  {
-    key: "1",
-    name: "Mike", - add something in the front
-    address: object deatils. address+city ,
-    supType: "alias",
-    rate_grade: 4,
-    description: (
-      <Description add in the front  
-        text="My name is Mike, I do dresses"
-        instgramLink=objectdetails.instagram
-      />
-    ),
-    photo: (
-      <img
-        src= objectdetails.thumbUrl
-        alt="My Photo"
-        width={100}
-        height={100}
-      />
-    ),
-  },
-*/
-
-const dataSource = [
-  {
-    key: "1",
-    name: "Mike",
-    address: "New York No. 34 Lake Park",
-    supType: "dresses",
-    rate_grade: 4,
-    description: (
-      <Description
-        text="My name is Mike, I do dresses"
-        instgramLink="https://www.instagram.com/"
-      />
-    ),
-    photo: (
-      <img
-        src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-        alt="My Photo"
-        width={100}
-        height={100}
-      />
-    ),
-  },
-  {
-    key: "5",
-    name: "Mike",
-    address: "New York No. 34 Lake Park",
-    supType: "dresses",
-    rate_grade: 4,
-    description: (
-      <Description
-        text="My name is Mike, I do dresses"
-        instgramLink="https://www.instagram.com/"
-      />
-    ),
-    photo: (
-      <img
-        src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-        alt="My Photo"
-        width={100}
-        height={100}
-      />
-    ),
-  },
-  {
-    key: "6",
-    name: "Mike",
-    address: "New York No. 34 Lake Park",
-    supType: "dresses",
-    rate_grade: 4,
-    description: (
-      <Description
-        text="My name is Mike, I do dresses"
-        instgramLink="https://www.instagram.com/"
-      />
-    ),
-    photo: (
-      <img
-        src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-        alt="My Photo"
-        width={100}
-        height={100}
-      />
-    ),
-  },
-  {
-    key: "2",
-    name: "John",
-    address: "London No. 1 Lake Park",
-    supType: "flowers",
-    rate_grade: 3,
-    description: (
-      <Description
-        text="My name is Mike, I like to wear dresses"
-        instgramLink="https://www.instagram.com/"
-      />
-    ),
-    photo: (
-      <img
-        src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-        alt="My Photo"
-        width={100}
-        height={100}
-      />
-    ),
-  },
-  {
-    key: "3",
-    name: "zohar",
-    address: "New York No. 1 Lake Park",
-    supType: "Dj",
-    rate_grade: 2,
-    description: (
-      <Description
-        text="My name is zohar, I DJ"
-        instgramLink="https://www.instagram.com/"
-      />
-    ),
-    photo: (
-      <img
-        src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-        alt="My Photo"
-        width={100}
-        height={100}
-      />
-    ),
-  },
-  {
-    key: "4",
-    name: "Dean",
-    address: "London No. 34 Lake Park",
-    supType: "Dj",
-    rate_grade: 2.5,
-    description: (
-      <Description
-        text="My name is Dean, I DJ"
-        instgramLink="https://www.instagram.com/"
-      />
-    ),
-    photo: (
-      <img
-        src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-        alt="My Photo"
-        width={100}
-        height={100}
-      />
-    ),
-  },
-];
 
 const cities = [
   {
@@ -422,7 +158,7 @@ const columns = [
     key: "name",
   },
   {
-    title: "supType",
+    title: "Type",
     dataIndex: "supType",
     key: "supType",
     filters: [
@@ -462,11 +198,56 @@ const columns = [
 ];
 
 const SupTable = () => {
+  const [suppliersData, setSuppliersData] = useState(null);
+  const [mapdData, setMappedData] = useState(null);
+
+  
+  useEffect( () => {
+    // Function to execute
+    const DataFromServer =  async () => {
+      try{
+        setSuppliersData(null);
+        const suppliers = await searchObjectsByType("liriella71@gmail.com");
+        const mappedData = suppliers.map((item) => ({
+          name: item.objectDetails.name,
+          address: item.objectDetails.address ? item.objectDetails.address + " " + item.objectDetails.city : item.objectDetails.city,
+          supType: item.alias,
+          rate_grade: 3,
+          description: (
+            <Description
+              text= {item.objectDetails.description}
+              instgramLink= {item.objectDetails.instagram}
+              facebookLink = {item.objectDetails.facebook}
+              mailLink = {item.objectDetails.email}
+            />
+          ),
+          photo: item.objectDetails.photo? (
+            <img
+              src={item.objectDetails.photo.thumbUrl}
+              alt="My Photo"
+              width={100}
+              height={100}
+            />
+          ): ""
+          ,
+        }));
+        setMappedData(mappedData)
+      setSuppliersData(suppliers)
+      } catch (error) {
+          console.log(error);
+        }
+    };
+    // Call the function
+    DataFromServer();
+  }, []); // Empty dependency array to run the effect only once
+
+
+
   return (
     <div>
       {
         <Table
-          dataSource={dataSource}
+          dataSource={mapdData}
           expandable={{
             expandedRowRender: (record) => (
               <p
@@ -507,25 +288,7 @@ const AllClientView =  () => {
     });
   };
 
-  const [resultsTable, setResultsTable] = useState(null);
   
-  useEffect( () => {
-    // Function to execute
-    const DataFromServer =  async () => {
-      // errorMsg("This table provides an example of dummy data for demonstration purposes.");
-      try{
-        setResultsTable(null);
-        const suppliers = await searchObjectsByType("liriella71@gmail.com");
-        console.log(suppliers);
-       //setResultsTable(<JsonTable data={suppliers} />);
-      } catch (error) {
-          console.log(error);
-        }
-    };
-    // Call the function
-    DataFromServer();
-  }, []); // Empty dependency array to run the effect only once
-
 
 return (
   <Layout>
