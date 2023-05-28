@@ -14,7 +14,7 @@ import {
 import { InstagramOutlined, MessageTwoTone } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GetAllSuppliers } from "../api/commandApi";
+import { searchObjectsByType } from "../api/commandApi";
 import { useParams } from 'react-router-dom';
 
 
@@ -187,38 +187,93 @@ const Description = ({ text, instgramLink }) => {
   );
 };
 
-const DataFromServer = async () => {
-  const [messageApi, contextHolder] = message.useMessage();
 
-const [resultsTable, setResultsTable] = useState(null);
-const { email } = useParams();
-const success = (text) => {
-  messageApi.open({
-    type: "success",
-    content: text,
-  });
-};
-  // const handleGetAllUsers = async () => {
-  //   try {
-  //     setResultsTable(null);
-  //     const users = await getAllUsers(email);
-  //     success("Get All Users");
-  //     console.log(users.data);
-  //     setResultsTable(<JsonTable data={users.data} />);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  try{
-    setResultsTable(null);
-    const suppliers = await GetAllSuppliers(email);
-    success("Show suppliers");
-    console.log(suppliers.data);
-   // setResultsTable(<JsonTable data={users.data} />);
-  } catch (error) {
-      console.log(error);
-    }
+
+function generateSubTable(key, value, dataIndex, title) {
+  const subKeys = Object.keys(value);
+  const children = subKeys.map((subKey) => ({
+    title: subKey.toUpperCase(),
+    dataIndex: `${key}.${subKey}`,
+    key: `${key}.${subKey}`,
+    render: (text, record) => record[key][subKey],
+  }));
+  return {
+    title,
+    dataIndex,
+    key,
+    children,
+  };
 }
+
+/*
+the json file:
+ {
+        "objectId": {
+            "superapp": "2023b.zohar.tzabari",
+            "internalObjectId": "7e4f4c94-4eab-432d-a62b-c3fbbeb35c60"
+        },
+        "type": "Supplier",
+        "alias": "FLOWERS",
+        "active": true,
+        "creationTimestamp": "2023-05-26T16:23:06.395+00:00",
+        "location": {
+            "lat": 0.0,
+            "lng": 0.0
+        },
+        "createdBy": {
+            "userId": {
+                "superapp": "2023b.zohar.tzabari",
+                "email": "liri@sdds.sd"
+            }
+        },
+        "objectDetails": {
+            "city": "kfar yona",
+            "alias": "FLOWERS",
+            "phone": "0547901147",
+            "photo": {
+                "uid": "rc-upload-1685117999409-3",
+                "lastModified": 1685118185082,
+                "lastModifiedDate": "2023-05-26T16:23:05.082Z",
+                "name": "Screenshot 2023-02-09 150641.png",
+                "size": 32103,
+                "type": "image/png",
+                "percent": 100,
+                "originFileObj": {
+                    "uid": "rc-upload-1685117999409-3"
+                },
+                "status": "done",
+                "response": "ok",
+                
+            ********** add - name, description,  
+            
+              }
+        }
+    },
+
+*/
+/*
+  {
+    key: "1",
+    name: "Mike", - add something in the front
+    address: object deatils. address+city ,
+    supType: "alias",
+    rate_grade: 4,
+    description: (
+      <Description add in the front  
+        text="My name is Mike, I do dresses"
+        instgramLink=objectdetails.instagram
+      />
+    ),
+    photo: (
+      <img
+        src= objectdetails.thumbUrl
+        alt="My Photo"
+        width={100}
+        height={100}
+      />
+    ),
+  },
+*/
 
 const dataSource = [
   {
@@ -407,7 +462,6 @@ const columns = [
 ];
 
 const SupTable = () => {
- DataFromServer("liriella71@gmail.com");
   return (
     <div>
       {
@@ -427,13 +481,14 @@ const SupTable = () => {
           }}
           columns={columns}
         />
+        
       }
     </div>
   );
 };
 
 
-const AllClientView = () => {
+const AllClientView =  () => {
   const [messageApi, contextHolder] = message.useMessage();
 
 
@@ -452,13 +507,23 @@ const AllClientView = () => {
     });
   };
 
-  useEffect(() => {
+  const [resultsTable, setResultsTable] = useState(null);
+  
+  useEffect( () => {
     // Function to execute
-    const showTempData =  () => {
-      errorMsg("This table provides an example of dummy data for demonstration purposes.");
+    const DataFromServer =  async () => {
+      // errorMsg("This table provides an example of dummy data for demonstration purposes.");
+      try{
+        setResultsTable(null);
+        const suppliers = await searchObjectsByType("liriella71@gmail.com");
+        console.log(suppliers);
+       //setResultsTable(<JsonTable data={suppliers} />);
+      } catch (error) {
+          console.log(error);
+        }
     };
     // Call the function
-    showTempData();
+    DataFromServer();
   }, []); // Empty dependency array to run the effect only once
 
 

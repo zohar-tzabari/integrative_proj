@@ -22,13 +22,13 @@ import axios from "axios";
 //   }
 // }
 
-export async function GetAllSuppliers(email) {
-  console.log(values);
+export async function searchObjectsByType() {
+  //console.log(values);
   let dataToSend = {};
   dataToSend["command"] = "searchObjectsByType";
   try {
-    const response = await axios.post(
-      `http://localhost:8081/superapp/objects/search/byType/Supplier?userEmail=${email}`,
+    const response = await axios.get(
+      `http://localhost:8081/superapp/objects/search/byType/Supplier?userEmail=liriella71@gmail.com`,
       dataToSend,
       {
         headers: {
