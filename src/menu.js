@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { TablePage, GuestForm } from "./pages/tables";
 
-
 const { Header, Content } = Layout;
 
 function NewMenu() {
@@ -56,6 +55,12 @@ function NewMenu() {
             />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
+            <Route
+              path="tables/login"
+              element={
+                <Login type={"MINIAPP_USER"} />
+              }
+            />
           </Routes>
         </Content>
       </Layout>
@@ -63,7 +68,7 @@ function NewMenu() {
   );
 }
 
-function MenuComp() {
+function MenuComp() { 
   const currentMiniApp = useSelector((state) => state.miniApp);
   const [menuToAdd, setMenuToAdd] = useState([]);
 
@@ -93,7 +98,18 @@ function MenuComp() {
           break;
         }
         case "Tables": {
-          setMenuToAdd([]);
+          setMenuToAdd([
+            {
+              key: "/tables/insertGuests",
+              to: "/tables/insertGuests",
+              name: "Tables organizer",
+            },
+            {
+              key: "/tables/login",
+              to: "/tables/login",
+              name: "Tables login",
+            },
+          ]);
           break;
         }
         case "Invention": {

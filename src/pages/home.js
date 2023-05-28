@@ -15,6 +15,7 @@ const buttonData = [
   { appName: "Tables", label: "Tables Mini App" },
   { appName: "Invention", label: "Approve Invention Mini App" },
   { appName: "Admin", label: "Admin" },
+  { appName: "Tables", label: "Tables" },
   { appName: "miniAppDashboard", label: "Mini App Dashboard" },
 ];
 

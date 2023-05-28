@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import {
   Button,
@@ -75,6 +75,12 @@ const GuestFormComponent = () => {
     a: "1",
   });
   const [form] = Form.useForm();
+  const user = useSelector((state) => state.user);
+
+  // Function to clear all messages
+  const clearAllMessages = () => {
+    messageApi.destroy(); // Clears all messages
+  };
 
   const successMsg = (text) => {
     messageApi.open({
@@ -134,6 +140,26 @@ const GuestFormComponent = () => {
       }
     }
   };
+
+  function isObjEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
+  useEffect(() => {
+    // Function to execute
+    const fetchData = () => {
+      console.log(user.user);
+      if (isObjEmpty(user.user)) {
+        errorMsg("need to login first");
+      } else {
+        clearAllMessages();
+      }
+    };
+    // Call the function
+    fetchData();
+  }, [user]); // Empty dependency array to run the effect only once
+
+  if (isObjEmpty(user.user)) return <>{contextHolder}</>;
 
   return (
     <>
@@ -256,7 +282,7 @@ export const TablePage = () => {
     { id: "14", name: "Roy", lastName: "Temp", category: "All ghests" },
   ]);
   const [tablesNum, setTablesNum] = useState(20);
-  const guests_categories = useSelector(state => state.all_catagroies);
+  const guests_categories = useSelector((state) => state.all_catagroies);
   const tables_to_sit = useRef(
     Array.from(Array(tablesNum).keys()).map((i) => `table ${i + 1}`)
   );
