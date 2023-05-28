@@ -72,6 +72,8 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
 };
 
 const LoginForm = ({ setLoginSuccess, navigateUrl }) => {
+  console.log(navigateUrl);
+
   return (
     <Layout>
       <Header
@@ -90,7 +92,7 @@ const LoginForm = ({ setLoginSuccess, navigateUrl }) => {
           }}
         ></Sider>
         <Content>
-          <LoginFormContent setLoginSuccess={setLoginSuccess} />
+          <LoginFormContent setLoginSuccess={setLoginSuccess} navigateUrl={navigateUrl}/>
         </Content>
         <Sider
           style={{
@@ -115,7 +117,7 @@ const Login = ({ urlToPass, type }) => {
   const [sucess, setSuccess] = useState(false);
   console.log(urlToPass);
 
-  return <LoginForm setLoginSuccess={setSuccess} teUrl={urlToPass} naviga />;
+  return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass}  />;
 };
 
 export default Login;

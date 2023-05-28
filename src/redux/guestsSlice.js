@@ -11,8 +11,6 @@ const guestsSlice = createSlice({
   reducers: {
     addGuest: (state, action) => {
       state.all_gusets = [...state.all_gusets, action.payload];
-      console.log(state.all_gusets);
-      console.log(action.payload);
     },
   },
 });

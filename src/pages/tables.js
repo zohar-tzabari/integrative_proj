@@ -127,11 +127,10 @@ const GuestFormComponent = () => {
 
   const onFinish = async (values) => {
     setAllGuests([...allGuests, values]);
-    values["category"] = "All ghests";
+    values["category"] = "All guests";
     values["color"] = categories.find(
       (category) => category.name === values.guestType
     ).color;
-    console.log(values);
     let json_to_server = {};
     json_to_server["type"] = "guest";
     json_to_server["alias"] = `${values["firstName"]}_${values["lastName"]}`;
@@ -139,10 +138,13 @@ const GuestFormComponent = () => {
     json_to_server["createdBy"] = { userId: user.user.userId };
     console.log(json_to_server);
     const registerObject = await CreateNewObject(json_to_server);
+    if(!registerObject)
+    {
+      errorMsg("somthing went wrong");
+      return;
+    }
     console.log(registerObject);
-    CreateNewObject(values);
-    // values["id"] = `${guestId}`;
-    setGuestId(guestId + 1);
+    values["id"] = `${registerObject.objectId.internalObjectId}`;
     dispatch(addGuest(values));
     // Reset the form fields
     form.resetFields();
@@ -235,7 +237,7 @@ const GuestFormComponent = () => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            add new ghest
+            add new guest
           </Button>
         </Form.Item>
       </Form>
@@ -348,7 +350,7 @@ export const TablePage = () => {
           <Sider style={{ background: "#fff" }}>
             <Row>
               <Category
-                category="All ghests"
+                category="All guests"
                 items={items}
                 onDragEnd={onDragEnd}
               />
