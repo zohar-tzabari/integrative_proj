@@ -3,19 +3,12 @@ import {
   Table,
   Button,
   Rate,
-  List,
-  Badge,
-  Avatar,
-  Form,
-  Input,
   Layout
   , message
 } from "antd";
-import { InstagramOutlined,FacebookOutlined,MailOutlined  } from "@ant-design/icons";
+import { InstagramOutlined,MailOutlined,PhoneOutlined,FacebookFilled} from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { searchObjectsByType } from "../api/commandApi";
-import { useParams } from 'react-router-dom';
 
 
 
@@ -99,21 +92,33 @@ const RatingSup = () => {
   );
 };
 
-const Description = ({ text, instgramLink,facebookLink,mailLink }) => {
+const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
   return (
     <div>
       {text}
       <br />
-      <Button icon={<InstagramOutlined />} size="large" href={instgramLink}>
-        {" "}
+      {instgramLink && (
+      <Button
+      icon={<InstagramOutlined />} 
+      size="large" 
+      href={instgramLink}>
       </Button>
-      <Button icon={<FacebookOutlined  />} size="large" href={facebookLink}>
-        {" "}
-      </Button>
+      )}
+      {"   "}
+      {facebookLink && (
+      <Button 
+      icon={<FacebookFilled   />}
+      size="large" 
+      href={facebookLink}>
+      </Button>)}
+      {"   "}
       {console.log(mailLink)}
-      <Button icon={<MailOutlined />} onClick={() => window.open(`mailto:${mailLink}`, '_blank')} size="large" href={mailLink}>
-        {" "}
+      <Button 
+      icon={<MailOutlined />} 
+      onClick={() => window.open(`mailto:${mailLink}`, '_blank')} 
+      size="large" > 
       </Button>
+      <h1><PhoneOutlined />{phoneNum}</h1>
       <RatingSup />
       <PickDate />
     </div>
@@ -121,93 +126,67 @@ const Description = ({ text, instgramLink,facebookLink,mailLink }) => {
 };
 
 
+const columns =
+[
+{
+ title: "Name",
+ dataIndex: "name",
+ key: "name",
+},
+{
+ title: "Type",
+ dataIndex: "supType",
+ key: "supType",
+ filters: [
+   {
+     text: "DJs",
+     value: "DJ",
+   },
+   {
+     text: "flowers",
+     value: "FLOWERS",
+   },
+   {
+     text: "photographers",
+     value: "PHOTOGRAPHER",
+   },
+ ],
+ onFilter: (value, record) => record.supType.indexOf(value) === 0,
+},
+{
+ title: "Address",
+ dataIndex: "address",
+ key: "address",
+ //filters: citiesData,
+ onFilter: (value, record) => record.address.includes(value),
+},
+{
+ title: "Rate grade",
+ dataIndex: "rate_grade",
+ key: "rate_grade",
+ sorter: (a, b) => a.rate_grade - b.rate_grade,
+},
+{
+ title: "Photo",
+ dataIndex: "photo",
+ key: "photo",
+},
+]
 
-function generateSubTable(key, value, dataIndex, title) {
-  const subKeys = Object.keys(value);
-  const children = subKeys.map((subKey) => ({
-    title: subKey.toUpperCase(),
-    dataIndex: `${key}.${subKey}`,
-    key: `${key}.${subKey}`,
-    render: (text, record) => record[key][subKey],
-  }));
-  return {
-    title,
-    dataIndex,
-    key,
-    children,
-  };
-}
 
 
-
-const cities = [
-  {
-    text: "New York",
-    value: "New York",
-  },
-  {
-    text: "London",
-    value: "London",
-  },
-];
-
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Type",
-    dataIndex: "supType",
-    key: "supType",
-    filters: [
-      {
-        text: "Dj",
-        value: "Dj",
-      },
-      {
-        text: "flowers",
-        value: "flowers",
-      },
-      {
-        text: "dresses",
-        value: "dresses",
-      },
-    ],
-    onFilter: (value, record) => record.supType.indexOf(value) === 0,
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
-    filters: cities,
-    onFilter: (value, record) => record.address.includes(value),
-  },
-  {
-    title: "Rate grade",
-    dataIndex: "rate_grade",
-    key: "rate_grade",
-    sorter: (a, b) => a.rate_grade - b.rate_grade,
-  },
-  {
-    title: "Photo",
-    dataIndex: "photo",
-    key: "photo",
-  },
-];
 
 const SupTable = () => {
   const [suppliersData, setSuppliersData] = useState(null);
   const [mapdData, setMappedData] = useState(null);
-
+  const [citiesData, setCities] = useState (null);
   
   useEffect( () => {
     // Function to execute
     const DataFromServer =  async () => {
       try{
         setSuppliersData(null);
-        const suppliers = await searchObjectsByType("liriella71@gmail.com");
+        const suppliers = await searchObjectsByType("liriella71@gmail.com"); // TODO change the hardcode <3
         const mappedData = suppliers.map((item) => ({
           name: item.objectDetails.name,
           address: item.objectDetails.address ? item.objectDetails.address + " " + item.objectDetails.city : item.objectDetails.city,
@@ -219,6 +198,7 @@ const SupTable = () => {
               instgramLink= {item.objectDetails.instagram}
               facebookLink = {item.objectDetails.facebook}
               mailLink = {item.objectDetails.email}
+              phoneNum = {item.objectDetails.phone}
             />
           ),
           photo: item.objectDetails.photo? (
@@ -231,7 +211,10 @@ const SupTable = () => {
           ): ""
           ,
         }));
-        setMappedData(mappedData)
+      const cityData = suppliers.map((item) => ({
+        name:item.objectDetails.city
+      }));
+      setMappedData(mappedData)
       setSuppliersData(suppliers)
       } catch (error) {
           console.log(error);
