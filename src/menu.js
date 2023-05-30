@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { TablePage, GuestForm } from "./pages/tables";
 import SupplierPage from "./pages/supplierPage";
+import CustomerRegistrationForm from "./pages/registerCustomer";
 
 const { Header, Content } = Layout;
 
@@ -25,6 +26,15 @@ function NewMenu() {
           <Routes>
             <Route index element={<Home />} />
             <Route path="AllClientView" element={<AllClientView />} />
+            <Route
+              path="client/login"
+              element={<Login type={"MINIAPP_USER"} />}
+            />
+            <Route
+              path="client/register"
+              element={<CustomerRegistrationForm userRole={"MINIAPP_USER"} />}
+            />
+
             <Route path="*" element={"nothing to see"} />
             <Route
               path="BuisnessRegistrationForm"
@@ -106,6 +116,16 @@ function MenuComp() {
               key: "/AllClientView",
               to: "/AllClientView",
               name: "All Client View",
+            },
+            {
+              key: "/client/register",
+              to: "/client/register",
+              name: "Customer register",
+            },
+            {
+              key: "/client/login",
+              to: "/client/login",
+              name: "Customer login",
             },
           ]);
           break;
