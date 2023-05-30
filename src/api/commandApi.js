@@ -1,14 +1,13 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-export async function GetAllSuppliers(values) {
-  console.log(values);
+
+export async function searchObjectsByType(email) {
   let dataToSend = {};
-  const miniApp = useSelector((state) => state.miniApp);
-  dataToSend["command"] = "getAllSuppliers";
+  dataToSend["command"] = "searchObjectsByType";
   try {
-    const response = await axios.post(
-      `http://localhost:8081/superapp/miniapp/${miniApp.miniAppName}`,
+    const response = await axios.get(
+      `http://localhost:8081/superapp/objects/search/byType/Supplier?userEmail=${email}`,
       dataToSend,
       {
         headers: {
@@ -23,6 +22,7 @@ export async function GetAllSuppliers(values) {
     return null;
   }
 }
+
 
 export async function GetAllGuests(email) {
   const miniApp = useSelector((state) => state.miniApp);

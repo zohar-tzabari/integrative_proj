@@ -108,6 +108,7 @@ const RegistrationFormContent = () => {
     values["photo"] = supplierPhoto.current;
     json_to_server["objectDetails"] = values;
     json_to_server["createdBy"] ={"userId": user.userId};
+
     console.log(json_to_server);
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
@@ -125,16 +126,10 @@ const RegistrationFormContent = () => {
         {contextHolder}
         <Content>
           <Form onFinish={onFinish}>
-            <Form.Item
-              name="email"
-              label="Second Email"
-              rules={[
-                { required: false },
-                {
-                  type: "email",
-                  message: "optional for second email address!",
-                },
-              ]}
+          <Form.Item
+              name="name"
+              label="Name"
+              rules={[{ required: true, message: "Please input your name!" }]}
             >
               <Input />
             </Form.Item>
@@ -183,12 +178,20 @@ const RegistrationFormContent = () => {
             >
               <Input />
             </Form.Item>
+            <Form.Item
+              name="description"
+              label="Description"
+  
+            >
+          <Input.TextArea placeholder="Optional" rows = {3}/>
+            </Form.Item>
             <UploadFile supplierPhoto={supplierPhoto} />
             <Form.Item>
               <Button type="primary" htmlType="submit">
                 Register
               </Button>
             </Form.Item>
+           
           </Form>
           {/* TODO: dropdown of supplier type */}
         </Content>
