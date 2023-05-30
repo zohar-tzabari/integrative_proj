@@ -19,53 +19,14 @@ import { useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
 
-const PickBirthDate = () => {
-  const [date, setDate] = useState(null);
-  const [busyDates, setBusyDates] = useState([
-    "2023-06-15",
-    "2023-03-23",
-    "2023-04-02",
-  ]);
 
-  const disabledDate = (current) => {
-    const formattedCurrent = current.format("YYYY-MM-DD");
-    const today = new Date(); // get current date
-    const currentDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    ); // remove time part of current date
-    const selectedDate = new Date(
-      2005,
-      12,
-      31
-    ); // remove time part of selected date
-    return (
-      busyDates.includes(formattedCurrent) &&
-      selectedDate.getTime() >currentDate.getTime()
-    ); // compare dates
-  };
-
-  return (
-    <DatePicker
-      bordered={false}
-      value={date}
-      onChange={setDate}
-      disabledDate={disabledDate}
-    />
-  );
-};
+const RegistrationFormContent = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+  const navigate = useNavigate();
+  const {user} = useSelector((state) => state.user);
 
 
-const PickDate = () => {
-  const [date, setDate] = useState(null);
-  const [busyDates, setBusyDates] = useState([
-    "2023-06-15",
-    "2023-03-23",
-    "2023-04-02",
-  ]);
-
-  const disabledDate = (current) => {
+  const disabledEventDate = (current) => {
     const formattedCurrent = current.format("YYYY-MM-DD");
     const today = new Date(); // get current date
     const currentDate = new Date(
@@ -79,29 +40,11 @@ const PickDate = () => {
       current.date()
     ); // remove time part of selected date
     return (
-      busyDates.includes(formattedCurrent) ||
       selectedDate.getTime() < currentDate.getTime()
     ); // compare dates
   };
-
-  return (
-    <DatePicker
-      bordered={false}
-      value={date}
-      onChange={setDate}
-      disabledDate={disabledDate}
-    />
-  );
-};
-
-const RegistrationFormContent = () => {
-  const [messageApi, contextHolder] = message.useMessage();
-  const supplierPhoto = useRef(null);
-  const navigate = useNavigate();
-  const {user} = useSelector((state) => state.user);
-
-  // const [role, setRole] = useState(MINIAPPUSER);
-
+  
+ 
   const successMsg = (text) => {
     messageApi.open({
       type: "success",
@@ -121,6 +64,7 @@ const RegistrationFormContent = () => {
 
   const onFinish = async (values) => {
     //todo: change the role to buissness
+
     let json_to_server = {};
     json_to_server["type"] = "customer";
     json_to_server["alias"] = values["name"];
@@ -128,11 +72,12 @@ const RegistrationFormContent = () => {
     json_to_server["createdBy"] ={"userId": user.userId};
 
     console.log(json_to_server);
+
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
       successMsg("Registration successful!");
       await timeout(2000); //for 1 sec delay
-      navigate("/");
+      // navigate("/");
     } else {
       errorMsg("somthing went wrong");
     }
@@ -162,7 +107,7 @@ const RegistrationFormContent = () => {
             name="birth date"
             label="Birthday"
               >
-              <PickBirthDate/>
+              <DatePicker/>
             </Form.Item>
 
             <Form.Item
@@ -177,9 +122,9 @@ const RegistrationFormContent = () => {
             <Form.Item 
             name="event date"
             label="Date of event"
-            // rules={[{ required: true, message: "Please input date!" }]}
+            rules={[{ required: true, message: "Please input date!" }]}
             >
-              <PickDate/>
+              <DatePicker  disabledDate= {disabledEventDate}/>
             </Form.Item>
 
             <Form.Item
@@ -205,7 +150,7 @@ const RegistrationFormContent = () => {
   );
 };
 
-const BuisnessRegistration = () => {
+const CustomerRegistration = () => {
   return (
     <Layout>
       <Header
@@ -272,7 +217,7 @@ const CustomerRegistrationForm = () => {
     },
     {
       title: "Add buisnedd data",
-      content: <BuisnessRegistration />,
+      content: <CustomerRegistration />,
     },
   ];
 
