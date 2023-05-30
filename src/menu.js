@@ -54,17 +54,16 @@ function NewMenu() {
               path="BuisnessRegistrationForm"
               element={<BuisnessRegistrationForm />}
             />
+            <Route path="supplierPage" element={<SupplierPage />} />
             <Route
-              path="supplierPage"
-              element={<SupplierPage />}
+              path="supplier/login"
+              element={<Login type={"MINIAPP_USER"} role={"Supplier"}/>}
             />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
             <Route
               path="tables/login"
-              element={
-                <Login type={"MINIAPP_USER"} />
-              }
+              element={<Login type={"MINIAPP_USER"} />}
             />
           </Routes>
         </Content>
@@ -73,7 +72,7 @@ function NewMenu() {
   );
 }
 
-function MenuComp() { 
+function MenuComp() {
   const currentMiniApp = useSelector((state) => state.miniApp);
   const [menuToAdd, setMenuToAdd] = useState([]);
 
@@ -92,6 +91,11 @@ function MenuComp() {
               key: "/supplierPage",
               to: "/supplierPage",
               name: "Buisness page",
+            },
+            {
+              key: "/supplier/login",
+              to: "/supplier/login",
+              name: "login",
             },
           ]);
           break;
