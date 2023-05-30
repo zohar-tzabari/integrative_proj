@@ -10,6 +10,7 @@ import RegistrationForm from "./sharedComponents/RegisterUser";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { TablePage, GuestForm } from "./pages/tables";
+import SupplierPage from "./pages/supplierPage";
 
 const { Header, Content } = Layout;
 
@@ -53,6 +54,10 @@ function NewMenu() {
               path="BuisnessRegistrationForm"
               element={<BuisnessRegistrationForm />}
             />
+            <Route
+              path="supplierPage"
+              element={<SupplierPage />}
+            />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
             <Route
@@ -82,6 +87,11 @@ function MenuComp() {
               key: "/BuisnessRegistrationForm",
               to: "/BuisnessRegistrationForm",
               name: "Buisness Registration Form",
+            },
+            {
+              key: "/supplierPage",
+              to: "/supplierPage",
+              name: "Buisness page",
             },
           ]);
           break;
