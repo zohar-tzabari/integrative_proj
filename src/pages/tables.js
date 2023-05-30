@@ -11,7 +11,9 @@ import {
   Radio,
   Modal,
   message,
+  Tabs,
 } from "antd";
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { SketchPicker } from "react-color";
 import { JsonTable } from "../sharedComponents/JsonTable";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -20,8 +22,10 @@ import { addGuest } from "../redux/guestsSlice";
 import { addCatagory } from "../redux/catagorySlice";
 import { CreateNewObject } from "../api/objectsApi";
 import { GetAllGuests } from "../api/commandApi";
+import Login from "../sharedComponents/loginUser";
 
 const { Header, Content, Footer, Sider } = Layout;
+const { TabPane } = Tabs;
 
 function CardComponent({ item }) {
   return (
@@ -191,7 +195,18 @@ const GuestFormComponent = () => {
     fetchData();
   }, [user]); // Empty dependency array to run the effect only once
 
-  if (isObjEmpty(user.user)) return <>{contextHolder}</>;
+  if (isObjEmpty(user.user))
+  return (
+    <Tabs>
+      <TabPane tab="Register" key="register">
+        {/* Contents of Register tab */}
+      </TabPane>
+      <TabPane tab="Login" key="login">
+        <Login type={"MINIAPP_USER"} />
+      </TabPane>
+    </Tabs>
+  );
+
 
   return (
     <>
@@ -289,7 +304,6 @@ export const GuestForm = () => {
           </Layout>
           <Sider style={{ background: "#fff" }}></Sider>
         </Layout>
-        <Footer></Footer>
       </Layout>
     </Layout>
   );

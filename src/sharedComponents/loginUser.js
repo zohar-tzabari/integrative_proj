@@ -68,7 +68,6 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
         backgroundImage: "url(https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        minHeight: "80vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -76,14 +75,13 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
     >
       <div
         style={{
-          backgroundColor: "white",
           textAlign: "center",
         }}
       >
         <img
           src="https://icon-library.com/images/icon-wedding/icon-wedding-11.jpg"
           alt="Logo"
-          style={{ width: "100px", height: "100px" }}
+          style={{ width: "10vh", height: "10vh" }}
         />
         <h2>Login</h2>
         {contextHolder}

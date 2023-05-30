@@ -61,10 +61,6 @@ function NewMenu() {
             />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
-            <Route
-              path="tables/login"
-              element={<Login type={"MINIAPP_USER"} />}
-            />
           </Routes>
         </Content>
       </Layout>
@@ -116,11 +112,6 @@ function MenuComp() {
               key: "/tables/insertGuests",
               to: "/tables/insertGuests",
               name: "Tables organizer",
-            },
-            {
-              key: "/tables/login",
-              to: "/tables/login",
-              name: "Tables login",
             },
           ]);
           break;
