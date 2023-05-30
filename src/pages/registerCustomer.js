@@ -4,7 +4,7 @@ import {
   Button,
   Layout,
   message,
-  Upload,
+  DatePicker,
   Steps,
   Select,
 } from "antd";
@@ -19,52 +19,78 @@ import { useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
 
-const UploadFile = ({ supplierPhoto }) => {
-  const [fileList, setFileList] = useState([]);
+const PickBirthDate = () => {
+  const [date, setDate] = useState(null);
+  const [busyDates, setBusyDates] = useState([
+    "2023-06-15",
+    "2023-03-23",
+    "2023-04-02",
+  ]);
 
-  useEffect(() => {
-    // console.log(fileList);
-    if (fileList.length > 0) {
-      supplierPhoto.current = fileList[0];
-    }
-  }, [fileList[0]]); // Only re-run the effect if count changes
-
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+  const disabledDate = (current) => {
+    const formattedCurrent = current.format("YYYY-MM-DD");
+    const today = new Date(); // get current date
+    const currentDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    ); // remove time part of current date
+    const selectedDate = new Date(
+      2005,
+      12,
+      31
+    ); // remove time part of selected date
+    return (
+      busyDates.includes(formattedCurrent) &&
+      selectedDate.getTime() >currentDate.getTime()
+    ); // compare dates
   };
 
-  const dummyRequest = async ({ file, onSuccess }) => {
-    setTimeout(() => {
-      onSuccess("ok");
-    }, 0);
-  };
-
-  const onPreview = async (file) => {
-    let src = file.url;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
   return (
-    <ImgCrop rotationSlider>
-      <Upload
-        listType="picture-card"
-        fileList={fileList}
-        onChange={onChange}
-        onPreview={onPreview}
-        customRequest={dummyRequest}
-      >
-        {fileList.length < 1 && "+ Upload buisness photo"}
-      </Upload>
-    </ImgCrop>
+    <DatePicker
+      bordered={false}
+      value={date}
+      onChange={setDate}
+      disabledDate={disabledDate}
+    />
+  );
+};
+
+
+const PickDate = () => {
+  const [date, setDate] = useState(null);
+  const [busyDates, setBusyDates] = useState([
+    "2023-06-15",
+    "2023-03-23",
+    "2023-04-02",
+  ]);
+
+  const disabledDate = (current) => {
+    const formattedCurrent = current.format("YYYY-MM-DD");
+    const today = new Date(); // get current date
+    const currentDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    ); // remove time part of current date
+    const selectedDate = new Date(
+      current.year(),
+      current.month(),
+      current.date()
+    ); // remove time part of selected date
+    return (
+      busyDates.includes(formattedCurrent) ||
+      selectedDate.getTime() < currentDate.getTime()
+    ); // compare dates
+  };
+
+  return (
+    <DatePicker
+      bordered={false}
+      value={date}
+      onChange={setDate}
+      disabledDate={disabledDate}
+    />
   );
 };
 
@@ -96,9 +122,8 @@ const RegistrationFormContent = () => {
   const onFinish = async (values) => {
     //todo: change the role to buissness
     let json_to_server = {};
-    json_to_server["type"] = "Client";
-    json_to_server["alias"] = values["alias"];
-    values["photo"] = supplierPhoto.current;
+    json_to_server["type"] = "customer";
+    json_to_server["alias"] = values["name"];
     json_to_server["objectDetails"] = values;
     json_to_server["createdBy"] ={"userId": user.userId};
 
@@ -126,33 +151,35 @@ const RegistrationFormContent = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item name="instagram" label="Instagram">
+            
+            <Form.Item 
+            name="partner name"
+            label="Name of partner">
               <Input placeholder="Optional" />
             </Form.Item>
 
-            <Form.Item name="facebook" label="Facebook">
-              <Input placeholder="Optional" />
+            <Form.Item 
+            name="birth date"
+            label="Birthday"
+              >
+              <PickBirthDate/>
             </Form.Item>
 
             <Form.Item
               name="city"
-              label="City"
-              rules={[{ required: true, message: "Please input your city!" }]}
+              label="City of the event"
+              rules={[{ required: true, message: "Please input city!" }]}
             >
               <Input />
             </Form.Item>
 
-            <Form.Item
-              name="alias"
-              label="supplier type (alias)"
-              rules={[
-                { required: true, message: "Please select a supplier type!" },
-              ]}
+           
+            <Form.Item 
+            name="event date"
+            label="Date of event"
+            // rules={[{ required: true, message: "Please input date!" }]}
             >
-            </Form.Item>
-
-            <Form.Item name="address" label="Address">
-              <Input placeholder="Optional" />
+              <PickDate/>
             </Form.Item>
 
             <Form.Item
@@ -164,14 +191,7 @@ const RegistrationFormContent = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              name="description"
-              label="Description"
-  
-            >
-          <Input.TextArea placeholder="Optional" rows = {3}/>
-            </Form.Item>
-            <UploadFile supplierPhoto={supplierPhoto} />
+
             <Form.Item>
               <Button type="primary" htmlType="submit">
                 Register
@@ -179,7 +199,6 @@ const RegistrationFormContent = () => {
             </Form.Item>
            
           </Form>
-          {/* TODO: dropdown of supplier type */}
         </Content>
       </Layout>
     </>
