@@ -10,6 +10,7 @@ import RegistrationForm from "./sharedComponents/RegisterUser";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { TablePage, GuestForm } from "./pages/tables";
+import SupplierPage from "./pages/supplierPage";
 
 const { Header, Content } = Layout;
 
@@ -53,13 +54,16 @@ function NewMenu() {
               path="BuisnessRegistrationForm"
               element={<BuisnessRegistrationForm />}
             />
+            <Route path="supplierPage" element={<SupplierPage />} />
+            <Route
+              path="supplier/login"
+              element={<Login type={"MINIAPP_USER"} role={"Supplier"}/>}
+            />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
             <Route
               path="tables/login"
-              element={
-                <Login type={"MINIAPP_USER"} />
-              }
+              element={<Login type={"MINIAPP_USER"} />}
             />
           </Routes>
         </Content>
@@ -68,7 +72,7 @@ function NewMenu() {
   );
 }
 
-function MenuComp() { 
+function MenuComp() {
   const currentMiniApp = useSelector((state) => state.miniApp);
   const [menuToAdd, setMenuToAdd] = useState([]);
 
@@ -82,6 +86,16 @@ function MenuComp() {
               key: "/BuisnessRegistrationForm",
               to: "/BuisnessRegistrationForm",
               name: "Buisness Registration Form",
+            },
+            {
+              key: "/supplierPage",
+              to: "/supplierPage",
+              name: "Buisness page",
+            },
+            {
+              key: "/supplier/login",
+              to: "/supplier/login",
+              name: "login",
             },
           ]);
           break;
