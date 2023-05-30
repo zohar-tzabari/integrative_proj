@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Switch,Layout, DatePicker, Table, Button, List } from "antd";
+import {
+  Switch,
+  Layout,
+  DatePicker,
+  Table,
+  Button,
+  List,
+  Popconfirm,
+} from "antd";
 import { GetObjectByType } from "../api/objectsApi";
 import { useSelector } from "react-redux";
 
@@ -16,22 +24,22 @@ const SupplierPage = () => {
     { id: 2, name: "Client B", date: "2023-05-27", approval: "No" },
     { id: 3, name: "Client C", date: "2023-05-28", approval: "No" },
   ]);
-  const [supplierObject,setSupplierObject] = useState();
+  const [supplierObject, setSupplierObject] = useState();
   const user = useSelector((state) => state.user);
-
 
   useEffect(() => {
     // Function to execute
     const fetchData = async () => {
-      const supObject = await GetObjectByType("Supplier",user.user.userId.email);
+      const supObject = await GetObjectByType(
+        "Supplier",
+        user.user.userId.email
+      );
       setSupplierObject(supObject);
       console.log(supObject);
     };
     // Call the function
     fetchData();
   }, []); // Empty dependency array to run the effect only once
-
-
 
   const disabledDate = (current) => {
     // Disable dates that are already busy
@@ -53,7 +61,7 @@ const SupplierPage = () => {
   const handleApprovalChange = (clientId, checked) => {
     const updatedClients = latestClients.map((client) => {
       if (client.id === clientId) {
-        return { ...client, approval: checked ? 'Yes' : 'No' };
+        return { ...client, approval: checked ? "Yes" : "No" };
       }
       return client;
     });
@@ -62,16 +70,17 @@ const SupplierPage = () => {
   };
 
   const columns = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
-    { title: 'Client Name', dataIndex: 'name', key: 'name' },
-    { title: 'Request Date', dataIndex: 'date', key: 'date' },
+    { title: "ID", dataIndex: "id", key: "id" },
+    { title: "Client Name", dataIndex: "name", key: "name" },
+    { title: "Request Date", dataIndex: "date", key: "date" },
     {
-      title: 'Approval',
-      dataIndex: 'approval',
-      key: 'approval',
+      title: "Approval",
+      dataIndex: "approval",
+      key: "approval",
       render: (_, record) => (
+        
         <Switch
-          checked={record.approval === 'Yes'}
+          checked={record.approval === "Yes"}
           onChange={(checked) => handleApprovalChange(record.id, checked)}
         />
       ),
@@ -89,16 +98,21 @@ const SupplierPage = () => {
         <Content>
           <h2>Select Busy Dates</h2>
           <DatePicker disabledDate={disabledDate} onChange={handleDateChange} />
-
           <h2>Busy Dates</h2>
           <List
             dataSource={busyDates}
             renderItem={(date) => (
               <List.Item
                 actions={[
-                  <Button onClick={() => handleRemoveDate(date)}>
-                    Delete
-                  </Button>,
+                  <Popconfirm
+                    title="Delete the date"
+                    description="Are you sure to delete this date?"
+                    onConfirm={() => handleRemoveDate(date)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button>Delete</Button>
+                  </Popconfirm>,
                 ]}
               >
                 {date}
