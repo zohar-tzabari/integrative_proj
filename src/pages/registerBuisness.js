@@ -133,20 +133,6 @@ const RegistrationFormContent = () => {
             >
               <Input />
             </Form.Item>
-
-            <Form.Item
-              name="email"
-              label="Second Email"
-              rules={[
-                { required: false },
-                {
-                  type: "email",
-                  message: "optional for second email address!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
             <Form.Item name="instagram" label="Instagram">
               <Input placeholder="Optional" />
             </Form.Item>

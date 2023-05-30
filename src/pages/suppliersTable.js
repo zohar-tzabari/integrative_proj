@@ -20,7 +20,7 @@ const { Header, Content, Footer, Sider } = Layout;
 const PickDate = () => {
   const [date, setDate] = useState(null);
   const [busyDates, setBusyDates] = useState([
-    "2023-03-15",
+    "2023-06-15",
     "2023-03-23",
     "2023-04-02",
   ]);
@@ -54,43 +54,43 @@ const PickDate = () => {
   );
 };
 
-const RatingSup = () => {
-  const [price, setPrice] = useState(0);
-  const [quality, setQuality] = useState(0);
-  const [services, setServices] = useState(0);
+// const RatingSup = () => {
+//   const [price, setPrice] = useState(0);
+//   const [quality, setQuality] = useState(0);
+//   const [services, setServices] = useState(0);
 
-  return (
-    <div>
-      <br />
-      price:
-      <span>
-        <Rate tooltips={desc} onChange={setPrice} value={price} />
-        {price ? <span className="ant-rate-text">{desc[price - 1]}</span> : ""}
-      </span>
-      <br />
-      quality:
-      <span>
-        <Rate tooltips={desc} onChange={setQuality} value={quality} />
-        {quality ? (
-          <span className="ant-rate-text">{desc[quality - 1]}</span>
-        ) : (
-          ""
-        )}
-      </span>
-      <br />
-      services:
-      <span>
-        <Rate tooltips={desc} onChange={setServices} value={services} />
-        {services ? (
-          <span className="ant-rate-text">{desc[services - 1]}</span>
-        ) : (
-          ""
-        )}
-      </span>
-      <br />
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <br />
+//       price:
+//       <span>
+//         <Rate tooltips={desc} onChange={setPrice} value={price} />
+//         {price ? <span className="ant-rate-text">{desc[price - 1]}</span> : ""}
+//       </span>
+//       <br />
+//       quality:
+//       <span>
+//         <Rate tooltips={desc} onChange={setQuality} value={quality} />
+//         {quality ? (
+//           <span className="ant-rate-text">{desc[quality - 1]}</span>
+//         ) : (
+//           ""
+//         )}
+//       </span>
+//       <br />
+//       services:
+//       <span>
+//         <Rate tooltips={desc} onChange={setServices} value={services} />
+//         {services ? (
+//           <span className="ant-rate-text">{desc[services - 1]}</span>
+//         ) : (
+//           ""
+//         )}
+//       </span>
+//       <br />
+//     </div>
+//   );
+// };
 
 const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
   return (
@@ -119,67 +119,37 @@ const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
       size="large" > 
       </Button>
       <h1><PhoneOutlined />{phoneNum}</h1>
-      <RatingSup />
-      <PickDate />
+      {/* <RatingSup /> */}
+      <div>
+        <PickDate />
+        <Button onClick = {DateReserve}> Reserve date </Button>
+        </div>
     </div>
   );
 };
 
+function DateReserve () {
 
-const columns =
-[
-{
- title: "Name",
- dataIndex: "name",
- key: "name",
-},
-{
- title: "Type",
- dataIndex: "supType",
- key: "supType",
- filters: [
-   {
-     text: "DJs",
-     value: "DJ",
-   },
-   {
-     text: "flowers",
-     value: "FLOWERS",
-   },
-   {
-     text: "photographers",
-     value: "PHOTOGRAPHER",
-   },
- ],
- onFilter: (value, record) => record.supType.indexOf(value) === 0,
-},
-{
- title: "Address",
- dataIndex: "address",
- key: "address",
- //filters: citiesData,
- onFilter: (value, record) => record.address.includes(value),
-},
-{
- title: "Rate grade",
- dataIndex: "rate_grade",
- key: "rate_grade",
- sorter: (a, b) => a.rate_grade - b.rate_grade,
-},
-{
- title: "Photo",
- dataIndex: "photo",
- key: "photo",
-},
-]
+}
 
+function extractUniqueCities(data) {
+  const uniqueCities = [];
+  if (data && Array.isArray(data)) {
+    data.forEach(item => {
+      const city = item.objectDetails.city;
 
-
+      if (city && !uniqueCities.includes(city)) {
+        uniqueCities.push(city);
+     }
+    
+  });
+  }
+  return uniqueCities;
+}
 
 const SupTable = () => {
   const [suppliersData, setSuppliersData] = useState(null);
-  const [mapdData, setMappedData] = useState(null);
-  const [citiesData, setCities] = useState (null);
+  const [mapdData, setMappedData] = useState(null);  
   
   useEffect( () => {
     // Function to execute
@@ -211,9 +181,9 @@ const SupTable = () => {
           ): ""
           ,
         }));
-      const cityData = suppliers.map((item) => ({
-        name:item.objectDetails.city
-      }));
+      // const cityData = suppliers.map((item) => ({
+      //   name:item.objectDetails.city
+      // }));
       setMappedData(mappedData)
       setSuppliersData(suppliers)
       } catch (error) {
@@ -224,8 +194,58 @@ const SupTable = () => {
     DataFromServer();
   }, []); // Empty dependency array to run the effect only once
 
+  const uniqueCities = extractUniqueCities(suppliersData);
 
-
+  const columns =
+  [
+  {
+   title: "Name",
+   dataIndex: "name",
+   key: "name",
+  },
+  {
+   title: "Type",
+   dataIndex: "supType",
+   key: "supType",
+   filters: [
+     {
+       text: "DJs",
+       value: "DJ",
+     },
+     {
+       text: "flowers",
+       value: "FLOWERS",
+     },
+     {
+       text: "photographers",
+       value: "PHOTOGRAPHER",
+     },
+   ],
+   onFilter: (value, record) => record.supType.indexOf(value) === 0,
+  },
+  {
+   title: "Address",
+   dataIndex: "address",
+   key: "address",
+   filters: uniqueCities.map(city => ({
+    text: city,
+    value: city,
+  })),
+  onFilter: (value, record) => record.address.includes(value),
+  },
+  {
+   title: "Rate grade",
+   dataIndex: "rate_grade",
+   key: "rate_grade",
+   sorter: (a, b) => a.rate_grade - b.rate_grade,
+  },
+  {
+   title: "Photo",
+   dataIndex: "photo",
+   key: "photo",
+  },
+  ]
+  
   return (
     <div>
       {
@@ -241,7 +261,7 @@ const SupTable = () => {
                 {record.description}
               </p>
             ),
-            rowExpandable: (record) => record.name !== "Not Expandable",
+            rowExpandable: (record) => record.name !== "Not Expandable", 
           }}
           columns={columns}
         />
