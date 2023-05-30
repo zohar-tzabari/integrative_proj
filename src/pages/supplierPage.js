@@ -10,6 +10,10 @@ import {
 } from "antd";
 import { GetObjectByType } from "../api/objectsApi";
 import { useSelector } from "react-redux";
+import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/userSlice";
+import { searchObjectsByUserEmail } from "../api/commandApi";
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -25,19 +29,29 @@ const SupplierPage = () => {
     { id: 3, name: "Client C", date: "2023-05-28", approval: "No" },
   ]);
   const [supplierObject, setSupplierObject] = useState();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const objectM = useSelector((state) => state.objectManager);
+  const miniApp = useSelector((state) => state.miniApp);
 
   useEffect(() => {
     // Function to execute
     const fetchData = async () => {
-      const supObject = await GetObjectByType(
-        "Supplier",
-        user.user.userId.email
-      );
-      setSupplierObject(supObject);
-      console.log(supObject);
+      try {
+        await ChangeToMiniAppUser();
+        const zohar = await searchObjectsByUserEmail(
+          "suppliers",
+          objectM.objectManager.objectId,
+          user.user.userId.email,
+          user.user.userId,
+        );
+        console.log(zohar);
+        await ChangeToSuperAppUser();
+      } catch (error) {
+        await ChangeToSuperAppUser();
+      }
     };
-    // Call the function
+
     fetchData();
   }, []); // Empty dependency array to run the effect only once
 
@@ -78,7 +92,6 @@ const SupplierPage = () => {
       dataIndex: "approval",
       key: "approval",
       render: (_, record) => (
-        
         <Switch
           checked={record.approval === "Yes"}
           onChange={(checked) => handleApprovalChange(record.id, checked)}
@@ -89,6 +102,26 @@ const SupplierPage = () => {
 
   const handleRemoveDate = (dateToRemove) => {
     setBusyDates(busyDates.filter((date) => date !== dateToRemove));
+  };
+
+  const ChangeToMiniAppUser = async () => {
+    let tempUser = JSON.parse(JSON.stringify(user));
+    tempUser["user"]["role"] = "MINIAPP_USER";
+    await UserUpdateApi(user.user.userId.email, tempUser.user);
+    const newUser = await UserLoginApi(user.user.userId.email);
+    if (newUser) {
+      dispatch(setUser(newUser));
+    }
+  };
+
+  const ChangeToSuperAppUser = async () => {
+    let tempUser = JSON.parse(JSON.stringify(user));
+    tempUser["user"]["role"] = "SUPERAPP_USER";
+    await UserUpdateApi(user.user.userId.email, tempUser.user);
+    const newUser = await UserLoginApi(user.user.userId.email);
+    if (newUser) {
+      dispatch(setUser(newUser));
+    }
   };
 
   return (
@@ -119,7 +152,6 @@ const SupplierPage = () => {
               </List.Item>
             )}
           />
-
           <h2>Customers Requests Table</h2>
           <Table dataSource={latestClients} columns={columns} />
         </Content>

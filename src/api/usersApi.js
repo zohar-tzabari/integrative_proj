@@ -21,6 +21,26 @@ export async function ClientRegisterApi(values) {
   }
 }
 
+export async function UserUpdateApi(email,values) {
+  try {
+    const response = await axios.put(
+      `http://localhost:8081/superapp/users/${SUPERAPP}/${email}`,
+      values,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error.response.data.message;
+  }
+}
+
+
 // export async function ChangeUserRoleApi(loginEmail) {
 //   try {
 //     const response = await axios.get(

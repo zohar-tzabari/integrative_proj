@@ -23,21 +23,45 @@ export async function searchObjectsByType(email) {
   }
 }
 
+export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId) {
+  let dataToSend = {};
+  dataToSend["command"] = "getObjectByMail";
+  dataToSend['invokedBy'] = {userId};
+  dataToSend["targetObject"] = {objectId};
+  dataToSend["commandAttributes"] = {"mail": mail};
+  console.log(dataToSend);
 
-export async function GetAllGuests(email) {
-  const miniApp = useSelector((state) => state.miniApp);
-  const objectM = useSelector((state) => state.objectManager);
-  const user = useSelector((state) => state.user);
+  try {
+    const response = await axios.get(
+      `http://localhost:8081/superapp/miniapp/${miniAppName}`,
+      dataToSend,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+
+
+export async function GetAllGuests(email,objectM,miniAppName) {
 
   let dataToSend = {};
   dataToSend["command"] = "getAllGuestsOfUser";
-  dataToSend["commandAttributes"] = { email: user.email };
+  dataToSend["commandAttributes"] = { email: email };
   dataToSend["targetObject"] = objectM;
-  dataToSend["invokedBy"] = user;
+  // dataToSend["invokedBy"] = user;
   console.log(dataToSend);
   try {
     const response = await axios.post(
-      `http://localhost:8081/superapp/miniapp/${miniApp.miniAppName}`,
+      `http://localhost:8081/superapp/miniapp/${miniAppName}`,
       dataToSend,
       {
         headers: {
