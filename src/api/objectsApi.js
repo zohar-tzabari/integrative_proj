@@ -1,4 +1,5 @@
 import axios from "axios";
+const SUPERAPP = "2023b.zohar.tzabari";
 
 export async function CreateNewObject(values) {
   try {
@@ -19,13 +20,34 @@ export async function CreateNewObject(values) {
   }
 }
 
+export async function BindObject(internalObjectId,userEmail,childernObject) {
+  try {
+    const response = await axios.post(
+      `http://localhost:8081/superapp/objects/${SUPERAPP}/${internalObjectId}/children?userEmail=${userEmail}`,
+      childernObject,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+
+
 export async function GetObjectByType(type,userEmail) {
   try {
     const response = await axios.get(
       `http://localhost:8081/superapp/objects/search/byType/${type}`,
       {
         params: {
-          userSuperapp: "2023b.zohar.tzabari",
+          userSuperapp: SUPERAPP,
           userEmail: userEmail,
         },
       }
@@ -44,7 +66,7 @@ export async function GetObjectByAlias(alias,userEmail) {
       `http://localhost:8081/superapp/objects/search/byAlias/${alias}`,
       {
         params: {
-          userSuperapp: "2023b.zohar.tzabari",
+          userSuperapp: SUPERAPP,
           userEmail: userEmail,
         },
       }
@@ -54,4 +76,4 @@ export async function GetObjectByAlias(alias,userEmail) {
     console.error(error);
     return null;
   }
-}
+}                                                                                                 
