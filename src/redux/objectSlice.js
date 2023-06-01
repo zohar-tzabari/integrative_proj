@@ -9,7 +9,7 @@ const objecctSlice = createSlice({
   initialState,
   reducers: {
     setManagerObject: (state, action) => {
-      console.log(state, action);
+
       state.objectManager = action.payload;
     },
   },

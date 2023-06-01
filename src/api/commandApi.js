@@ -32,7 +32,7 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
   console.log(dataToSend);
 
   try {
-    const response = await axios.get(
+    const response = await axios.post(
       `http://localhost:8081/superapp/miniapp/${miniAppName}`,
       dataToSend,
       {

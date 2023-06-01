@@ -79,7 +79,6 @@ const SupplierPage = () => {
       }
       return client;
     });
-    console.log(updatedClients);
     setLatestClients(updatedClients);
   };
 
