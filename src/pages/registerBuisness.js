@@ -14,8 +14,6 @@ import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect, useRef } from "react";
 import ImgCrop from "antd-img-crop";
-import { GetSupplierTypes } from "../api/miniAppApi";
-import useSelection from "antd/es/table/hooks/useSelection";
 import { useSelector } from "react-redux";
 
 const { Header, Content, Footer, Sider } = Layout;
