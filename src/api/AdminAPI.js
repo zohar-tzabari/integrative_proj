@@ -49,13 +49,14 @@ export async function getAllUsers(userEmail) {
 }
 
 export async function getAllCommands(userEmail) {
-    try {
-        const response = await axios.get(
-          `http://localhost:8081/superapp/admin/miniapp?userEmail=${userEmail}`
-        );
-        return response;
-      } catch (error) {
-        console.error(error);
-        return null;
-      }
+  try {
+    const response = await axios.get(
+      `http://localhost:8081/superapp/admin/miniapp?userEmail=${userEmail}`
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }

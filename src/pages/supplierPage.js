@@ -45,7 +45,7 @@ const SupplierPage = () => {
           user.user.userId.email,
           user.user.userId,
         );
-        console.log(zohar);
+        setSupplierObject(zohar);
         await ChangeToSuperAppUser();
       } catch (error) {
         await ChangeToSuperAppUser();
