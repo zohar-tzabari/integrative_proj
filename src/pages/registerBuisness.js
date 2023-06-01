@@ -105,9 +105,10 @@ const RegistrationFormContent = () => {
     json_to_server["alias"] = values["alias"];
     values["photo"] = supplierPhoto.current;
     values['mail']= user.userId.email;
+    values['busyDates']= [];
     json_to_server["objectDetails"] = values;
     json_to_server["createdBy"] ={"userId": user.userId};
-
+  
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
       successMsg("Registration successful!");

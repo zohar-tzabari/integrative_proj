@@ -77,3 +77,26 @@ export async function GetObjectByAlias(alias,userEmail) {
     return null;
   }
 }                                                                                                 
+
+
+
+export async function UserUpdateApi(email,internalObjectId,values) {
+  try {
+    const response = await axios.put(
+      `http://localhost:8081/superapp/objects/${SUPERAPP}/${internalObjectId}?userEmail=${email}`,
+      values,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error.response.data.message;
+  }
+}
+
+

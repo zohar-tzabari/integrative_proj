@@ -7,7 +7,7 @@ export async function searchObjectsByType(email) {
   dataToSend["command"] = "searchObjectsByType";
   try {
     const response = await axios.get(
-      `http://localhost:8081/superapp/objects/search/byType/Supplier?userEmail=${email}`,
+      `http://localhost:8081/superapp/objects/search/byType/supplier?userEmail=${email}`,
       dataToSend,
       {
         headers: {

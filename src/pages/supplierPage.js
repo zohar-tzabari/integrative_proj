@@ -18,34 +18,34 @@ import { searchObjectsByUserEmail } from "../api/commandApi";
 const { Header, Sider, Content, Footer } = Layout;
 
 const SupplierPage = () => {
-  const [busyDates, setBusyDates] = useState([
-    "2023-05-15",
-    "2023-05-20",
-    "2023-05-22",
-  ]);
-  const [latestClients, setLatestClients] = useState([
-    { id: 1, name: "Client A", date: "2023-05-25", approval: "No" },
-    { id: 2, name: "Client B", date: "2023-05-27", approval: "No" },
-    { id: 3, name: "Client C", date: "2023-05-28", approval: "No" },
-  ]);
-  const [supplierObject, setSupplierObject] = useState();
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const objectM = useSelector((state) => state.objectManager);
   const miniApp = useSelector((state) => state.miniApp);
 
+  const [supplierObject, setSupplierObject] = useState();
+  const [busyDates, setBusyDates] = useState();
+  const [serviceRequest,setServiceRequest] = useState();
+  const [latestClients, setLatestClients] = useState([
+  
+    { id: 1, name: "Client A", date: "2023-05-25", approval: "Yes" },
+    { id: 2, name: "Client B", date: "2023-05-27", approval: "No" },
+    { id: 3, name: "Client C", date: "2023-05-28", approval: "No" },
+  ]);
+  const dispatch = useDispatch();
+ 
   useEffect(() => {
     // Function to execute
     const fetchData = async () => {
       try {
         await ChangeToMiniAppUser();
-        const zohar = await searchObjectsByUserEmail(
+        const current = await searchObjectsByUserEmail(
           "suppliers",
           objectM.objectManager.objectId,
           user.user.userId.email,
           user.user.userId,
         );
-        setSupplierObject(zohar);
+        setSupplierObject(current);
+        setBusyDates(current.objectDetails.busyDates);
         await ChangeToSuperAppUser();
       } catch (error) {
         await ChangeToSuperAppUser();
