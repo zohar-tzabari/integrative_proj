@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import { TablePage, GuestForm } from "./pages/tables";
 import SupplierPage from "./pages/supplierPage";
 import CustomerRegistrationForm from "./pages/registerCustomer";
+import TableRegistrationForm from "./pages/loginRegisterTable";
+
 
 const { Header, Content } = Layout;
 
@@ -71,6 +73,10 @@ function NewMenu() {
             />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
+            <Route
+              path="tables/RegistrationForm"
+              element={<TableRegistrationForm />}
+            />
           </Routes>
         </Content>
       </Layout>
@@ -132,6 +138,11 @@ function MenuComp() {
               key: "/tables/insertGuests",
               to: "/tables/insertGuests",
               name: "Tables organizer",
+            },
+            {
+              key: "tables/RegistrationForm",
+              to: "tables/RegistrationForm",
+              name: "Tables RegistrationForm",
             },
           ]);
           break;

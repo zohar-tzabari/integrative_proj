@@ -11,20 +11,20 @@ import {
   Radio,
   Modal,
   message,
-  Tabs,
 } from "antd";
 import { SketchPicker } from "react-color";
 import { JsonTable } from "../sharedComponents/JsonTable";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addGuest } from "../redux/guestsSlice";
 import { addCatagory } from "../redux/catagorySlice";
-import { CreateNewObject } from "../api/objectsApi";
+import { CreateNewObject, BindObject } from "../api/objectsApi";
 import { GetAllGuests } from "../api/commandApi";
-import Login from "../sharedComponents/loginUser";
+import { searchObjectsByUserEmail } from "../api/commandApi";
+import { setUser } from "../redux/userSlice";
+import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
 
 const { Header, Content, Footer, Sider } = Layout;
-const { TabPane } = Tabs;
 
 function CardComponent({ item }) {
   return (
@@ -83,6 +83,7 @@ const GuestFormComponent = () => {
   const [newCategory, setNewCategory] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [myObject, setMyObject] = useState();
   const [sketchPickerColor, setSketchPickerColor] = useState({
     r: "241",
     g: "112",
@@ -92,6 +93,28 @@ const GuestFormComponent = () => {
   const [guestId, setGuestId] = useState(0);
   const [form] = Form.useForm();
   const user = useSelector((state) => state.user);
+  const objectM = useSelector((state) => state.objectManager);
+  console.log(objectM);
+
+  const ChangeToMiniAppUser = async () => {
+    let tempUser = JSON.parse(JSON.stringify(user));
+    tempUser["user"]["role"] = "MINIAPP_USER";
+    await UserUpdateApi(user.user.userId.email, tempUser.user);
+    const newUser = await UserLoginApi(user.user.userId.email);
+    if (newUser) {
+      dispatch(setUser(newUser));
+    }
+  };
+
+  const ChangeToSuperAppUser = async () => {
+    let tempUser = JSON.parse(JSON.stringify(user));
+    tempUser["user"]["role"] = "SUPERAPP_USER";
+    await UserUpdateApi(user.user.userId.email, tempUser.user);
+    const newUser = await UserLoginApi(user.user.userId.email);
+    if (newUser) {
+      dispatch(setUser(newUser));
+    }
+  };
 
   // Function to clear all messages
   const clearAllMessages = () => {
@@ -146,6 +169,8 @@ const GuestFormComponent = () => {
       errorMsg("somthing went wrong");
       return;
     }
+    console.log(myObject);
+    // BindObject()
     console.log(registerObject);
     dispatch(addGuest(registerObject));
     // Reset the form fields
@@ -183,27 +208,28 @@ const GuestFormComponent = () => {
       console.log(user.user);
       if (isObjEmpty(user.user)) {
         errorMsg("need to login first");
+        return;
       } else {
         clearAllMessages();
-        const previous_guests = await GetAllGuests();
-        console.log(previous_guests);
+        await ChangeToMiniAppUser();
+        const zohar = await searchObjectsByUserEmail(
+          "tables",
+          objectM.objectManager.objectId,
+          user.user.userId.email,
+          user.user.userId
+        );
+        console.log(zohar);
+        await ChangeToSuperAppUser();
       }
     };
     // Call the function
     fetchData();
-  }, [user]); // Empty dependency array to run the effect only once
+  }, []); // Empty dependency array to run the effect only once
 
-  if (isObjEmpty(user.user))
-    return (
-      <Tabs>
-        <TabPane tab="Register" key="register">
-          {/* Contents of Register tab */}
-        </TabPane>
-        <TabPane tab="Login" key="login">
-          <Login type={"MINIAPP_USER"} />
-        </TabPane>
-      </Tabs>
-    );
+  if (isObjEmpty(user.user)) {
+    errorMsg("need to conect");
+    return <>{contextHolder}</>;
+  }
 
   return (
     <>
@@ -325,7 +351,7 @@ export const TablePage = () => {
       return;
     }
 
-    const newItems =  JSON.parse(JSON.stringify([...items]));
+    const newItems = JSON.parse(JSON.stringify([...items]));
     const itemIndex = newItems.findIndex(
       (i) => i.objectId.internalObjectId === result.draggableId
     );
