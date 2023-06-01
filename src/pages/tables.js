@@ -31,10 +31,10 @@ function CardComponent({ item }) {
     <Card
       size="small"
       style={{
-        backgroundColor: `rgba(${item.color.r}, ${item.color.g}, ${item.color.b}, ${item.color.a})`,
+        backgroundColor: `rgba(${item.objectDetails.color.r}, ${item.objectDetails.color.g}, ${item.objectDetails.color.b}, ${item.objectDetails.color.a})`,
       }}
     >
-      {item.firstName}
+      {item.objectDetails.firstName}
     </Card>
   );
 }
@@ -46,11 +46,11 @@ const Category = ({ category, items, onDragEnd }) => {
         <div {...provided.droppableProps} ref={provided.innerRef}>
           <h2>{category}</h2>
           {items
-            .filter((item) => item.category === category)
+            .filter((item) => item.objectDetails.category === category)
             .map((item, index) => (
               <Draggable
-                key={item.id}
-                draggableId={item.id}
+                key={item.objectId.internalObjectId}
+                draggableId={item.objectId.internalObjectId}
                 index={index}
                 distance={5}
               >
@@ -147,8 +147,7 @@ const GuestFormComponent = () => {
       return;
     }
     console.log(registerObject);
-    values["id"] = `${registerObject.objectId.internalObjectId}`;
-    dispatch(addGuest(values));
+    dispatch(addGuest(registerObject));
     // Reset the form fields
     form.resetFields();
   };
@@ -195,17 +194,16 @@ const GuestFormComponent = () => {
   }, [user]); // Empty dependency array to run the effect only once
 
   if (isObjEmpty(user.user))
-  return (
-    <Tabs>
-      <TabPane tab="Register" key="register">
-        {/* Contents of Register tab */}
-      </TabPane>
-      <TabPane tab="Login" key="login">
-        <Login type={"MINIAPP_USER"} />
-      </TabPane>
-    </Tabs>
-  );
-
+    return (
+      <Tabs>
+        <TabPane tab="Register" key="register">
+          {/* Contents of Register tab */}
+        </TabPane>
+        <TabPane tab="Login" key="login">
+          <Login type={"MINIAPP_USER"} />
+        </TabPane>
+      </Tabs>
+    );
 
   return (
     <>
@@ -313,6 +311,7 @@ export const TablePage = () => {
   const guests = useSelector((state) => state.all_gusets);
   const guestsArray = guests.all_gusets || []; // Make sure guests.all_gusets is an array
   const [items, setItems] = useState([...guestsArray]);
+  console.log(items);
   const [tablesNum, setTablesNum] = useState(20);
   const guests_categories = useSelector((state) => state.all_catagroies);
 
@@ -326,12 +325,14 @@ export const TablePage = () => {
       return;
     }
 
-    const newItems = [...items];
-    const itemIndex = newItems.findIndex((i) => i.id === result.draggableId);
+    const newItems =  JSON.parse(JSON.stringify([...items]));
+    const itemIndex = newItems.findIndex(
+      (i) => i.objectId.internalObjectId === result.draggableId
+    );
     const item = { ...newItems[itemIndex] };
 
     if (result.destination.droppableId !== result.source.droppableId) {
-      item.category = result.destination.droppableId;
+      item.objectDetails.category = result.destination.droppableId;
     }
 
     newItems.splice(result.source.index, 1);
