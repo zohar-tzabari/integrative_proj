@@ -103,13 +103,13 @@ const RegistrationFormContent = () => {
   const onFinish = async (values) => {
     //todo: change the role to buissness
     let json_to_server = {};
-    json_to_server["type"] = "Supplier";
+    json_to_server["type"] = "supplier";
     json_to_server["alias"] = values["alias"];
     values["photo"] = supplierPhoto.current;
+    values['mail']= user.userId.email;
     json_to_server["objectDetails"] = values;
     json_to_server["createdBy"] ={"userId": user.userId};
 
-    console.log(json_to_server);
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
       successMsg("Registration successful!");
