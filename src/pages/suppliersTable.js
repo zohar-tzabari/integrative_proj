@@ -21,13 +21,13 @@ const { Header, Content, Footer, Sider } = Layout;
 
 
 
-const PickDate = ({handleDateChange,busyDatesArr}) => {
+const PickDate = ({handleDateChange,busyDates}) => {
   const [date, setDate] = useState(null);
 
-  const [busyDates, setBusyDates] = useState([
-    busyDatesArr
+  const [busyDate, setBusyDates] = useState([
+    ...busyDates
   ]);
-
+   console.log(busyDate);
   const disabledDate = (current) => {
     const formattedCurrent = current.format("YYYY-MM-DD");
     const today = new Date(); // get current date
@@ -42,7 +42,7 @@ const PickDate = ({handleDateChange,busyDatesArr}) => {
       current.date()
     ); // remove time part of selected date
     return (
-      busyDates.includes(formattedCurrent) ||
+      busyDate.includes(formattedCurrent) ||
       selectedDate.getTime() < currentDate.getTime()
     ); // compare dates
   };
