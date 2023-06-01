@@ -46,9 +46,7 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
           json_to_server["type"] = "objectManager";
           json_to_server["alias"] = "manager";
           json_to_server["createdBy"] = { userId: user.userId };
-          console.log(json_to_server);
           const registerObject = await CreateNewObject(json_to_server);
-          console.log(registerObject);
           dispatch(setManagerObject(registerObject));
         }
         if (navigateUrl) {
