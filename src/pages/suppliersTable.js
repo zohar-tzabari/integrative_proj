@@ -8,6 +8,8 @@ import {
 } from "antd";
 import { InstagramOutlined,MailOutlined,PhoneOutlined,FacebookFilled} from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { CreateNewObject } from "../api/objectsApi";
+
 import { searchObjectsByType } from "../api/commandApi";
 import { useSelector, useDispatch } from "react-redux";
 import { json } from "react-router-dom";
@@ -60,13 +62,12 @@ const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
   const [dates, setDate] = useState();
   const user = useSelector((state) => state.user);
 
-  const DateReserve =()=> {
+  const DateReserve =async ()=> {
     try{
-      console.log(user);
       let json_to_server={};
       json_to_server  ["type"] = "service";
       json_to_server  ["alias"] = "service";
-      json_to_server  ["createdBy"] = {userId: user.userId};
+      json_to_server  ["createdBy"] = {userId: user.user.userId};
       json_to_server["objectDetails"] = {
       "customerMail": user.user.userId.email,
       "supplierMail": mailLink,
@@ -75,6 +76,8 @@ const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
       }
       console.log(json_to_server);
 
+      const result = await CreateNewObject(json_to_server);
+      console.log(result);
       }
       catch (error){ console.log(error);}
       } 
@@ -115,21 +118,6 @@ const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
   );
 };
 
-// function DateReserve ({date,supplierMail}) {
-//   const user = useSelector((state) => state.user);
-
-//   let json_to_server={};
-//   json_to_server  ["type"] = "service";
-//   json_to_server  ["alias"] = "service";
-//   json_to_server  ["createdBy"] = {userId: user.userId};
-//   json_to_server["objectDetails"] = {
-//     "customerMail": user.userId.email,
-//     "supplierMail": supplierMail,
-//     "date": date,
-//     "status": "NOT YET"
-//   }
-//   console.log(json_to_server);
-// }
 
 
 
