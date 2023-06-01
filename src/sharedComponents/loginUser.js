@@ -31,13 +31,10 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
   };
 
   const onFinish = async (values) => {
-    console.log("log in", values.email);
     const user = await UserLoginApi(values.email);
     if (user) {
-      console.log(user);
       if (user.role === userType) {
         dispatch(setUser(user));
-        console.log(values.email);
         successMsg(`${values.email} login successfuly `);
         //create manager object//
         //todo: change the role to buissness\
@@ -107,8 +104,6 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
 };
 
 const LoginForm = ({ setLoginSuccess, navigateUrl }) => {
-  console.log(navigateUrl);
-
   return (
     <Layout>
       <Header
@@ -153,7 +148,6 @@ const LoginForm = ({ setLoginSuccess, navigateUrl }) => {
 
 const Login = ({ urlToPass, type }) => {
   const [sucess, setSuccess] = useState(false);
-  console.log(urlToPass);
 
   return <LoginForm setLoginSuccess={setSuccess} navigateUrl={urlToPass} />;
 };
