@@ -104,6 +104,7 @@ const LoginFormContent = ({ setLoginSuccess, navigateUrl }) => {
 };
 
 const LoginForm = ({ setLoginSuccess, navigateUrl }) => {
+  console.log(navigateUrl);
 
   return (
     <Layout>

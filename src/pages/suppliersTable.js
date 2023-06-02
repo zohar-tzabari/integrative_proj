@@ -8,7 +8,11 @@ import {
 } from "antd";
 import { InstagramOutlined,MailOutlined,PhoneOutlined,FacebookFilled} from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { CreateNewObject } from "../api/objectsApi";
+
 import { searchObjectsByType } from "../api/commandApi";
+import { useSelector, useDispatch } from "react-redux";
+import { json } from "react-router-dom";
 
 
 
@@ -17,8 +21,9 @@ const { Header, Content, Footer, Sider } = Layout;
 
 
 
-const PickDate = () => {
+const PickDate = ({handleDateChange}) => {
   const [date, setDate] = useState(null);
+
   const [busyDates, setBusyDates] = useState([
     "2023-06-15",
     "2023-03-23",
@@ -43,57 +48,44 @@ const PickDate = () => {
       selectedDate.getTime() < currentDate.getTime()
     ); // compare dates
   };
-
+ console.log(date);
   return (
     <DatePicker
       bordered={false}
-      value={date}
-      onChange={setDate}
+      onChange={handleDateChange}
       disabledDate={disabledDate}
     />
   );
 };
 
-// const RatingSup = () => {
-//   const [price, setPrice] = useState(0);
-//   const [quality, setQuality] = useState(0);
-//   const [services, setServices] = useState(0);
-
-//   return (
-//     <div>
-//       <br />
-//       price:
-//       <span>
-//         <Rate tooltips={desc} onChange={setPrice} value={price} />
-//         {price ? <span className="ant-rate-text">{desc[price - 1]}</span> : ""}
-//       </span>
-//       <br />
-//       quality:
-//       <span>
-//         <Rate tooltips={desc} onChange={setQuality} value={quality} />
-//         {quality ? (
-//           <span className="ant-rate-text">{desc[quality - 1]}</span>
-//         ) : (
-//           ""
-//         )}
-//       </span>
-//       <br />
-//       services:
-//       <span>
-//         <Rate tooltips={desc} onChange={setServices} value={services} />
-//         {services ? (
-//           <span className="ant-rate-text">{desc[services - 1]}</span>
-//         ) : (
-//           ""
-//         )}
-//       </span>
-//       <br />
-//     </div>
-//   );
-// };
-
 const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
-  return (
+  const [dates, setDate] = useState();
+  const user = useSelector((state) => state.user);
+
+  const DateReserve =async ()=> {
+    try{
+      let json_to_server={};
+      json_to_server  ["type"] = "service";
+      json_to_server  ["alias"] = "service";
+      json_to_server  ["createdBy"] = {userId: user.user.userId};
+      json_to_server["objectDetails"] = {
+      "customerMail": user.user.userId.email,
+      "supplierMail": mailLink,
+      "date": dates,
+      "status": "NOT YET"
+      }
+      console.log(json_to_server);
+
+      const result = await CreateNewObject(json_to_server);
+      console.log(result);
+      }
+      catch (error){ console.log(error);}
+      } 
+  const handleDateChange = (date, dateString) => {
+    const formattedDate = date.format("YYYY-MM-DD");
+      setDate([date, formattedDate]);
+    };  
+    return (
     <div>
       {text}
       <br />
@@ -112,25 +104,24 @@ const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
       href={facebookLink}>
       </Button>)}
       {"   "}
-      {console.log(mailLink)}
       <Button 
       icon={<MailOutlined />} 
       onClick={() => window.open(`mailto:${mailLink}`, '_blank')} 
       size="large" > 
       </Button>
       <h1><PhoneOutlined />{phoneNum}</h1>
-      {/* <RatingSup /> */}
       <div>
-        <PickDate />
+        <PickDate  handleDateChange={handleDateChange} />
         <Button onClick = {DateReserve}> Reserve date </Button>
         </div>
     </div>
   );
 };
 
-function DateReserve () {
 
-}
+
+
+
 
 function extractUniqueCities(data) {
   const uniqueCities = [];
@@ -167,7 +158,7 @@ const SupTable = () => {
               text= {item.objectDetails.description}
               instgramLink= {item.objectDetails.instagram}
               facebookLink = {item.objectDetails.facebook}
-              mailLink = {item.objectDetails.email}
+              mailLink = {item.createdBy.userId.email}
               phoneNum = {item.objectDetails.phone}
             />
           ),
@@ -181,9 +172,7 @@ const SupTable = () => {
           ): ""
           ,
         }));
-      // const cityData = suppliers.map((item) => ({
-      //   name:item.objectDetails.city
-      // }));
+      
       setMappedData(mappedData)
       setSuppliersData(suppliers)
       } catch (error) {
@@ -330,7 +319,7 @@ return (
       >
       </Sider>
     </Layout>
-    <Footer>@all right served to wed portal</Footer>
+    <Footer>©all right served to wed portal</Footer>
   </Layout>
 );
 }
