@@ -23,7 +23,7 @@ import {
   BindObject,
   GetChildrenObject,
 } from "../api/objectsApi";
-import { searchObjectsByUserEmail } from "../api/commandApi";
+import { searchObjectsByUserEmail ,searchObjectsByUserEmailBoundary} from "../api/commandApi";
 import { setUser } from "../redux/userSlice";
 import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
 import { set_all_Guests } from "../redux/guestsSlice";
@@ -58,7 +58,7 @@ const GuestFormComponent = () => {
       } else {
         clearAllMessages();
         await ChangeToMiniAppUser();
-        const zohar = await searchObjectsByUserEmail(
+        const zohar = await searchObjectsByUserEmailBoundary(
           "tables",
           objectM.objectManager.objectId,
           user.user.userId.email,
@@ -127,7 +127,6 @@ const GuestFormComponent = () => {
   const finishGuestsAdding = async () => {
     console.log(myObject);
     const guests = await GetChildrenObject(myObject, user.user.userId.email);
-    dispatch(set_all_Guests(guests));
     console.log(guests);
     navigate(`/tables/arrangeTables`);
   };
@@ -151,9 +150,6 @@ const GuestFormComponent = () => {
     console.log(myObject);
     
     await BindObject(myObject, user.user.userId.email, registerObject.objectId);
-    const guests = await GetChildrenObject(myObject, user.user.userId.email);
-    console.log(guests);
-    dispatch(addGuest(registerObject));
     // Reset the form fields
     form.resetFields();
   };
@@ -171,7 +167,6 @@ const GuestFormComponent = () => {
           color: sketchPickerColor,
         };
         setCategories([...categories, objectToAdd]);
-        dispatch(addCatagory(objectToAdd));
         setNewCategory("");
         successMsg("Guest category added successfully!");
       }

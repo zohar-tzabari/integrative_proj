@@ -22,12 +22,9 @@ export async function CreateNewObject(values) {
 
 export async function BindObject(myObject, userEmail, childernObject) {
   console.log(myObject);
-  const temp = myObject.objectId;
-  var valuesAfterHash = temp.split("#")[1];
-  console.log(valuesAfterHash);
   try {
     const response = await axios.put(
-      `http://localhost:8081/superapp/objects/${SUPERAPP}/${valuesAfterHash}/children?userEmail=${userEmail}`,
+      `http://localhost:8081/superapp/objects/${SUPERAPP}/${myObject.objectId.internalObjectId}/children?userEmail=${userEmail}`,
       childernObject,
       {
         headers: {
@@ -44,12 +41,9 @@ export async function BindObject(myObject, userEmail, childernObject) {
 }
 
 export async function GetChildrenObject(myObject, userEmail) {
-  const temp = myObject.objectId;
-  var valuesAfterHash = temp.split("#")[1];
-  console.log(valuesAfterHash);
   try {
     const response = await axios.get(
-      `http://localhost:8081/superapp/objects/${SUPERAPP}/${valuesAfterHash}/children?userEmail=${userEmail}`,
+      `http://localhost:8081/superapp/objects/${SUPERAPP}/${ myObject.objectId.internalObjectId}/children?userEmail=${userEmail}`,
       {
         headers: {
           "Content-Type": "application/json",

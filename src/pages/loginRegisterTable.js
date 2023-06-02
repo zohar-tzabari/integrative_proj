@@ -73,7 +73,7 @@ const RegistrationFormContent = () => {
     if (registerObject) {
       successMsg("Registration successful!");
       await timeout(2000); //for 1 sec delay
-      // navigate("/");
+      navigate("/");
     } else {
       errorMsg("somthing went wrong");
     }
@@ -150,23 +150,9 @@ const CustomerRegistration = () => {
         }}
       ></Header>
       <Layout>
-        <Sider
-          style={{
-            backgroundColor: "#ffff",
-            borderBottom: "none",
-            padding: 0,
-          }}
-        ></Sider>
         <Content>
           <RegistrationFormContent />
         </Content>
-        <Sider
-          style={{
-            backgroundColor: "#ffff",
-            borderBottom: "none",
-            padding: 0,
-          }}
-        ></Sider>{" "}
       </Layout>
       <Footer
         style={{
@@ -205,16 +191,19 @@ const TableRegistrationForm = () => {
       content: <RegistrationForm />,
     },
     {
-      title: "Add buisnedd data",
+      title: "Add costumer data",
       content: <CustomerRegistration />,
     },
   ];
 
+  function isJsonEmpty(jsonObj) {
+    return Object.keys(jsonObj).length === 0;
+  }
+
   const next = () => {
-    if (userRegisterSuccess) {
+    if (isJsonEmpty(userRegisterSuccess)) {
       setCurrent(current + 1);
     } else {
-      console.log(userRegisterSuccess);
       errorMsg("need to register as user first");
     }
   };
@@ -231,18 +220,17 @@ const TableRegistrationForm = () => {
   return (
     <Layout>
       <Layout>
-        <Sider style={{ background: "#fff" }}></Sider>
         <Layout>
           <Content>
             {contextHolder}
             <Steps current={current} items={items} />
             <div style={contentStyle}>{steps[current].content}</div>
+            
             <Button type="primary" onClick={next}>
               Next
             </Button>
           </Content>
         </Layout>
-        <Sider style={{ background: "#fff" }}></Sider>
       </Layout>
       <Footer></Footer>
     </Layout>

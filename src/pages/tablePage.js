@@ -1,29 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import {
-  Button,
-  Card,
-  Col,
-  Row,
-  Layout,
-  Form,
-  Input,
-  Radio,
-  Modal,
-  message,
-} from "antd";
-import { SketchPicker } from "react-color";
-import { JsonTable } from "../sharedComponents/JsonTable";
-import { useNavigate } from "react-router-dom";
+import { Button, Card, Col, Row, Layout } from "antd";
+
 import { useDispatch, useSelector } from "react-redux";
-import { addGuest } from "../redux/guestsSlice";
-import { addCatagory } from "../redux/catagorySlice";
-import {
-  CreateNewObject,
-  BindObject,
-  GetChildrenObject,
-} from "../api/objectsApi";
-import { searchObjectsByUserEmail } from "../api/commandApi";
+
+import { GetChildrenObject,ObjectUpdateApi } from "../api/objectsApi";
+import { searchObjectsByUserEmailBoundary } from "../api/commandApi";
 import { setUser } from "../redux/userSlice";
 import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
 
@@ -115,180 +97,21 @@ export const TablePage = ({}) => {
     // Function to execute
     const fetchData = async () => {
       try {
-        setItems([
-          {
-            objectId: {
-              superapp: "2023b.zohar.tzabari",
-              internalObjectId: "ca3549e2-d255-4782-a4dd-8cca7151e56b",
-            },
-            type: "guest",
-            alias: "Zohar_Tzabari",
-            active: true,
-            creationTimestamp: "2023-06-02T12:35:34.322+00:00",
-            location: {
-              lat: 0,
-              lng: 0,
-            },
-            createdBy: {
-              userId: {
-                superapp: "2023b.zohar.tzabari",
-                email: "zohar.zabari@gmail.vcvcom",
-              },
-            },
-            objectDetails: {
-              firstName: "Zohar",
-              lastName: "Tzabari",
-              guestType: "zohar",
-              category: "All guests",
-              color: {
-                r: "241",
-                g: "112",
-                b: "19",
-                a: "1",
-              },
-            },
-          },
-          {
-            objectId: {
-              superapp: "2023b.zohar.tzabari",
-              internalObjectId: "de362617-2eb4-4ef9-ab19-2088398621ee",
-            },
-            type: "guest",
-            alias: "adi_levi",
-            active: true,
-            creationTimestamp: "2023-06-02T12:35:49.858+00:00",
-            location: {
-              lat: 0,
-              lng: 0,
-            },
-            createdBy: {
-              userId: {
-                superapp: "2023b.zohar.tzabari",
-                email: "zohar.zabari@gmail.vcvcom",
-              },
-            },
-            objectDetails: {
-              firstName: "adi",
-              lastName: "levi",
-              guestType: "frend",
-              category: "All guests",
-              color: {
-                r: 241,
-                g: 19,
-                b: 93,
-                a: 1,
-              },
-            },
-          },
-          {
-            objectId: {
-              superapp: "2023b.zohar.tzabari",
-              internalObjectId: "5958f829-4345-4998-926a-2e2f0666e28e",
-            },
-            type: "guest",
-            alias: "kobi_efrati",
-            active: true,
-            creationTimestamp: "2023-06-02T12:36:16.723+00:00",
-            location: {
-              lat: 0,
-              lng: 0,
-            },
-            createdBy: {
-              userId: {
-                superapp: "2023b.zohar.tzabari",
-                email: "zohar.zabari@gmail.vcvcom",
-              },
-            },
-            objectDetails: {
-              firstName: "kobi",
-              lastName: "efrati",
-              guestType: "famly",
-              category: "All guests",
-              color: {
-                r: 19,
-                g: 137,
-                b: 241,
-                a: 1,
-              },
-            },
-          },
-          {
-            objectId: {
-              superapp: "2023b.zohar.tzabari",
-              internalObjectId: "d1a45f6e-9bfb-4570-bead-1d68285a9706",
-            },
-            type: "guest",
-            alias: "moshe_levi",
-            active: true,
-            creationTimestamp: "2023-06-02T12:35:58.018+00:00",
-            location: {
-              lat: 0,
-              lng: 0,
-            },
-            createdBy: {
-              userId: {
-                superapp: "2023b.zohar.tzabari",
-                email: "zohar.zabari@gmail.vcvcom",
-              },
-            },
-            objectDetails: {
-              firstName: "moshe",
-              lastName: "levi",
-              guestType: "frend",
-              category: "All guests",
-              color: {
-                r: 241,
-                g: 19,
-                b: 93,
-                a: 1,
-              },
-            },
-          },
-          {
-            objectId: {
-              superapp: "2023b.zohar.tzabari",
-              internalObjectId: "4e9659a9-0027-4504-9f55-87d765b51b5a",
-            },
-            type: "guest",
-            alias: "shsiso_fvfdf",
-            active: true,
-            creationTimestamp: "2023-06-02T12:36:22.472+00:00",
-            location: {
-              lat: 0,
-              lng: 0,
-            },
-            createdBy: {
-              userId: {
-                superapp: "2023b.zohar.tzabari",
-                email: "zohar.zabari@gmail.vcvcom",
-              },
-            },
-            objectDetails: {
-              firstName: "shsiso",
-              lastName: "fvfdf",
-              guestType: "famly",
-              category: "All guests",
-              color: {
-                r: 19,
-                g: 137,
-                b: 241,
-                a: 1,
-              },
-            },
-          },
-        ]);
-        // await ChangeToMiniAppUser();
-        // const myObj = await searchObjectsByUserEmail(
-        //   "tables",
-        //   objectM.objectManager.objectId,
-        //   user.user.userId.email,
-        //   user.user.userId
-        // );
-        // console.log(myObj);
-        // await ChangeToSuperAppUser();
-        // setMyObject(myObj);
-        // const guests = await GetChildrenObject(myObj, user.user.userId.email);
-        // console.log(guests);
+        await ChangeToMiniAppUser();
+        const myObjectT = await searchObjectsByUserEmailBoundary(
+          "tables",
+          objectM.objectManager.objectId,
+          user.user.userId.email,
+          user.user.userId
+        );
+        await ChangeToSuperAppUser();
+        setMyObject(myObjectT);
+        const guests = await GetChildrenObject(
+          myObjectT,
+          user.user.userId.email
+        );
+        console.log(guests);
+        setItems(guests);
       } catch (error) {
         console.log(error);
         await ChangeToSuperAppUser();
@@ -329,6 +152,25 @@ export const TablePage = ({}) => {
     }
   };
 
+  const handleFinishTableArragment = async () => 
+  {
+    for (const guest of items) {
+      try {
+        const { superapp, internalObjectId } = guest.objectId;
+        await ObjectUpdateApi(
+          guest.createdBy.userId.email,
+          internalObjectId,
+          {objectDetails:guest.objectDetails}
+        );
+        console.log(`Guest ${superapp}/${internalObjectId} updated successfully.`);
+        // Handle the response as needed
+      } catch (error) {
+        console.error(`Error updating guest ${guest.objectId}: ${error}`);
+        // Handle the error as needed
+      }
+    }
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Layout>
@@ -336,7 +178,9 @@ export const TablePage = ({}) => {
           <Row>
             <Col span={10}></Col>
             <Col span={7}>
-              <Button onClick={()=>console.log("hi")}>finish table arragment</Button>
+              <Button onClick={handleFinishTableArragment}>
+                finish table arragment
+              </Button>
             </Col>
           </Row>
         </Header>
