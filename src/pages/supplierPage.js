@@ -14,6 +14,8 @@ import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
 import { searchObjectsByUserEmail } from "../api/commandApi";
+import { ObjectUpdateApi } from "../api/objectsApi";
+
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -23,7 +25,7 @@ const SupplierPage = () => {
   const miniApp = useSelector((state) => state.miniApp);
 
   const [supplierObject, setSupplierObject] = useState();
-  const [busyDates, setBusyDates] = useState();
+  const [busyDates, setBusyDates] = useState([]);
   const [serviceRequest,setServiceRequest] = useState();
   const [latestClients, setLatestClients] = useState([
   
@@ -37,6 +39,7 @@ const SupplierPage = () => {
     // Function to execute
     const fetchData = async () => {
       try {
+
         await ChangeToMiniAppUser();
         const current = await searchObjectsByUserEmail(
           "suppliers",
@@ -55,20 +58,52 @@ const SupplierPage = () => {
     fetchData();
   }, []); // Empty dependency array to run the effect only once
 
+  // useEffect(() => {
+  //   // Function to execute
+  //   const updateDBDates = async () => {
+  //     try {
+  //       await ChangeToMiniAppUser();
+  //       const  prop = supplierObject.objectId.split('#');
+  //       let tempObject = JSON.parse(JSON.stringify(supplierObject));
+  //       tempObject["objectDetails"]["busyDates"] = busyDates;
+  //       await ChangeToSuperAppUser();
+  //       await ObjectUpdateApi(supplierObject.objectDetails.mail,prop[1],tempObject.objectDetails);
+  //       console.log(supplierObject);
+  //       await ChangeToSuperAppUser();
+  //     } catch (error) {
+  //       await ChangeToSuperAppUser();
+  //     }
+  //   };
+
+  //   updateDBDates();
+  // }, [busyDates.length]); 
+
   const disabledDate = (current) => {
     // Disable dates that are already busy
     const formattedDate = current.format("YYYY-MM-DD");
     return busyDates.includes(formattedDate);
   };
 
-  const handleDateChange = (date, dateString) => {
+  const handleDateChange = async (date, dateString) => {
     const formattedDate = date.format("YYYY-MM-DD");
-    if (busyDates.includes(formattedDate)) {
-      // Remove date if it already exists in the array
-      setBusyDates(busyDates.filter((date) => date !== formattedDate));
-    } else {
-      // Add date if it doesn't exist in the array
+    // if (busyDates.includes(formattedDate)) {
+    //   // Remove date if it already exists in the array
+    //   setBusyDates(busyDates.filter((date) => date !== formattedDate));
+    // } else {
+    //   // Add date if it doesn't exist in the array
       setBusyDates([...busyDates, formattedDate]);
+    //  }
+     try {
+      await ChangeToMiniAppUser();
+      const  prop = supplierObject.objectId.split('#');
+      let tempObject = JSON.parse(JSON.stringify(supplierObject));
+      tempObject["objectDetails"]["busyDates"] = [...busyDates, formattedDate] ;
+      await ChangeToSuperAppUser();
+      await ObjectUpdateApi(supplierObject.objectDetails.mail,prop[1],tempObject.objectDetails);
+      console.log(supplierObject);
+      await ChangeToSuperAppUser();
+    } catch (error) {
+      await ChangeToSuperAppUser();
     }
   };
 

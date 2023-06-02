@@ -29,7 +29,6 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
   dataToSend['invokedBy'] = {userId};
   dataToSend["targetObject"] = {objectId};
   dataToSend["commandAttributes"] = {"mail": mail};
-  console.log(dataToSend);
 
   try {
     const response = await axios.post(
@@ -42,6 +41,7 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
         },
       }
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
