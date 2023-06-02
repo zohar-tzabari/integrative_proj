@@ -41,7 +41,6 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
         },
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
