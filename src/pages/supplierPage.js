@@ -50,6 +50,7 @@ const SupplierPage = () => {
         setSupplierObject(current);
         setBusyDates(current.objectDetails.busyDates);
         await ChangeToSuperAppUser();
+
       } catch (error) {
         await ChangeToSuperAppUser();
       }
@@ -57,6 +58,25 @@ const SupplierPage = () => {
 
     fetchData();
   }, []); // Empty dependency array to run the effect only once
+
+// const ServiceList = () => {
+//   const [services, setServices] = useState([]);
+
+//   useEffect(() => {
+//     const getAllServices = async() => {
+
+//   }, []);
+
+// }
+      
+//   };
+
+//   const filteredServices = services.filter(
+//     service =>
+//       service.objectDetails.supplierMail === 'supplier@mail.com' &&
+//       service.objectDetails.status === 'NOT YET'
+//   );
+//   }
 
   // useEffect(() => {
   //   // Function to execute
@@ -98,9 +118,10 @@ const SupplierPage = () => {
       const  prop = supplierObject.objectId.split('#');
       let tempObject = JSON.parse(JSON.stringify(supplierObject));
       tempObject["objectDetails"]["busyDates"] = [...busyDates, formattedDate] ;
+      console.log(tempObject);
       await ChangeToSuperAppUser();
-      await ObjectUpdateApi(supplierObject.objectDetails.mail,prop[1],tempObject.objectDetails);
-      console.log(supplierObject);
+      await ObjectUpdateApi(supplierObject.objectDetails.mail,prop[1],{objectDetails:tempObject.objectDetails});
+      //console.log(supplierObject);
       await ChangeToSuperAppUser();
     } catch (error) {
       await ChangeToSuperAppUser();

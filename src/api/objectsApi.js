@@ -92,7 +92,6 @@ export async function ObjectUpdateApi(email,internalObjectId,values) {
         },
       }
     );
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);
