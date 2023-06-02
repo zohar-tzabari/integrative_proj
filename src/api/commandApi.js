@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
 
 
 export async function searchObjectsByType(email) {
@@ -29,8 +28,6 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
   dataToSend['invokedBy'] = {userId};
   dataToSend["targetObject"] = {objectId};
   dataToSend["commandAttributes"] = {"mail": mail};
-  console.log(dataToSend);
-
   try {
     const response = await axios.post(
       `http://localhost:8081/superapp/miniapp/${miniAppName}`,
@@ -58,7 +55,6 @@ export async function GetAllGuests(email,objectM,miniAppName) {
   dataToSend["commandAttributes"] = { email: email };
   dataToSend["targetObject"] = objectM;
   // dataToSend["invokedBy"] = user;
-  console.log(dataToSend);
   try {
     const response = await axios.post(
       `http://localhost:8081/superapp/miniapp/${miniAppName}`,

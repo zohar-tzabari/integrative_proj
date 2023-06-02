@@ -18,8 +18,11 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addGuest } from "../redux/guestsSlice";
 import { addCatagory } from "../redux/catagorySlice";
-import { CreateNewObject, BindObject } from "../api/objectsApi";
-import { GetAllGuests } from "../api/commandApi";
+import {
+  CreateNewObject,
+  BindObject,
+  GetChildrenObject,
+} from "../api/objectsApi";
 import { searchObjectsByUserEmail } from "../api/commandApi";
 import { setUser } from "../redux/userSlice";
 import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
@@ -94,7 +97,6 @@ const GuestFormComponent = () => {
   const [form] = Form.useForm();
   const user = useSelector((state) => state.user);
   const objectM = useSelector((state) => state.objectManager);
-  console.log(objectM);
 
   const ChangeToMiniAppUser = async () => {
     let tempUser = JSON.parse(JSON.stringify(user));
@@ -148,8 +150,11 @@ const GuestFormComponent = () => {
     setIsModalOpen(false);
   };
 
-  const finishGuestsAdding = () => {
-    navigate(`/tables/arrangeTables`);
+  const finishGuestsAdding = async () => {
+    console.log(myObject);
+    const guests = await GetChildrenObject(myObject, user.user.userId.email);
+    console.log(guests);
+    // navigate(`/tables/arrangeTables`);
   };
 
   const onFinish = async (values) => {
@@ -163,14 +168,13 @@ const GuestFormComponent = () => {
     json_to_server["alias"] = `${values["firstName"]}_${values["lastName"]}`;
     json_to_server["objectDetails"] = values;
     json_to_server["createdBy"] = { userId: user.user.userId };
-    console.log(json_to_server);
     const registerObject = await CreateNewObject(json_to_server);
     if (!registerObject) {
       errorMsg("somthing went wrong");
       return;
     }
     console.log(myObject);
-    // BindObject()
+    await BindObject(myObject, user.user.userId.email, registerObject.objectId);
     console.log(registerObject);
     dispatch(addGuest(registerObject));
     // Reset the form fields
@@ -191,7 +195,6 @@ const GuestFormComponent = () => {
         };
         setCategories([...categories, objectToAdd]);
         dispatch(addCatagory(objectToAdd));
-        console.log(allCategories);
         setNewCategory("");
         successMsg("Guest category added successfully!");
       }
@@ -218,6 +221,7 @@ const GuestFormComponent = () => {
           user.user.userId.email,
           user.user.userId
         );
+        setMyObject(zohar);
         console.log(zohar);
         await ChangeToSuperAppUser();
       }
@@ -332,18 +336,60 @@ export const GuestForm = () => {
   );
 };
 
-export const TablePage = () => {
+export const TablePage = ({}) => {
   // Define the initial state of the items and their categories
-  const guests = useSelector((state) => state.all_gusets);
-  const guestsArray = guests.all_gusets || []; // Make sure guests.all_gusets is an array
-  const [items, setItems] = useState([...guestsArray]);
-  console.log(items);
+  const [items, setItems] = useState();
   const [tablesNum, setTablesNum] = useState(20);
-  const guests_categories = useSelector((state) => state.all_catagroies);
+  const guests_categories = [];
+  const user = useSelector((state) => state.user);
+  const [myObject, setMyObject] = useState();
+
+  const objectM = useSelector((state) => state.objectManager);
+  const dispatch = useDispatch();
+
+  const ChangeToMiniAppUser = async () => {
+    let tempUser = JSON.parse(JSON.stringify(user));
+    tempUser["user"]["role"] = "MINIAPP_USER";
+    await UserUpdateApi(user.user.userId.email, tempUser.user);
+    const newUser = await UserLoginApi(user.user.userId.email);
+    if (newUser) {
+      dispatch(setUser(newUser));
+    }
+  };
+
+  const ChangeToSuperAppUser = async () => {
+    let tempUser = JSON.parse(JSON.stringify(user));
+    tempUser["user"]["role"] = "SUPERAPP_USER";
+    await UserUpdateApi(user.user.userId.email, tempUser.user);
+    const newUser = await UserLoginApi(user.user.userId.email);
+    if (newUser) {
+      dispatch(setUser(newUser));
+    }
+  };
 
   const tables_to_sit = useRef(
     Array.from(Array(tablesNum).keys()).map((i) => `table ${i + 1}`)
   );
+
+  useEffect(() => {
+    // Function to execute
+    const fetchData = async () => {
+      await ChangeToMiniAppUser();
+      const myObj = await searchObjectsByUserEmail(
+        "tables",
+        objectM.objectManager.objectId,
+        user.user.userId.email,
+        user.user.userId
+      );
+      console.log(myObj);
+      await ChangeToSuperAppUser();
+      setMyObject(myObj);
+      const guests = await GetChildrenObject(myObj, user.user.userId.email);
+      console.log(guests);
+    };
+    // Call the function
+    fetchData();
+  }, []); // Empty dependency array to run the effect only once
 
   // Define the function to handle drag and drop
   const onDragEnd = (result) => {
