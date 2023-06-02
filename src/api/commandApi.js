@@ -28,6 +28,7 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
   dataToSend['invokedBy'] = {userId};
   dataToSend["targetObject"] = {objectId};
   dataToSend["commandAttributes"] = {"mail": mail};
+  console.log(dataToSend);
   try {
     const response = await axios.post(
       `http://localhost:8081/superapp/miniapp/${miniAppName}`,

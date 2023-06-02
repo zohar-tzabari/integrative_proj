@@ -49,7 +49,7 @@ export async function GetChildrenObject(myObject, userEmail) {
   console.log(valuesAfterHash);
   try {
     const response = await axios.get(
-      `http://localhost:8081/superapp/objects/${SUPERAPP}/${valuesAfterHash}/children?userSuperApp=${userEmail}&userEmail=${userEmail}`,
+      `http://localhost:8081/superapp/objects/${SUPERAPP}/${valuesAfterHash}/children?userEmail=${userEmail}`,
       {
         headers: {
           "Content-Type": "application/json",
