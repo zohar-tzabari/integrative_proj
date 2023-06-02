@@ -80,7 +80,7 @@ export async function GetObjectByAlias(alias,userEmail) {
 
 
 
-export async function ObjectUpdateApi(email,internalObjectId,values) {
+export async function UserUpdateApi(email,internalObjectId,values) {
   try {
     const response = await axios.put(
       `http://localhost:8081/superapp/objects/${SUPERAPP}/${internalObjectId}?userEmail=${email}`,
@@ -88,6 +88,7 @@ export async function ObjectUpdateApi(email,internalObjectId,values) {
       {
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
       }
     );
