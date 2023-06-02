@@ -41,17 +41,6 @@ export async function UserUpdateApi(email,values) {
 }
 
 
-// export async function ChangeUserRoleApi(loginEmail) {
-//   try {
-//     const response = await axios.get(
-//       `http://localhost:8081/superapp/users/login/${SUPERAPP}/${loginEmail}`,
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error(error);
-//     return null;
-//   }
-// }
 
 
 export async function UserLoginApi(loginEmail) {
