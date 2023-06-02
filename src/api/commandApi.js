@@ -6,7 +6,7 @@ export async function searchObjectsByType(email) {
   dataToSend["command"] = "searchObjectsByType";
   try {
     const response = await axios.get(
-      `http://localhost:8081/superapp/objects/search/byType/Supplier?userEmail=${email}`,
+      `http://localhost:8081/superapp/objects/search/byType/supplier?userEmail=${email}`,
       dataToSend,
       {
         headers: {
@@ -28,7 +28,6 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
   dataToSend['invokedBy'] = {userId};
   dataToSend["targetObject"] = {objectId};
   dataToSend["commandAttributes"] = {"mail": mail};
-  console.log(dataToSend);
   try {
     const response = await axios.post(
       `http://localhost:8081/superapp/miniapp/${miniAppName}`,
@@ -40,6 +39,7 @@ export async function searchObjectsByUserEmail(miniAppName,objectId,mail,userId)
         },
       }
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);

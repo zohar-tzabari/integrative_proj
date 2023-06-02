@@ -216,7 +216,7 @@ const CustomerRegistrationForm = () => {
       content: <RegistrationForm />,
     },
     {
-      title: "Add buisnedd data",
+      title: "Add customer data",
       content: <CustomerRegistration />,
     },
   ];

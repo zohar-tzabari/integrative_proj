@@ -14,39 +14,43 @@ import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
 import { searchObjectsByUserEmail } from "../api/commandApi";
+import { ObjectUpdateApi } from "../api/objectsApi";
+
 
 const { Header, Sider, Content, Footer } = Layout;
 
 const SupplierPage = () => {
-  const [busyDates, setBusyDates] = useState([
-    "2023-05-15",
-    "2023-05-20",
-    "2023-05-22",
-  ]);
-  const [latestClients, setLatestClients] = useState([
-    { id: 1, name: "Client A", date: "2023-05-25", approval: "No" },
-    { id: 2, name: "Client B", date: "2023-05-27", approval: "No" },
-    { id: 3, name: "Client C", date: "2023-05-28", approval: "No" },
-  ]);
-  const [supplierObject, setSupplierObject] = useState();
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const objectM = useSelector((state) => state.objectManager);
   const miniApp = useSelector((state) => state.miniApp);
 
+  const [supplierObject, setSupplierObject] = useState();
+  const [busyDates, setBusyDates] = useState([]);
+  const [serviceRequest,setServiceRequest] = useState();
+  const [latestClients, setLatestClients] = useState([
+  
+    { id: 1, name: "Client A", date: "2023-05-25", approval: "Yes" },
+    { id: 2, name: "Client B", date: "2023-05-27", approval: "No" },
+    { id: 3, name: "Client C", date: "2023-05-28", approval: "No" },
+  ]);
+  const dispatch = useDispatch();
+ 
   useEffect(() => {
     // Function to execute
     const fetchData = async () => {
       try {
+
         await ChangeToMiniAppUser();
-        const zohar = await searchObjectsByUserEmail(
+        const current = await searchObjectsByUserEmail(
           "suppliers",
           objectM.objectManager.objectId,
           user.user.userId.email,
           user.user.userId,
         );
-        setSupplierObject(zohar);
+        setSupplierObject(current);
+        setBusyDates(current.objectDetails.busyDates);
         await ChangeToSuperAppUser();
+
       } catch (error) {
         await ChangeToSuperAppUser();
       }
@@ -55,20 +59,72 @@ const SupplierPage = () => {
     fetchData();
   }, []); // Empty dependency array to run the effect only once
 
+// const ServiceList = () => {
+//   const [services, setServices] = useState([]);
+
+//   useEffect(() => {
+//     const getAllServices = async() => {
+
+//   }, []);
+
+// }
+      
+//   };
+
+//   const filteredServices = services.filter(
+//     service =>
+//       service.objectDetails.supplierMail === 'supplier@mail.com' &&
+//       service.objectDetails.status === 'NOT YET'
+//   );
+//   }
+
+  // useEffect(() => {
+  //   // Function to execute
+  //   const updateDBDates = async () => {
+  //     try {
+  //       await ChangeToMiniAppUser();
+  //       const  prop = supplierObject.objectId.split('#');
+  //       let tempObject = JSON.parse(JSON.stringify(supplierObject));
+  //       tempObject["objectDetails"]["busyDates"] = busyDates;
+  //       await ChangeToSuperAppUser();
+  //       await ObjectUpdateApi(supplierObject.objectDetails.mail,prop[1],tempObject.objectDetails);
+  //       console.log(supplierObject);
+  //       await ChangeToSuperAppUser();
+  //     } catch (error) {
+  //       await ChangeToSuperAppUser();
+  //     }
+  //   };
+
+  //   updateDBDates();
+  // }, [busyDates.length]); 
+
   const disabledDate = (current) => {
     // Disable dates that are already busy
     const formattedDate = current.format("YYYY-MM-DD");
     return busyDates.includes(formattedDate);
   };
 
-  const handleDateChange = (date, dateString) => {
+  const handleDateChange = async (date, dateString) => {
     const formattedDate = date.format("YYYY-MM-DD");
-    if (busyDates.includes(formattedDate)) {
-      // Remove date if it already exists in the array
-      setBusyDates(busyDates.filter((date) => date !== formattedDate));
-    } else {
-      // Add date if it doesn't exist in the array
+    // if (busyDates.includes(formattedDate)) {
+    //   // Remove date if it already exists in the array
+    //   setBusyDates(busyDates.filter((date) => date !== formattedDate));
+    // } else {
+    //   // Add date if it doesn't exist in the array
       setBusyDates([...busyDates, formattedDate]);
+    //  }
+     try {
+      await ChangeToMiniAppUser();
+      const  prop = supplierObject.objectId.split('#');
+      let tempObject = JSON.parse(JSON.stringify(supplierObject));
+      tempObject["objectDetails"]["busyDates"] = [...busyDates, formattedDate] ;
+      console.log(tempObject);
+      await ChangeToSuperAppUser();
+      await ObjectUpdateApi(supplierObject.objectDetails.mail,prop[1],{objectDetails:tempObject.objectDetails});
+      //console.log(supplierObject);
+      await ChangeToSuperAppUser();
+    } catch (error) {
+      await ChangeToSuperAppUser();
     }
   };
 

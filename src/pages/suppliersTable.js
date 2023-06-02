@@ -21,15 +21,13 @@ const { Header, Content, Footer, Sider } = Layout;
 
 
 
-const PickDate = ({handleDateChange}) => {
+const PickDate = ({handleDateChange,busyDates}) => {
   const [date, setDate] = useState(null);
 
-  const [busyDates, setBusyDates] = useState([
-    "2023-06-15",
-    "2023-03-23",
-    "2023-04-02",
+  const [busyDate, setBusyDates] = useState([
+    ...busyDates
   ]);
-
+   console.log(busyDate);
   const disabledDate = (current) => {
     const formattedCurrent = current.format("YYYY-MM-DD");
     const today = new Date(); // get current date
@@ -44,7 +42,7 @@ const PickDate = ({handleDateChange}) => {
       current.date()
     ); // remove time part of selected date
     return (
-      busyDates.includes(formattedCurrent) ||
+      busyDate.includes(formattedCurrent) ||
       selectedDate.getTime() < currentDate.getTime()
     ); // compare dates
   };
@@ -58,9 +56,19 @@ const PickDate = ({handleDateChange}) => {
   );
 };
 
-const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
+const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum,busyDates }) => {
   const [dates, setDate] = useState();
   const user = useSelector((state) => state.user);
+  const [messageApi, contextHolder] = message.useMessage();
+
+
+  const successMsg = (text) => {
+    messageApi.open({
+      type: "success",
+      content: text,
+    });
+  };
+
 
   const DateReserve =async ()=> {
     try{
@@ -74,10 +82,8 @@ const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
       "date": dates,
       "status": "NOT YET"
       }
-      console.log(json_to_server);
-
       const result = await CreateNewObject(json_to_server);
-      console.log(result);
+      successMsg("request sent to the supplier")
       }
       catch (error){ console.log(error);}
       } 
@@ -111,7 +117,7 @@ const Description = ({ text, instgramLink,facebookLink,mailLink,phoneNum }) => {
       </Button>
       <h1><PhoneOutlined />{phoneNum}</h1>
       <div>
-        <PickDate  handleDateChange={handleDateChange} />
+        <PickDate  handleDateChange={handleDateChange} busyDates = {busyDates} />
         <Button onClick = {DateReserve}> Reserve date </Button>
         </div>
     </div>
@@ -147,12 +153,12 @@ const SupTable = () => {
     const DataFromServer =  async () => {
       try{
         setSuppliersData(null);
-        const suppliers = await searchObjectsByType("liriella71@gmail.com"); // TODO change the hardcode <3
+        const suppliers = await searchObjectsByType("supplier@mail.com"); // TODO change the hardcode <3
         const mappedData = suppliers.map((item) => ({
           name: item.objectDetails.name,
           address: item.objectDetails.address ? item.objectDetails.address + " " + item.objectDetails.city : item.objectDetails.city,
           supType: item.alias,
-          rate_grade: 3,
+        
           description: (
             <Description
               text= {item.objectDetails.description}
@@ -160,6 +166,7 @@ const SupTable = () => {
               facebookLink = {item.objectDetails.facebook}
               mailLink = {item.createdBy.userId.email}
               phoneNum = {item.objectDetails.phone}
+              busyDates = {item.objectDetails.busyDates}
             />
           ),
           photo: item.objectDetails.photo? (
@@ -222,12 +229,7 @@ const SupTable = () => {
   })),
   onFilter: (value, record) => record.address.includes(value),
   },
-  {
-   title: "Rate grade",
-   dataIndex: "rate_grade",
-   key: "rate_grade",
-   sorter: (a, b) => a.rate_grade - b.rate_grade,
-  },
+  
   {
    title: "Photo",
    dataIndex: "photo",
@@ -307,7 +309,7 @@ return (
       <Content>
         {" "}
         <div>
-          <SupTable />
+          <SupTable  />
         </div>
       </Content>
       <Sider
