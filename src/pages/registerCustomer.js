@@ -7,11 +7,12 @@ import {
   DatePicker,
   Steps,
   Select,
+  Tabs,
 } from "antd";
 import { CreateNewObject } from "../api/objectsApi";
 import RegistrationForm from "../sharedComponents/RegisterUser";
 import { useNavigate } from "react-router-dom";
-
+import Login from "../sharedComponents/loginUser";
 import { useState, useEffect, useRef } from "react";
 import ImgCrop from "antd-img-crop";
 import { useSelector } from "react-redux";
@@ -19,12 +20,10 @@ import { useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
 
-
 const RegistrationFormContent = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
-  const {user} = useSelector((state) => state.user);
-
+  const { user } = useSelector((state) => state.user);
 
   const disabledEventDate = (current) => {
     const formattedCurrent = current.format("YYYY-MM-DD");
@@ -39,12 +38,9 @@ const RegistrationFormContent = () => {
       current.month(),
       current.date()
     ); // remove time part of selected date
-    return (
-      selectedDate.getTime() < currentDate.getTime()
-    ); // compare dates
+    return selectedDate.getTime() < currentDate.getTime(); // compare dates
   };
-  
- 
+
   const successMsg = (text) => {
     messageApi.open({
       type: "success",
@@ -69,7 +65,7 @@ const RegistrationFormContent = () => {
     json_to_server["type"] = "customer";
     json_to_server["alias"] = values["name"];
     json_to_server["objectDetails"] = values;
-    json_to_server["createdBy"] ={"userId": user.userId};
+    json_to_server["createdBy"] = { userId: user.userId };
 
     console.log(json_to_server);
 
@@ -89,25 +85,20 @@ const RegistrationFormContent = () => {
         {contextHolder}
         <Content>
           <Form onFinish={onFinish}>
-          <Form.Item
+            <Form.Item
               name="name"
               label="Name"
               rules={[{ required: true, message: "Please input your name!" }]}
             >
               <Input />
             </Form.Item>
-            
-            <Form.Item 
-            name="partner name"
-            label="Name of partner">
+
+            <Form.Item name="partner name" label="Name of partner">
               <Input placeholder="Optional" />
             </Form.Item>
 
-            <Form.Item 
-            name="birth date"
-            label="Birthday"
-              >
-              <DatePicker/>
+            <Form.Item name="birth date" label="Birthday">
+              <DatePicker />
             </Form.Item>
 
             <Form.Item
@@ -118,13 +109,12 @@ const RegistrationFormContent = () => {
               <Input />
             </Form.Item>
 
-           
-            <Form.Item 
-            name="event date"
-            label="Date of event"
-            rules={[{ required: true, message: "Please input date!" }]}
+            <Form.Item
+              name="event date"
+              label="Date of event"
+              rules={[{ required: true, message: "Please input date!" }]}
             >
-              <DatePicker  disabledDate= {disabledEventDate}/>
+              <DatePicker disabledDate={disabledEventDate} />
             </Form.Item>
 
             <Form.Item
@@ -142,7 +132,6 @@ const RegistrationFormContent = () => {
                 Register
               </Button>
             </Form.Item>
-           
           </Form>
         </Content>
       </Layout>
@@ -242,22 +231,37 @@ const CustomerRegistrationForm = () => {
   return (
     <Layout>
       <Layout>
-        <Sider style={{ background: "#fff" }}></Sider>
         <Layout>
           <Content>
             {contextHolder}
             <Steps current={current} items={items} />
             <div style={contentStyle}>{steps[current].content}</div>
-              <Button type="primary" onClick={next}>
-                Next
-              </Button>            
+            <Button type="primary" onClick={next}>
+              Next
+            </Button>
           </Content>
         </Layout>
-        <Sider style={{ background: "#fff" }}></Sider>
       </Layout>
       <Footer></Footer>
     </Layout>
   );
 };
 
-export default CustomerRegistrationForm;
+const { TabPane } = Tabs;
+
+function SingLoginCustomers() {
+  return (
+    <Tabs>
+      {console.log("hi")}
+
+      <TabPane tab="Register" key="register">
+        <CustomerRegistrationForm />
+      </TabPane>
+      <TabPane tab="Login" key="login">
+        <Login type={"MINIAPP_USER"} />
+      </TabPane>
+    </Tabs>
+  );
+}
+
+export default SingLoginCustomers;

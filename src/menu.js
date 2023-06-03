@@ -12,9 +12,8 @@ import { useEffect, useState } from "react";
 import { GuestForm } from "./pages/tables";
 import { TablePage } from "./pages/tablePage";
 import SupplierPage from "./pages/supplierPage";
-import CustomerRegistrationForm from "./pages/registerCustomer";
 import TableRegistrationForm from "./pages/loginRegisterTable";
-
+import SingLoginCustomers from './pages/registerCustomer'
 
 const { Header, Content } = Layout;
 
@@ -30,12 +29,8 @@ function NewMenu() {
             <Route index element={<Home />} />
             <Route path="AllClientView" element={<AllClientView />} />
             <Route
-              path="client/login"
-              element={<Login type={"MINIAPP_USER"} />}
-            />
-            <Route
               path="client/register"
-              element={<CustomerRegistrationForm userRole={"MINIAPP_USER"} />}
+              element={<SingLoginCustomers />}
             />
 
             <Route path="*" element={"nothing to see"} />
@@ -124,11 +119,6 @@ function MenuComp() {
               key: "/client/register",
               to: "/client/register",
               name: "Customer register",
-            },
-            {
-              key: "/client/login",
-              to: "/client/login",
-              name: "Customer login",
             },
           ]);
           break;
