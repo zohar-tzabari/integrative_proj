@@ -16,10 +16,9 @@ const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 const { Header, Content, Footer, Sider } = Layout;
 
 const PickDate = ({ handleDateChange, busyDates }) => {
-  const [date, setDate] = useState(null);
 
   const [busyDate, setBusyDates] = useState([...busyDates]);
-  console.log(busyDate);
+
   const disabledDate = (current) => {
     const formattedCurrent = current.format("YYYY-MM-DD");
     const today = new Date(); // get current date
@@ -38,7 +37,6 @@ const PickDate = ({ handleDateChange, busyDates }) => {
       selectedDate.getTime() < currentDate.getTime()
     ); // compare dates
   };
-  console.log(date);
   return (
     <DatePicker
       bordered={false}
@@ -86,9 +84,13 @@ const Description = ({
     }
   };
   const handleDateChange = (date, dateString) => {
+    if (!date) return;
     const formattedDate = date.format("YYYY-MM-DD");
+    console.log(formattedDate);
     setDate([date, formattedDate]);
   };
+
+
   return (
     <div>
       {text}
@@ -143,21 +145,21 @@ function extractUniqueCities(data) {
 const SupTable = () => {
   const [suppliersData, setSuppliersData] = useState(null);
   const [mapdData, setMappedData] = useState(null);
+  const [expandedRowKey, setExpandedRowKey] = useState(null);
   const user = useSelector((state) => state.user);
 
   useEffect(() => {
-    // Function to execute
-    const DataFromServer = async () => {
+    const fetchData = async () => {
       try {
         setSuppliersData(null);
         const suppliers = await searchObjectsByType(user.user.userId.email);
-        const mappedData = suppliers.map((item) => ({
+        const mappedData = suppliers.map((item, index) => ({
+          key: index.toString(),
           name: item.objectDetails.name,
           address: item.objectDetails.address
-            ? item.objectDetails.address + " " + item.objectDetails.city
+            ? item.objectDetails.address + ' ' + item.objectDetails.city
             : item.objectDetails.city,
           supType: item.alias,
-
           description: (
             <Description
               text={item.objectDetails.description}
@@ -175,9 +177,7 @@ const SupTable = () => {
               width={100}
               height={100}
             />
-          ) : (
-            ""
-          ),
+          ) : null,
         }));
 
         setMappedData(mappedData);
@@ -186,76 +186,79 @@ const SupTable = () => {
         console.log(error);
       }
     };
-    // Call the function
-    DataFromServer();
-  }, []); // Empty dependency array to run the effect only once
+
+    fetchData();
+  }, []);
 
   const uniqueCities = extractUniqueCities(suppliersData);
 
+  const handleRowExpand = (expanded, record) => {
+    if (expanded) {
+      setExpandedRowKey(record.key);
+    } else {
+      setExpandedRowKey(null);
+    }
+  };
+
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: "Type",
-      dataIndex: "supType",
-      key: "supType",
+      title: 'Type',
+      dataIndex: 'supType',
+      key: 'supType',
       filters: [
         {
-          text: "DJs",
-          value: "DJ",
+          text: 'DJs',
+          value: 'DJ',
         },
         {
-          text: "flowers",
-          value: "FLOWERS",
+          text: 'Flowers',
+          value: 'FLOWERS',
         },
         {
-          text: "photographers",
-          value: "PHOTOGRAPHER",
+          text: 'Photographers',
+          value: 'PHOTOGRAPHER',
         },
       ],
       onFilter: (value, record) => record.supType.indexOf(value) === 0,
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
       filters: uniqueCities.map((city) => ({
         text: city,
         value: city,
       })),
       onFilter: (value, record) => record.address.includes(value),
     },
-
     {
-      title: "Photo",
-      dataIndex: "photo",
-      key: "photo",
+      title: 'Photo',
+      dataIndex: 'photo',
+      key: 'photo',
     },
   ];
 
   return (
     <div>
-      {
-        <Table
-          dataSource={mapdData}
-          expandable={{
-            expandedRowRender: (record) => (
-              <p
-                style={{
-                  margin: 0,
-                }}
-              >
-                {record.description}
-              </p>
-            ),
-            rowExpandable: (record) => record.name !== "Not Expandable",
-          }}
-          columns={columns}
-        />
-      }
+      <Table
+        dataSource={mapdData}
+        expandable={{
+          expandedRowRender: (record) => (
+            <p style={{ margin: 0 }}>
+              {record.description}
+            </p>
+          ),
+          expandedRowKeys: [expandedRowKey],
+          onExpand: handleRowExpand,
+          rowExpandable: (record) => record.name !== 'Not Expandable',
+        }}
+        columns={columns}
+      />
     </div>
   );
 };
