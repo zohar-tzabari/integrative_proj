@@ -10,7 +10,6 @@ const catagorySlice = createSlice({
   reducers: {
     addCatagory: (state, action) => {
       state.all_catagroies = [...state.all_catagroies, action.payload];
-      console.log(state.all_catagroies);
     },
   },
 });

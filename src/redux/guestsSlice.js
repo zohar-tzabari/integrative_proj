@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   all_gusets: [],
-  id:0,
 };
 
 const guestsSlice = createSlice({
@@ -12,8 +11,11 @@ const guestsSlice = createSlice({
     addGuest: (state, action) => {
       state.all_gusets = [...state.all_gusets, action.payload];
     },
+    set_all_Guests: (state, action) => {
+      state.all_gusets = action.payload;
+    },
   },
 });
 
-export const { addGuest } = guestsSlice.actions;
+export const { addGuest,set_all_Guests } = guestsSlice.actions;
 export default guestsSlice.reducer;

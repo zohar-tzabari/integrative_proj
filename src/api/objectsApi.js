@@ -20,10 +20,11 @@ export async function CreateNewObject(values) {
   }
 }
 
-export async function BindObject(internalObjectId,userEmail,childernObject) {
+export async function BindObject(myObject, userEmail, childernObject) {
+  console.log(myObject);
   try {
-    const response = await axios.post(
-      `http://localhost:8081/superapp/objects/${SUPERAPP}/${internalObjectId}/children?userEmail=${userEmail}`,
+    const response = await axios.put(
+      `http://localhost:8081/superapp/objects/${SUPERAPP}/${myObject.objectId.internalObjectId}/children?userEmail=${userEmail}`,
       childernObject,
       {
         headers: {
@@ -39,9 +40,25 @@ export async function BindObject(internalObjectId,userEmail,childernObject) {
   }
 }
 
+export async function GetChildrenObject(myObject, userEmail) {
+  try {
+    const response = await axios.get(
+      `http://localhost:8081/superapp/objects/${SUPERAPP}/${ myObject.objectId.internalObjectId}/children?userEmail=${userEmail}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
 
-
-export async function GetObjectByType(type,userEmail) {
+export async function GetObjectByType(type, userEmail) {
   try {
     const response = await axios.get(
       `http://localhost:8081/superapp/objects/search/byType/${type}`,
@@ -59,8 +76,7 @@ export async function GetObjectByType(type,userEmail) {
   }
 }
 
-
-export async function GetObjectByAlias(alias,userEmail) {
+export async function GetObjectByAlias(alias, userEmail) {
   try {
     const response = await axios.get(
       `http://localhost:8081/superapp/objects/search/byAlias/${alias}`,
@@ -75,8 +91,9 @@ export async function GetObjectByAlias(alias,userEmail) {
   } catch (error) {
     console.error(error);
     return null;
-  }
-}                                                                                                 
+  }}
+
+
 
 
 

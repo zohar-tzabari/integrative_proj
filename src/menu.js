@@ -9,9 +9,12 @@ import Login from "./sharedComponents/loginUser";
 import RegistrationForm from "./sharedComponents/RegisterUser";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { TablePage, GuestForm } from "./pages/tables";
+import { GuestForm } from "./pages/tables";
+import { TablePage } from "./pages/tablePage";
 import SupplierPage from "./pages/supplierPage";
 import CustomerRegistrationForm from "./pages/registerCustomer";
+import TableRegistrationForm from "./pages/loginRegisterTable";
+
 
 const { Header, Content } = Layout;
 
@@ -71,6 +74,10 @@ function NewMenu() {
             />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
+            <Route
+              path="tables/RegistrationForm"
+              element={<TableRegistrationForm />}
+            />
           </Routes>
         </Content>
       </Layout>
@@ -133,6 +140,11 @@ function MenuComp() {
               to: "/tables/insertGuests",
               name: "Tables organizer",
             },
+            {
+              key: "tables/RegistrationForm",
+              to: "tables/RegistrationForm",
+              name: "Tables RegistrationForm",
+            },
           ]);
           break;
         }
@@ -182,7 +194,7 @@ function MenuComp() {
   }, [currentMiniApp]); // Empty dependency array to run the effect only once
 
   useEffect(() => {
-    console.log("menuToAdd updated:", menuToAdd);
+
   }, [menuToAdd]);
 
   return (
