@@ -16,6 +16,7 @@ function generateSubTable(key, value, dataIndex, title) {
     children,
   };
 }
+console.error = () => {};
 
 export const JsonTable = ({ data }) => {
   const [columns, setColumns] = useState([]);
@@ -40,7 +41,9 @@ export const JsonTable = ({ data }) => {
     }
   }, [data]);
 
-  return (<div>
-    <Table dataSource={data} columns={columns} />
-  </div>)
+  return (
+    <div>
+      <Table dataSource={data} columns={columns} />
+    </div>
+  );
 };
