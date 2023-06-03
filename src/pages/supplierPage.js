@@ -19,6 +19,9 @@ import { ObjectUpdateApi } from "../api/objectsApi";
 
 const { Header, Sider, Content, Footer } = Layout;
 
+
+
+
 const SupplierPage = () => {
   const user = useSelector((state) => state.user);
   const objectM = useSelector((state) => state.objectManager);
@@ -31,30 +34,32 @@ const SupplierPage = () => {
   ]);
   const dispatch = useDispatch();
  
-    useEffect(() => {
-      // Function to execute
-      const fetchData = async () => {
-        try {
-
-          await ChangeToMiniAppUser();
-          const current = await searchObjectsByUserEmail(
-            "suppliers",
-            objectM.objectManager.objectId,
-            user.user.userId.email,
-            user.user.userId,
-          );
-          setSupplierObject(current);
-          setBusyDates(current.objectDetails.busyDates);
-          await ChangeToSuperAppUser();
-
-        } catch (error) {
-          await ChangeToSuperAppUser();
-        }
-      };
-
-      fetchData();
-    }, []); // Empty dependency array to run the effect only once
-
+  useEffect(() => {
+    // Function to execute
+    const fetchData = async () => {
+      try {
+        await ChangeToMiniAppUser();
+        const current = await searchObjectsByUserEmail(
+          "suppliers",
+          objectM.objectManager.objectId,
+          user.user.userId.email,
+          user.user.userId,
+        );
+        console.log(typeof current);
+        setSupplierObject(current);
+        console.log(current.objectDetails.busyDates);
+        setBusyDates(current.objectDetails.busyDates);
+        await ChangeToSuperAppUser();
+      } catch (error) {
+        console.error(error);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second
+        fetchData(); // Retry the function
+      }
+    };
+  
+    fetchData();
+  }, []); // Empty dependency array to run the effect only once
+  
   
     const [services, setServices] = useState([]);
     const [notYetServices, setNotYetServices] = useState([]);

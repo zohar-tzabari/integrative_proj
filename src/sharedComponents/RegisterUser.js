@@ -32,11 +32,8 @@ const RegistrationFormContent = ({
   };
 
   const onFinish = async (values) => {
-    console.log(miniAppClientRole);
     values["role"] = miniAppClientRole;
-    console.log(values);
     const dataFromServer = await ClientRegisterApi(values);
-    console.log(typeof dataFromServer);
     if (typeof dataFromServer == "object") {
       console.log(dataFromServer);
       successMsg("Registration successful!");
