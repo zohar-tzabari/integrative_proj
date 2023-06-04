@@ -26,6 +26,8 @@ const SupplierPage = () => {
   const [busyDates, setBusyDates] = useState([]);
   const [services, setServices] = useState([]);
   const [notYetServices, setNotYetServices] = useState([]);
+  const [refresh, setRefresh] = useState(true);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -73,7 +75,7 @@ const SupplierPage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     // Function to execute
@@ -101,8 +103,13 @@ const SupplierPage = () => {
   };
 
   const handleDateChange = async (date, dateString) => {
-    const formattedDate = date.format("YYYY-MM-DD");
-    setBusyDates([...busyDates, formattedDate]);
+    let formattedDate;
+    if (dateString !== "manual") {
+      formattedDate = date.format("YYYY-MM-DD");
+      setBusyDates([...busyDates, formattedDate]);
+    } else {
+      formattedDate = date;
+    }
     try {
       await ChangeToMiniAppUser();
       const prop = supplierObject.objectId.split("#");
@@ -113,6 +120,7 @@ const SupplierPage = () => {
         objectDetails: tempObject.objectDetails,
       });
       await ChangeToSuperAppUser();
+      setRefresh(!refresh);
     } catch (error) {
       await ChangeToSuperAppUser();
     }
@@ -123,6 +131,7 @@ const SupplierPage = () => {
     const prop = object.objectId.split("#");
     if (isApproved) {
       object["objectDetails"]["status"] = "APPROVED";
+      await handleDateChange(record.date, "manual");
     } else {
       object["objectDetails"]["status"] = "REJECTED";
     }
@@ -252,7 +261,6 @@ const SupplierPage = () => {
         </Content>
         <Footer></Footer>
         <Sider style={{ background: "#fff" }}></Sider>
-
       </Layout>
     </Layout>
   );

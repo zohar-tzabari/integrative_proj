@@ -116,7 +116,6 @@ export async function GetServicesApi(
   dataToSend["commandAttributes"] = { supplierMail: mail, status: status };
   dataToSend["invokedBy"] = { userId };
   dataToSend["targetObject"] = { objectId };
-  console.log(dataToSend);
   try {
     const response = await axios.post(
       `http://localhost:8081/superapp/miniapp/${miniAppName}`,
