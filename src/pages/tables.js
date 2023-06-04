@@ -22,8 +22,12 @@ import {
   CreateNewObject,
   BindObject,
   GetChildrenObject,
+  ObjectUpdateApi,
 } from "../api/objectsApi";
-import { searchObjectsByUserEmail ,searchObjectsByUserEmailBoundary} from "../api/commandApi";
+import {
+  searchObjectsByUserEmail,
+  searchObjectsByUserEmailBoundary,
+} from "../api/commandApi";
 import { setUser } from "../redux/userSlice";
 import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
 import { set_all_Guests } from "../redux/guestsSlice";
@@ -64,6 +68,9 @@ const GuestFormComponent = () => {
           user.user.userId.email,
           user.user.userId
         );
+        try{
+        setCategories(zohar.objectDetails.categories);}
+        catch (error){console.log(error);}
         await ChangeToSuperAppUser();
         setMyObject(zohar);
       }
@@ -148,13 +155,13 @@ const GuestFormComponent = () => {
       return;
     }
     console.log(myObject);
-    
+
     await BindObject(myObject, user.user.userId.email, registerObject.objectId);
     // Reset the form fields
     form.resetFields();
   };
 
-  const handleNewGuestType = () => {
+  const handleNewGuestType = async () => {
     if (newCategory !== "") {
       const categoryNameExists = categories.some(
         (category) => category.name === newCategory.GuestCatagoryName
@@ -167,6 +174,26 @@ const GuestFormComponent = () => {
           color: sketchPickerColor,
         };
         setCategories([...categories, objectToAdd]);
+        try {
+          await ChangeToMiniAppUser();
+          // console.log(myObject.objectId.internalObjectId);
+          // const prop = myObject.objectId.split("#");
+          let tempObject = JSON.parse(JSON.stringify(myObject));
+          tempObject["objectDetails"]["categories"] = [
+            ...categories,
+            objectToAdd,
+          ];
+          await ChangeToSuperAppUser();
+          const result = await ObjectUpdateApi(
+            myObject.objectDetails.mail,
+            myObject.objectId.internalObjectId,
+            { objectDetails: tempObject.objectDetails }
+          );
+          console.log(result);
+          await ChangeToSuperAppUser();
+        } catch (error) {
+          console.log(error);
+        }
         setNewCategory("");
         successMsg("Guest category added successfully!");
       }
