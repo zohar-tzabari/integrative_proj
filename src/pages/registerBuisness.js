@@ -112,8 +112,6 @@ const RegistrationFormContent = () => {
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
       successMsg("Registration successful!");
-      await timeout(2000); //for 1 sec delay
-      navigate("/");
     } else {
       errorMsg("somthing went wrong");
     }
@@ -270,11 +268,14 @@ const BuisnessRegistrationForm = () => {
     },
   ];
 
+  function isJsonEmpty(jsonObj) {
+    return Object.keys(jsonObj).length === 0;
+  }
+
   const next = () => {
-    if (userRegisterSuccess) {
+    if(!isJsonEmpty(userRegisterSuccess.user)){
       setCurrent(current + 1);
     } else {
-      console.log(userRegisterSuccess);
       errorMsg("need to register as user first");
     }
   };
@@ -291,7 +292,6 @@ const BuisnessRegistrationForm = () => {
   return (
     <Layout>
       <Layout>
-        <Sider style={{ background: "#fff" }}></Sider>
         <Layout>
           <Content>
             {contextHolder}
@@ -302,7 +302,6 @@ const BuisnessRegistrationForm = () => {
               </Button>            
           </Content>
         </Layout>
-        <Sider style={{ background: "#fff" }}></Sider>
       </Layout>
       <Footer></Footer>
     </Layout>

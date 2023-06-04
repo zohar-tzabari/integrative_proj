@@ -13,7 +13,8 @@ import { GuestForm } from "./pages/tables";
 import { TablePage } from "./pages/tablePage";
 import SupplierPage from "./pages/supplierPage";
 import TableRegistrationForm from "./pages/loginRegisterTable";
-import SingLoginCustomers from './pages/registerCustomer'
+import SingLoginCustomers from './pages/loginRegisterCustomer'
+import SingLoginSupplier from "./pages/loginRegisterSupplier";
 
 const { Header, Content } = Layout;
 
@@ -36,7 +37,7 @@ function NewMenu() {
             <Route path="*" element={"nothing to see"} />
             <Route
               path="BuisnessRegistrationForm"
-              element={<BuisnessRegistrationForm />}
+              element={<SingLoginSupplier />}
             />
             <Route path="MiniAppDash/:email" element={<MiniAppDash />} />
             <Route path="Admin/:email" element={<Admin />} />
@@ -63,10 +64,6 @@ function NewMenu() {
               element={<BuisnessRegistrationForm />}
             />
             <Route path="supplierPage" element={<SupplierPage />} />
-            <Route
-              path="supplier/login"
-              element={<Login type={"MINIAPP_USER"} role={"Supplier"}/>}
-            />
             <Route path="tables/arrangeTables" element={<TablePage />} />
             <Route path="tables/insertGuests" element={<GuestForm />} />
             <Route
@@ -99,11 +96,6 @@ function MenuComp() {
               key: "/supplierPage",
               to: "/supplierPage",
               name: "Buisness page",
-            },
-            {
-              key: "/supplier/login",
-              to: "/supplier/login",
-              name: "login",
             },
           ]);
           break;
