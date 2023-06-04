@@ -68,8 +68,7 @@ const GuestFormComponent = () => {
           user.user.userId.email,
           user.user.userId
         );
-        console.log(zohar.objectDetails.categories);
-       if (zohar.objectDetails.categories) {setCategories(zohar.objectDetails.categories);}
+        if (zohar.objectDetails.categories) setCategories(zohar.objectDetails.categories);
         await ChangeToSuperAppUser();
         setMyObject(zohar);
       }
