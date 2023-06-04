@@ -14,10 +14,6 @@ const buttonData = [
   { appName: "Supplier", label: "Supplier Mini App" },
   { appName: "Customer", label: "Customer Mini App" },
   { appName: "Tables", label: "Tables Mini App" },
-  { appName: "Invention", label: "Approve Invention Mini App" },
-  { appName: "Admin", label: "Admin" },
-  { appName: "Tables", label: "Tables" },
-  { appName: "miniAppDashboard", label: "Mini App Dashboard" },
 ];
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -69,32 +65,27 @@ function Home() {
 
   return (
     <Layout>
-        <Sider style={{ background: "#fff" }}></Sider>
-      {/* <Sider collapsible> */}
-      {/* <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-          <Menu.Item key="1" icon={<PieChartOutlined />}>
-            example
-          </Menu.Item>
-          <Menu.Item key="2" icon={<DesktopOutlined />}>
-            example
-          </Menu.Item>
-          <Menu.Item key="3" icon={<FileOutlined />}>
-            example
-          </Menu.Item>
-          <Menu.Item key="4" icon={<TeamOutlined />}>
-            example
-          </Menu.Item>
-        </Menu> */}
-      {/* </Sider> */}
-      <Layout>
-        <Header 
-          className="site-layout-sub-header-background"
-          style={{ padding: 0 ,background: "#fff" }}
-        />
-        <Content >
-          <Breadcrumb>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-          </Breadcrumb>
+      <Sider style={{ background: "#fff" }}></Sider>
+      <Layout
+        style={{
+          padding: 0,
+          background: "rgba(255, 255, 100, 0.1)",
+          backgroundImage:
+            'url("https://img.freepik.com/free-vector/light-pink-heart-pattern_53876-67660.jpg")',
+          backgroundSize: "20%",
+          backgroundRepeat: "repeat",
+        }}
+      >
+        <Content
+          style={{
+            padding: 0,
+            background: "rgba(255, 255, 100, 0.1)",
+            backgroundImage:
+              'url("https://img.freepik.com/free-vector/light-pink-heart-pattern_53876-67660.jpg")',
+            backgroundSize: "20%",
+            backgroundRepeat: "repeat",
+          }}
+        >
           <div>
             <h1>hi: {Object.keys(user).length != 0 ? user.user.avatar : ""}</h1>
             <h1>current mini app is: {miniApp.miniAppName}</h1>

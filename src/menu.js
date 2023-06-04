@@ -13,7 +13,7 @@ import { GuestForm } from "./pages/tables";
 import { TablePage } from "./pages/tablePage";
 import SupplierPage from "./pages/supplierPage";
 import TableRegistrationForm from "./pages/loginRegisterTable";
-import SingLoginCustomers from './pages/loginRegisterCustomer'
+import SingLoginCustomers from "./pages/loginRegisterCustomer";
 import SingLoginSupplier from "./pages/loginRegisterSupplier";
 
 const { Header, Content } = Layout;
@@ -25,14 +25,20 @@ function NewMenu() {
         <Header>
           <MenuComp />
         </Header>
-        <Content>
+        <Content
+          style={{
+            padding: 0,
+            background: "rgba(255, 255, 100, 0.1)",
+            backgroundImage:
+              'url("https://img.freepik.com/free-vector/light-pink-heart-pattern_53876-67660.jpg")',
+            backgroundSize: "20%",
+            backgroundRepeat: "repeat",
+          }}
+        >
           <Routes>
             <Route index element={<Home />} />
             <Route path="AllClientView" element={<AllClientView />} />
-            <Route
-              path="client/register"
-              element={<SingLoginCustomers />}
-            />
+            <Route path="client/register" element={<SingLoginCustomers />} />
 
             <Route path="*" element={"nothing to see"} />
             <Route
@@ -175,9 +181,7 @@ function MenuComp() {
     fetchData();
   }, [currentMiniApp]); // Empty dependency array to run the effect only once
 
-  useEffect(() => {
-
-  }, [menuToAdd]);
+  useEffect(() => {}, [menuToAdd]);
 
   return (
     <Menu theme="dark" mode="horizontal">
