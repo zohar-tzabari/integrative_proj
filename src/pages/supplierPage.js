@@ -13,128 +13,86 @@ import { useSelector } from "react-redux";
 import { UserUpdateApi, UserLoginApi } from "../api/usersApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
-import { searchObjectsByUserEmail } from "../api/commandApi";
+import { searchObjectsByUserEmail, GetServicesApi } from "../api/commandApi";
 import { ObjectUpdateApi } from "../api/objectsApi";
-
+import { JsonTable } from "../sharedComponents/JsonTable";
 
 const { Header, Sider, Content, Footer } = Layout;
-
-
-
 
 const SupplierPage = () => {
   const user = useSelector((state) => state.user);
   const objectM = useSelector((state) => state.objectManager);
-  const miniApp = useSelector((state) => state.miniApp);
-
   const [supplierObject, setSupplierObject] = useState();
   const [busyDates, setBusyDates] = useState([]);
-  const [serviceRequest,setServiceRequest] = useState();
-  const [latestClients, setLatestClients] = useState([
-  ]);
+  const [services, setServices] = useState([]);
+  const [notYetServices, setNotYetServices] = useState([]);
   const dispatch = useDispatch();
- 
+
   useEffect(() => {
     // Function to execute
     const fetchData = async () => {
       try {
         await ChangeToMiniAppUser();
-        const current = await searchObjectsByUserEmail(
+        let current = await searchObjectsByUserEmail(
+          "suppliers",
+          objectM.objectManager.objectId,
+          user.user.userId.email,
+          user.user.userId
+        );
+        await ChangeToMiniAppUser();
+        current = await searchObjectsByUserEmail(
+          "suppliers",
+          objectM.objectManager.objectId,
+          user.user.userId.email,
+          user.user.userId
+        );
+        await ChangeToMiniAppUser();
+        const notYetServicesData = await GetServicesApi(
           "suppliers",
           objectM.objectManager.objectId,
           user.user.userId.email,
           user.user.userId,
+          "NOT YET"
         );
-        console.log(typeof current);
+        await ChangeToMiniAppUser();
+        const approvedServices = await GetServicesApi(
+          "suppliers",
+          objectM.objectManager.objectId,
+          user.user.userId.email,
+          user.user.userId,
+          "APPROVED"
+        );
+        setNotYetServices(notYetServicesData);
+        setServices(approvedServices);
         setSupplierObject(current);
-        console.log(current.objectDetails.busyDates);
         setBusyDates(current.objectDetails.busyDates);
         await ChangeToSuperAppUser();
       } catch (error) {
         console.error(error);
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second
-        fetchData(); // Retry the function
+        await ChangeToSuperAppUser();
       }
     };
-  
     fetchData();
-  }, []); // Empty dependency array to run the effect only once
-  
-  
-    const [services, setServices] = useState([]);
-    const [notYetServices, setNotYetServices] = useState([]);
+  }, []);
 
+  useEffect(() => {
+    // Function to execute
+    const getAllServices = async () => {
+      try {
+        await ChangeToMiniAppUser();
+        const current = await GetObjectByType(
+          "service",
+          supplierObject.objectDetails.mail
+        );
+        setServices(current);
 
-    useEffect(() => {
-      // Function to execute
-      const getAllServices = async () => {
-        try {
-          await ChangeToMiniAppUser();
-          const current = await GetObjectByType(
-            "service",
-            supplierObject.objectDetails.mail
-          );
-          setServices(current);
-
-          await ChangeToSuperAppUser();
-        } catch (error) {
-          await ChangeToSuperAppUser();
-        }
-      };
-      getAllServices();
-    }, []);
-
-    const [mapdData, setMappedData] = useState(null);  
-  
-    useEffect(() => {
-      // Function to execute
-      const getDataFromServer = async () => {
-        try {
-          // const filteredData = services.filter(
-          //   item =>
-          //     item.objectDetails.supplierMail === supplierObject.objectDetails.mail &&
-          //     item.objectDetails.status === "NOT YET"
-          // );
-    
-          const mappedData = services.map(item => ({
-            name: item.objectDetails.customerMail,
-            date: item.objectDetails.date[1],
-            approval: item.objectDetails.status
-          }));
-    
-          setMappedData(mappedData);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-    
-      // Call the function
-      getDataFromServer();
-    }, []);
-      
-  const filteredServicesNotYet = (services)=>{
-  services.filter(
-    service =>
-      service.objectDetails.supplierMail === supplierObject.objectDetails.mail &&
-      service.objectDetails.status === 'NOT YET'
-  
-  );
-}
-  const filteredServicesApproved = (services)=>{
-    services.filter(
-    service =>
-      service.objectDetails.supplierMail === supplierObject.objectDetails.mail &&
-      service.objectDetails.status === 'APPROVED'
-  );}
-
-  const filteredServicesRejected = (services)=>{
-    services.filter(
-    service =>
-      service.objectDetails.supplierMail === supplierObject.objectDetails.mail&&
-      service.objectDetails.status === 'REJECTED'
-  );}
-  
-
+        await ChangeToSuperAppUser();
+      } catch (error) {
+        await ChangeToSuperAppUser();
+      }
+    };
+    getAllServices();
+  }, []);
 
   const disabledDate = (current) => {
     // Disable dates that are already busy
@@ -144,56 +102,87 @@ const SupplierPage = () => {
 
   const handleDateChange = async (date, dateString) => {
     const formattedDate = date.format("YYYY-MM-DD");
-      setBusyDates([...busyDates, formattedDate]);
-     try {
+    setBusyDates([...busyDates, formattedDate]);
+    try {
       await ChangeToMiniAppUser();
-      const  prop = supplierObject.objectId.split('#');
+      const prop = supplierObject.objectId.split("#");
       let tempObject = JSON.parse(JSON.stringify(supplierObject));
-      tempObject["objectDetails"]["busyDates"] = [...busyDates, formattedDate] ;
+      tempObject["objectDetails"]["busyDates"] = [...busyDates, formattedDate];
       await ChangeToSuperAppUser();
-      await ObjectUpdateApi(supplierObject.objectDetails.mail,prop[1],{objectDetails:tempObject.objectDetails});
+      await ObjectUpdateApi(supplierObject.objectDetails.mail, prop[1], {
+        objectDetails: tempObject.objectDetails,
+      });
       await ChangeToSuperAppUser();
     } catch (error) {
       await ChangeToSuperAppUser();
     }
   };
 
-  const handleApprovalChange = (clientId, checked) => {
-    const updatedClients = latestClients.map((client) => {
-      if (client.id === clientId) {
-        return { ...client, approval: checked ? "Yes" : "No" };
-      }
-      return client;
+  async function handleApprovalChange(record, isApproved) {
+    const object = notYetServices.find((item) => item.key === record.objectId);
+    const prop = object.objectId.split("#");
+    if (isApproved) {
+      object["objectDetails"]["status"] = "APPROVED";
+    } else {
+      object["objectDetails"]["status"] = "REJECTED";
+    }
+    await ObjectUpdateApi(object.objectDetails.supplierMail, prop[1], {
+      objectDetails: object.objectDetails,
     });
-    setLatestClients(updatedClients);
-  };
+  }
 
   const waitingColumns = [
-    { title: "Customer E-mail",
-     dataIndex: "name", 
-     key: "name" },
-    { title: "Date Requested",
-     dataIndex: "date", 
-     key: "date" },
+    {
+      title: "Customer E-mail",
+      dataIndex: "customerMail",
+      key: "customerMail",
+    },
+    { title: "Date Requested", dataIndex: "date", key: "date" },
     {
       title: "Approval",
       dataIndex: "approval",
       key: "approval",
       render: (_, record) => (
-        <Popconfirm
-          title="Approve"
-          description="Are you sure you want to approve?"
-          okText="Approve"
-          cancelText="Reject"
-        >
-          <Button>Approve</Button>
-        </Popconfirm>
+        <>
+          <Popconfirm
+            title="Approve"
+            description="Are you sure you want to approve?"
+            okText="YES"
+            cancelText="NO"
+            onConfirm={() => handleApprovalChange(record, true)}
+          >
+            <Button>Approve</Button>
+          </Popconfirm>
+          <Popconfirm
+            title="Reject"
+            description="Are you sure you want to Reject?"
+            okText="YES"
+            cancelText="NO"
+            onConfirm={() => handleApprovalChange(record, true)}
+          >
+            <Button>Reject</Button>
+          </Popconfirm>
+        </>
       ),
     },
   ];
 
-  const handleRemoveDate = (dateToRemove) => {
-    setBusyDates(busyDates.filter((date) => date !== dateToRemove));
+  const handleRemoveDate = async (dateToRemove) => {
+    const newBustDates = busyDates.filter((date) => date !== dateToRemove);
+    setBusyDates(newBustDates);
+    try {
+      await ChangeToMiniAppUser();
+      const prop = supplierObject.objectId.split("#");
+      let tempObject = JSON.parse(JSON.stringify(supplierObject));
+      tempObject["objectDetails"]["busyDates"] = newBustDates;
+      await ChangeToSuperAppUser();
+      await ObjectUpdateApi(supplierObject.objectDetails.mail, prop[1], {
+        objectDetails: tempObject.objectDetails,
+      });
+      await ChangeToSuperAppUser();
+    } catch (error) {
+      await ChangeToSuperAppUser();
+    }
   };
 
   const ChangeToMiniAppUser = async () => {
@@ -245,9 +234,25 @@ const SupplierPage = () => {
             )}
           />
           <h2>Customers Requests Table</h2>
-          <Table dataSource={mapdData} columns={waitingColumns} />
+          <Table
+            dataSource={notYetServices.map((item) => ({
+              key: item.objectId,
+              customerMail: item.objectDetails.customerMail,
+              date: item.objectDetails.date,
+            }))}
+            columns={waitingColumns}
+          />
+          <h2>Customers Aprroved services Table</h2>
+          <JsonTable
+            data={services.map((item) => ({
+              customerMail: item.objectDetails.customerMail,
+              date: item.objectDetails.date,
+            }))}
+          />
         </Content>
         <Footer></Footer>
+        <Sider style={{ background: "#fff" }}></Sider>
+
       </Layout>
     </Layout>
   );

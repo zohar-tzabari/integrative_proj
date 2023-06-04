@@ -16,7 +16,6 @@ const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 const { Header, Content, Footer, Sider } = Layout;
 
 const PickDate = ({ handleDateChange, busyDates }) => {
-
   const [busyDate, setBusyDates] = useState([...busyDates]);
 
   const disabledDate = (current) => {
@@ -64,8 +63,20 @@ const Description = ({
       content: text,
     });
   };
+  const errorMsg = (text, duration = 9999) => {
+    messageApi.open({
+      type: "error",
+      content: text,
+      duration: duration,
+    });
+  };
 
   const DateReserve = async () => {
+    if (!dates) {
+      errorMsg("need to insert date");
+      return;
+    }
+    console.log(dates);
     try {
       let json_to_server = {};
       json_to_server["type"] = "service";
@@ -74,9 +85,10 @@ const Description = ({
       json_to_server["objectDetails"] = {
         customerMail: user.user.userId.email,
         supplierMail: mailLink,
-        date: dates,
+        date: dates[1],
         status: "NOT YET",
       };
+      setDate(null);
       const result = await CreateNewObject(json_to_server);
       successMsg("request sent to the supplier");
     } catch (error) {
@@ -90,9 +102,9 @@ const Description = ({
     setDate([date, formattedDate]);
   };
 
-
   return (
     <div>
+      {contextHolder}
       {text}
       <br />
       {instgramLink && (
@@ -157,7 +169,7 @@ const SupTable = () => {
           key: index.toString(),
           name: item.objectDetails.name,
           address: item.objectDetails.address
-            ? item.objectDetails.address + ' ' + item.objectDetails.city
+            ? item.objectDetails.address + " " + item.objectDetails.city
             : item.objectDetails.city,
           supType: item.alias,
           description: (
@@ -202,34 +214,34 @@ const SupTable = () => {
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Type',
-      dataIndex: 'supType',
-      key: 'supType',
+      title: "Type",
+      dataIndex: "supType",
+      key: "supType",
       filters: [
         {
-          text: 'DJs',
-          value: 'DJ',
+          text: "DJs",
+          value: "DJ",
         },
         {
-          text: 'Flowers',
-          value: 'FLOWERS',
+          text: "Flowers",
+          value: "FLOWERS",
         },
         {
-          text: 'Photographers',
-          value: 'PHOTOGRAPHER',
+          text: "Photographers",
+          value: "PHOTOGRAPHER",
         },
       ],
       onFilter: (value, record) => record.supType.indexOf(value) === 0,
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
       filters: uniqueCities.map((city) => ({
         text: city,
         value: city,
@@ -237,9 +249,9 @@ const SupTable = () => {
       onFilter: (value, record) => record.address.includes(value),
     },
     {
-      title: 'Photo',
-      dataIndex: 'photo',
-      key: 'photo',
+      title: "Photo",
+      dataIndex: "photo",
+      key: "photo",
     },
   ];
 
@@ -249,13 +261,11 @@ const SupTable = () => {
         dataSource={mapdData}
         expandable={{
           expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>
-              {record.description}
-            </p>
+            <p style={{ margin: 0 }}>{record.description}</p>
           ),
           expandedRowKeys: [expandedRowKey],
           onExpand: handleRowExpand,
-          rowExpandable: (record) => record.name !== 'Not Expandable',
+          rowExpandable: (record) => record.name !== "Not Expandable",
         }}
         columns={columns}
       />
