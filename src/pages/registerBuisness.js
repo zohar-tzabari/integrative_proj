@@ -77,7 +77,7 @@ const RegistrationFormContent = () => {
     "PHOTOGRAPHER",
     "DJ",
   ]);
-  const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
   // const [role, setRole] = useState(MINIAPPUSER);
 
@@ -104,11 +104,11 @@ const RegistrationFormContent = () => {
     json_to_server["type"] = "supplier";
     json_to_server["alias"] = values["alias"];
     values["photo"] = supplierPhoto.current;
-    values['mail']= user.userId.email;
-    values['busyDates']= [];
+    values["mail"] = user.userId.email;
+    values["busyDates"] = [];
     json_to_server["objectDetails"] = values;
-    json_to_server["createdBy"] ={"userId": user.userId};
-  
+    json_to_server["createdBy"] = { userId: user.userId };
+
     const registerObject = await CreateNewObject(json_to_server);
     if (registerObject) {
       successMsg("Registration successful!");
@@ -123,7 +123,7 @@ const RegistrationFormContent = () => {
         {contextHolder}
         <Content>
           <Form onFinish={onFinish}>
-          <Form.Item
+            <Form.Item
               name="name"
               label="Name"
               rules={[{ required: true, message: "Please input your name!" }]}
@@ -175,12 +175,8 @@ const RegistrationFormContent = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              name="description"
-              label="Description"
-  
-            >
-          <Input.TextArea placeholder="Optional" rows = {3}/>
+            <Form.Item name="description" label="Description">
+              <Input.TextArea placeholder="Optional" rows={3} />
             </Form.Item>
             <UploadFile supplierPhoto={supplierPhoto} />
             <Form.Item>
@@ -188,7 +184,6 @@ const RegistrationFormContent = () => {
                 Register
               </Button>
             </Form.Item>
-           
           </Form>
           {/* TODO: dropdown of supplier type */}
         </Content>
@@ -273,12 +268,13 @@ const BuisnessRegistrationForm = () => {
   }
 
   const next = () => {
-    if(!isJsonEmpty(userRegisterSuccess.user)){
+    if (!isJsonEmpty(userRegisterSuccess.user)) {
       setCurrent(current + 1);
     } else {
       errorMsg("need to register as user first");
     }
   };
+
   const prev = () => {
     setCurrent(current - 1);
   };
@@ -297,9 +293,11 @@ const BuisnessRegistrationForm = () => {
             {contextHolder}
             <Steps current={current} items={items} />
             <div style={contentStyle}>{steps[current].content}</div>
+            {current < 1 && (
               <Button type="primary" onClick={next}>
                 Next
-              </Button>            
+              </Button>
+            )}
           </Content>
         </Layout>
       </Layout>

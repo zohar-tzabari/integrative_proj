@@ -82,6 +82,7 @@ const RegistrationFormContent = () => {
     <>
       <Layout>
         {contextHolder}
+
         <Content>
           <Form onFinish={onFinish}>
             <Form.Item
@@ -149,10 +150,24 @@ const CustomerRegistration = () => {
         }}
       ></Header>
       <Layout>
+        <Sider
+          style={{
+            backgroundColor: "#ffff",
+            borderBottom: "none",
+            padding: 0,
+          }}
+        ></Sider>{" "}
         <Content>
           <RegistrationFormContent />
         </Content>
       </Layout>
+      <Sider
+        style={{
+          backgroundColor: "#ffff",
+          borderBottom: "none",
+          padding: 0,
+        }}
+      ></Sider>{" "}
       <Footer
         style={{
           backgroundColor: "#ffff",
@@ -200,7 +215,7 @@ const TableRegistrationForm = () => {
   }
 
   const next = () => {
-    if (isJsonEmpty(userRegisterSuccess)) {
+    if (!isJsonEmpty(userRegisterSuccess.user)) {
       setCurrent(current + 1);
     } else {
       errorMsg("need to register as user first");
@@ -224,10 +239,11 @@ const TableRegistrationForm = () => {
             {contextHolder}
             <Steps current={current} items={items} />
             <div style={contentStyle}>{steps[current].content}</div>
-
-            <Button type="primary" onClick={next}>
-              Next
-            </Button>
+            {current < 1 && (
+              <Button type="primary" onClick={next}>
+                Next
+              </Button>
+            )}
           </Content>
         </Layout>
       </Layout>

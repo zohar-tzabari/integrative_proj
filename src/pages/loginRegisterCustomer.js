@@ -210,8 +210,12 @@ const CustomerRegistrationForm = () => {
     },
   ];
 
+  function isJsonEmpty(jsonObj) {
+    return Object.keys(jsonObj).length === 0;
+  }
+
   const next = () => {
-    if (userRegisterSuccess) {
+    if (!isJsonEmpty(userRegisterSuccess.user)) {
       setCurrent(current + 1);
     } else {
       console.log(userRegisterSuccess);
@@ -236,9 +240,11 @@ const CustomerRegistrationForm = () => {
             {contextHolder}
             <Steps current={current} items={items} />
             <div style={contentStyle}>{steps[current].content}</div>
-            <Button type="primary" onClick={next}>
-              Next
-            </Button>
+            {current < 1 && (
+              <Button type="primary" onClick={next}>
+                Next
+              </Button>
+            )}
           </Content>
         </Layout>
       </Layout>
