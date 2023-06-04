@@ -183,13 +183,21 @@ function MenuComp() {
 
   useEffect(() => {}, [menuToAdd]);
 
+  
   return (
-    <Menu theme="dark" mode="horizontal">
+    <Menu
+      theme="dark"
+      mode="horizontal"
+      style={{
+        colorBgElevated: "#820034",
+
+      }}
+    >
       <Menu.Item key="/">
         <Link to="/">Home</Link>
       </Menu.Item>
       {menuToAdd.map((item) => (
-        <Menu.Item key={item.key}>
+        <Menu.Item key={item.key} style={{colorPrimary:"red"}}>
           <Link to={item.to}>{item.name}</Link>
         </Menu.Item>
       ))}

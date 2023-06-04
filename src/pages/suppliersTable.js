@@ -296,15 +296,18 @@ const AllClientView = () => {
       {contextHolder}
       <Header
         style={{
-          backgroundColor: "white",
-          borderBottom: "none",
           padding: 0,
+          background: "rgba(255, 255, 100, 0.1)",
+          backgroundImage:
+            'url("https://img.freepik.com/free-vector/light-pink-heart-pattern_53876-67660.jpg")',
+          backgroundSize: "20%",
+          backgroundRepeat: "repeat",
         }}
       ></Header>
       <Layout>
         <Sider
           style={{
-            backgroundColor: "gray",
+            backgroundColor: "#edd5dc",
             borderBottom: "none",
             padding: 0,
           }}
@@ -319,7 +322,7 @@ const AllClientView = () => {
         </Content>
         <Sider
           style={{
-            backgroundColor: "gray",
+            backgroundColor: "#edd5dc",
             borderBottom: "none",
             padding: 0,
           }}
