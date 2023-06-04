@@ -68,9 +68,7 @@ const GuestFormComponent = () => {
           user.user.userId.email,
           user.user.userId
         );
-        try{
-        setCategories(zohar.objectDetails.categories);}
-        catch (error){console.log(error);}
+        if (zohar.objectDetails.categories) setCategories(zohar.objectDetails.categories);
         await ChangeToSuperAppUser();
         setMyObject(zohar);
       }
@@ -234,6 +232,7 @@ const GuestFormComponent = () => {
           name="guestType"
           rules={[{ required: true, message: "Please select a guest type!" }]}
         >
+          {console.log(categories)}
           <Radio.Group>
             {categories.map((category) => (
               <Radio.Button
