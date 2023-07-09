@@ -62,15 +62,16 @@ const GuestFormComponent = () => {
       } else {
         clearAllMessages();
         await ChangeToMiniAppUser();
-        const zohar = await searchObjectsByUserEmailBoundary(
+        const client = await searchObjectsByUserEmailBoundary(
           "tables",
           objectM.objectManager.objectId,
           user.user.userId.email,
           user.user.userId
         );
-        if (zohar.objectDetails.categories) setCategories(zohar.objectDetails.categories);
+        console.log(client);
+        setCategories(client?.objectDetails?.categories ?? []);
         await ChangeToSuperAppUser();
-        setMyObject(zohar);
+        setMyObject(client);
       }
     };
     // Call the function
@@ -232,7 +233,6 @@ const GuestFormComponent = () => {
           name="guestType"
           rules={[{ required: true, message: "Please select a guest type!" }]}
         >
-          {console.log(categories)}
           <Radio.Group>
             {categories.map((category) => (
               <Radio.Button
